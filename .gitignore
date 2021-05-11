@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.log
+
+.idea/sonarlint/issuestore/*
+.idea/workspace.xml
+.idea/watcherTasks.xml

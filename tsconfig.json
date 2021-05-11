@@ -1,0 +1,18 @@
+{
+    "include": ["**/*.ts"],
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "inlineSourceMap": true,
+        "lib": ["ESNext"],
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "target": "ESNext",
+        "esModuleInterop": true
+    }
+}

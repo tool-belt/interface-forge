@@ -1,0 +1,49 @@
+{
+    "name": "interfaceforge",
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "",
+    "scripts": {
+        "build": "rimraf lib && tsc -p ./tsconfig.build.json",
+        "test": "jest",
+        "test:debug": "node --inspect=9229 --inspect-brk ./node_modules/.bin/jest --runInBand",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
+        "check:script": "eslint --fix-dry-run 'src/**/*.ts'",
+        "lint:script": "eslint --fix 'src/**/*.ts'",
+        "format": "prettier --write '**/*.{js,md,json}'",
+        "prepare": "husky install"
+    },
+    "repository": "https://github.com/Goldziher/interfaceForge",
+    "bugs": "https://github.com/Goldziher/interfaceForge/issues",
+    "main": "dist/index.js",
+    "typings": "dist/index",
+    "files": [
+        "dist/"
+    ],
+    "author": "Na'aman Hirschfeld",
+    "devDependencies": {
+        "@types/jest": "^26.0.23",
+        "@types/merge-deep": "^3.0.0",
+        "@types/node": "^15.0.2",
+        "@typescript-eslint/eslint-plugin": "^4.23.0",
+        "@typescript-eslint/parser": "^4.23.0",
+        "eslint": "^7.26.0",
+        "eslint-config-prettier": "^8.3.0",
+        "husky": ">=6",
+        "jest": "^26.6.3",
+        "lint-staged": ">=10",
+        "prettier": "^2.3.0",
+        "rimraf": "^3.0.2",
+        "ts-jest": "^26.5.6",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.4"
+    },
+    "lint-staged": {
+        "*.ts": "eslint --fix",
+        "*.{js,json,md}": "prettier --write"
+    },
+    "dependencies": {
+        "merge-deep": "^3.0.3"
+    }
+}
