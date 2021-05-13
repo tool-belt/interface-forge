@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1111a0fc-16ba-414b-97da-d0eb1c820c99" name="Default Changelist" comment="initial implementation">
       <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +92,7 @@
       <updated>1620842777809</updated>
       <workItem from="1620842779430" duration="9970000" />
       <workItem from="1620892143531" duration="6346000" />
-      <workItem from="1620916058665" duration="1221000" />
+      <workItem from="1620916058665" duration="1500000" />
     </task>
     <task id="LOCAL-00001" summary="added .idea and cleanup">
       <created>1620916433753</created>
