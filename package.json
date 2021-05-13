@@ -11,7 +11,7 @@
         "test:coverage": "jest --coverage",
         "check:script": "eslint --fix-dry-run 'src/**/*.ts'",
         "lint:script": "eslint --fix 'src/**/*.ts'",
-        "format": "prettier --write '**/*.{js,md,json}'",
+        "format": "prettier --write '**/*.{js,md,json,yaml,yml}'",
         "prepare": "husky install"
     },
     "repository": "https://github.com/Goldziher/interfaceForge",
@@ -41,7 +41,7 @@
     },
     "lint-staged": {
         "*.ts": "eslint --fix",
-        "*.{js,json,md}": "prettier --write"
+        "*.{js,json,md,yml,yaml}": "prettier --write"
     },
     "dependencies": {
         "merge-deep": "^3.0.3"
