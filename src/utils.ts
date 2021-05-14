@@ -1,4 +1,6 @@
-export const isOfType = <T>(
+export function isOfType<T>(
     variable: unknown,
-    propertyToCheckFor: keyof T,
-): variable is T => (variable as T)[propertyToCheckFor] !== undefined;
+    property: keyof T,
+): variable is T {
+    return (variable as T)[property] !== undefined;
+}

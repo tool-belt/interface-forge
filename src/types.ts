@@ -1,5 +1,5 @@
-import { InterfaceForge } from './index';
 import { BoundGenerator } from './bound-generator';
+import { InterfaceForge } from './interface-forge';
 
 export type FactoryFunction<T> = (
     values: T,

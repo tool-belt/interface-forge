@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1111a0fc-16ba-414b-97da-d0eb1c820c99" name="Default Changelist" comment="initial implementation">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
+    <list default="true" id="1111a0fc-16ba-414b-97da-d0eb1c820c99" name="Default Changelist" comment="removed &quot;deep-merge&quot; and replaced with local implementation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface-forge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface-forge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.build.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +57,7 @@
   </component>
   <component name="RecentsManager">
     <key name="es6.move.members.recent.items">
+      <recent name="$PROJECT_DIR$/src/interface-forge.ts" />
       <recent name="$PROJECT_DIR$/src/utils.ts" />
       <recent name="$PROJECT_DIR$/src/types.ts" />
     </key>
@@ -78,8 +83,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Jest.All Tests (watch)" />
       <item itemvalue="Jest.All Tests" />
+      <item itemvalue="Jest.All Tests (watch)" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -92,7 +97,7 @@
       <updated>1620842777809</updated>
       <workItem from="1620842779430" duration="9970000" />
       <workItem from="1620892143531" duration="6346000" />
-      <workItem from="1620916058665" duration="1500000" />
+      <workItem from="1620916058665" duration="6986000" />
     </task>
     <task id="LOCAL-00001" summary="added .idea and cleanup">
       <created>1620916433753</created>
@@ -108,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620916461311</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="removed &quot;deep-merge&quot; and replaced with local implementation">
+      <created>1620972783907</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1620972783907</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,7 +154,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="added .idea and cleanup" />
     <MESSAGE value="initial implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial implementation" />
+    <MESSAGE value="removed &quot;deep-merge&quot; and replaced with local implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed &quot;deep-merge&quot; and replaced with local implementation" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -150,6 +163,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/interfaceForge$All_Tests__watch_.info" NAME="All Tests (watch) Coverage Results" MODIFIED="1620846248759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/interfaceForge$All_Tests.info" NAME="All Tests Coverage Results" MODIFIED="1620915607309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/interfaceForge$All_Tests.info" NAME="All Tests Coverage Results" MODIFIED="1620972820112" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

@@ -2,11 +2,10 @@
     "name": "interfaceforge",
     "version": "0.1.0",
     "license": "MIT",
-    "description": "",
+    "description": "Gracefully generate testing data using TypeScript interfaces.",
     "scripts": {
-        "build": "rimraf lib && tsc -p ./tsconfig.build.json",
+        "build": "rimraf dist && tsc -p ./tsconfig.build.json",
         "test": "jest",
-        "test:debug": "node --inspect=9229 --inspect-brk ./node_modules/.bin/jest --runInBand",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "check:script": "eslint --fix-dry-run 'src/**/*.ts'",
@@ -25,14 +24,14 @@
     "devDependencies": {
         "@types/jest": "^26.0.23",
         "@types/merge-deep": "^3.0.0",
-        "@types/node": "^15.0.2",
+        "@types/node": "^15.0.3",
         "@typescript-eslint/eslint-plugin": "^4.23.0",
         "@typescript-eslint/parser": "^4.23.0",
         "eslint": "^7.26.0",
         "eslint-config-prettier": "^8.3.0",
         "husky": ">=6",
         "jest": "^26.6.3",
-        "lint-staged": ">=10",
+        "lint-staged": ">=11",
         "prettier": "^2.3.0",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.5.6",
@@ -42,8 +41,5 @@
     "lint-staged": {
         "*.ts": "eslint --fix",
         "*.{js,json,md,yml,yaml}": "prettier --write"
-    },
-    "dependencies": {
-        "merge-deep": "^3.0.3"
     }
 }
