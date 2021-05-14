@@ -1,9 +1,9 @@
-import { BoundGenerator } from './bound-generator';
+import { Ref } from './ref';
 import { InterfaceForge } from './interface-forge';
 import { FactoryFunction, FactorySchema, FactoryOptions } from './types';
 
 export {
-    BoundGenerator,
+    Ref,
     FactoryFunction,
     FactoryOptions,
     FactorySchema,

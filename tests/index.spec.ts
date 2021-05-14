@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { InterfaceForge } from '../src';
 
 interface Options {
@@ -24,13 +25,13 @@ describe('InterfaceFactory', () => {
             );
         });
         it('builds correctly with defaults function', async () => {
-            const factory = new InterfaceForge<ComplexObject>((i) => ({
+            const factory = new InterfaceForge<ComplexObject>(() => ({
                 ...defaults,
-                value: i,
+                value: 99,
             }));
             expect(await factory.build()).toStrictEqual<ComplexObject>({
                 ...defaults,
-                value: 1,
+                value: 99,
             });
         });
         it('builds correctly with builder function', async () => {
@@ -39,7 +40,7 @@ describe('InterfaceFactory', () => {
                 (defaults, iteration) => ({
                     ...defaults,
                     name: 'newObject',
-                    value: iteration,
+                    value: iteration + 1,
                 }),
             );
             expect(await factory.build()).toStrictEqual<ComplexObject>({
@@ -67,6 +68,20 @@ describe('InterfaceFactory', () => {
             });
         });
     });
+    describe('.batch', () => {
+        it('returns an array of unique objects', async () => {
+            const factory = new InterfaceForge<ComplexObject>(
+                defaults,
+                (defaults, iteration) => ({
+                    ...defaults,
+                    value: iteration,
+                }),
+            );
+            const result = await factory.batch(5);
+            expect(result).toBeInstanceOf(Array);
+            expect(result.map(({ value }) => value)).toEqual([1, 2, 3, 4, 5]);
+        });
+    });
     describe('parse schema', () => {
         it('parses schema correctly for embedded instance', async () => {
             const factory = new InterfaceForge<ComplexObject>({
@@ -82,23 +97,20 @@ describe('InterfaceFactory', () => {
                 },
             });
         });
-        it('parses schema correctly using .use', async () => {
+        it('parses schema correctly using .bind', async () => {
             const factory = new InterfaceForge<ComplexObject>({
                 ...defaults,
-                value: InterfaceForge.use(
-                    async () =>
-                        await new Promise<number>((resolve) => resolve(99)),
-                ),
+                value: InterfaceForge.bind(async () => Promise.resolve(99)),
             });
             expect(await factory.build()).toStrictEqual<ComplexObject>({
                 ...defaults,
                 value: 99,
             });
         });
-        it('parses schema correctly using .bind', async () => {
+        it('parses schema correctly using .use', async () => {
             const factory = new InterfaceForge<ComplexObject>({
                 ...defaults,
-                options: InterfaceForge.bind<Options>(
+                options: InterfaceForge.use<Options>(
                     new InterfaceForge<Options>({
                         type: 'none',
                     }),
@@ -111,6 +123,37 @@ describe('InterfaceFactory', () => {
                     type: 'all',
                 },
             });
+        });
+        it('parses schema correctly using .useBatch', async () => {
+            const factory = new InterfaceForge<ComplexObject>({
+                ...defaults,
+                options: InterfaceForge.use<Options>(
+                    new InterfaceForge<Options>({
+                        type: 'none',
+                        children: InterfaceForge.useBatch(
+                            new InterfaceForge<ComplexObject>(defaults),
+                            5,
+                            undefined,
+                            (values, iteration) => ({
+                                ...values,
+                                value: iteration,
+                            }),
+                        ),
+                    }),
+                ),
+            });
+            const result = await factory.build()
+            expect(result).toStrictEqual<ComplexObject>({
+                ...defaults,
+                options: {
+                    type: 'none',
+                    children: expect.arrayContaining([{
+                        ...defaults,
+                        value: expect.any(Number),
+                    }]),
+                },
+            });
+            expect(result?.options?.children?.length).toEqual(5)
         });
         it('parses schema correctly using .iterate', async () => {
             const factory = new InterfaceForge<ComplexObject>({
@@ -133,20 +176,6 @@ describe('InterfaceFactory', () => {
                 ...defaults,
                 value: 1,
             });
-        });
-    });
-    describe('.batch', () => {
-        it('returns an array of unique objects', async () => {
-            const factory = new InterfaceForge<ComplexObject>(
-                defaults,
-                (defaults, iteration) => ({
-                    ...defaults,
-                    value: iteration,
-                }),
-            );
-            const result = await factory.batch(5)();
-            expect(result).toBeInstanceOf(Array);
-            expect(result.map(({ value }) => value)).toEqual([1, 2, 3, 4, 5]);
         });
     });
     describe('.iterate', () => {

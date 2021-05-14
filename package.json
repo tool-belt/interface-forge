@@ -1,6 +1,6 @@
 {
-    "name": "interfaceforge",
-    "version": "0.1.0",
+    "name": "interface-forge",
+    "version": "1.0.0",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript interfaces.",
     "scripts": {

@@ -3,6 +3,7 @@ dist/
 coverage/
 *.log
 
+.husky/
 .idea/sonarlint/issuestore/*
 .idea/workspace.xml
 .idea/watcherTasks.xml

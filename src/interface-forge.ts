@@ -1,27 +1,36 @@
 import { FactoryFunction, FactoryOptions, FactorySchema } from './types';
-import { BoundGenerator } from './bound-generator';
+import { Ref } from './ref';
 import { isOfType } from './utils';
 
+
 export class InterfaceForge<T> {
-    defaults: FactoryOptions<T>;
-    factory?: FactoryFunction<T>;
+    private readonly _defaults: FactoryOptions<T>;
+    public factory?: FactoryFunction<T>;
 
     constructor(defaults: FactoryOptions<T>, factory?: FactoryFunction<T>) {
-        this.defaults = defaults;
+        this._defaults = defaults;
         this.factory = factory;
     }
 
-    private async _parse_schema(schema: FactorySchema<T>): Promise<T> {
+    get defaults(): Promise<FactorySchema<T>> {
+        return typeof this._defaults === 'function'
+            ? Promise.resolve(this._defaults())
+            : Promise.resolve(this._defaults);
+    }
+
+    private async _parse_schema(
+        schema: FactorySchema<T>,
+    ): Promise<T> {
         const output: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(schema)) {
             if (value instanceof InterfaceForge) {
                 output[key] = await value.build();
-            } else if (value instanceof BoundGenerator) {
-                output[key] = await value.call({ ...schema });
+            } else if (value instanceof Ref) {
+                output[key] = await value.fn({ ...schema });
             } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
-                output[key] = value.next().value;
+                output[key] = await value.next().value;
             } else {
-                output[key] = value;
+                output[key] = await Promise.resolve(value);
             }
         }
         return output as T;
@@ -30,49 +39,55 @@ export class InterfaceForge<T> {
     async build(
         options?: FactoryOptions<Partial<T>>,
         factory?: FactoryFunction<T>,
-        iteration = 1,
+        iteration = 0,
     ): Promise<T> {
-        const defaults =
-            typeof this.defaults === 'function'
-                ? await this.defaults(iteration)
-                : this.defaults;
         const value = await this._parse_schema(
             Object.assign(
                 {},
-                defaults,
-                typeof options === 'function'
-                    ? await options(iteration)
-                    : options ?? {} as FactorySchema<any>,
-            ),
+                await this.defaults,
+                await Promise.resolve(
+                    typeof options === 'function' ? options() : options,
+                ),
+            )
         );
         const fn = factory ?? this.factory;
-        return fn ? fn(value, iteration) : value;
+        return Promise.resolve(fn ? fn(value, iteration) : value);
     }
 
-    batch(size: number) {
-        return async (
-            options?: FactoryOptions<Partial<T>>,
-            factory?: FactoryFunction<T>,
-        ): Promise<T[]> => {
-            return Promise.all(
-                new Array(size)
-                    .fill(null)
-                    .map((_, i) => this.build(options, factory, i + 1)),
-            );
-        };
+    async batch(
+        size: number,
+        options?: FactoryOptions<Partial<T>>,
+        factory?: FactoryFunction<T>,
+    ): Promise<T[]> {
+        return Promise.all(
+            new Array(size)
+                .fill(null)
+                .map((_, i) => this.build(options, factory, i + 1)),
+        );
     }
 
-    static use<P>(fn: (values: any) => Promise<P> | P): BoundGenerator<P> {
-        return new BoundGenerator<P>(fn);
+    static bind<P>(fn: (values: any) => Promise<P> | P): Ref<P> {
+        return new Ref<P>(fn);
     }
 
-    static bind<P>(
+    static use<P>(
         forgeInstance: InterfaceForge<P>,
         options?: FactoryOptions<Partial<P>>,
         factory?: FactoryFunction<P>,
-    ): BoundGenerator<P> {
-        return new BoundGenerator<P>((iteration: number) =>
-            forgeInstance.build(options, factory, iteration),
+    ): Ref<P> {
+        return new Ref<P>(() =>
+            forgeInstance.build(options, factory),
+        );
+    }
+
+    static useBatch<P>(
+        forgeInstance: InterfaceForge<P>,
+        size: number,
+        options?: FactoryOptions<Partial<P>>,
+        factory?: FactoryFunction<P>,
+    ): Ref<P[]> {
+        return new Ref<P[]>(() =>
+            forgeInstance.batch(size, options, factory),
         );
     }
 
