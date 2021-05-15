@@ -1,15 +1,21 @@
-import { FactoryFunction, FactoryOptions, FactorySchema } from './types';
+import {
+    FactoryBuildOptions,
+    FactoryFunction,
+    FactoryOptions,
+    FactorySchema,
+} from './types';
 import { Ref } from './ref';
 import { isOfType } from './utils';
 
-
 export class InterfaceForge<T> {
     private readonly _defaults: FactoryOptions<T>;
+    public counter: number;
     public factory?: FactoryFunction<T>;
 
     constructor(defaults: FactoryOptions<T>, factory?: FactoryFunction<T>) {
         this._defaults = defaults;
         this.factory = factory;
+        this.counter = 0;
     }
 
     get defaults(): Promise<FactorySchema<T>> {
@@ -18,9 +24,7 @@ export class InterfaceForge<T> {
             : Promise.resolve(this._defaults);
     }
 
-    private async _parse_schema(
-        schema: FactorySchema<T>,
-    ): Promise<T> {
+    private async _parse_schema(schema: FactorySchema<T>): Promise<T> {
         const output: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(schema)) {
             if (value instanceof InterfaceForge) {
@@ -36,33 +40,32 @@ export class InterfaceForge<T> {
         return output as T;
     }
 
-    async build(
-        options?: FactoryOptions<Partial<T>>,
-        factory?: FactoryFunction<T>,
-        iteration = 0,
-    ): Promise<T> {
+    resetCounter(value = 0): void {
+        this.counter = value;
+    }
+
+    async build(options?: FactoryBuildOptions<T>): Promise<T> {
+        const iteration = this.counter;
+        this.counter++;
         const value = await this._parse_schema(
             Object.assign(
                 {},
                 await this.defaults,
                 await Promise.resolve(
-                    typeof options === 'function' ? options() : options,
+                    typeof options?.overrides === 'function'
+                        ? options.overrides()
+                        : options?.overrides,
                 ),
-            )
+            ),
         );
-        const fn = factory ?? this.factory;
+        const fn = options?.factory ?? this.factory;
         return Promise.resolve(fn ? fn(value, iteration) : value);
     }
 
-    async batch(
-        size: number,
-        options?: FactoryOptions<Partial<T>>,
-        factory?: FactoryFunction<T>,
-    ): Promise<T[]> {
+    async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
+        this.resetCounter();
         return Promise.all(
-            new Array(size)
-                .fill(null)
-                .map((_, i) => this.build(options, factory, i + 1)),
+            new Array(size).fill(null).map(() => this.build(options)),
         );
     }
 
@@ -72,22 +75,18 @@ export class InterfaceForge<T> {
 
     static use<P>(
         forgeInstance: InterfaceForge<P>,
-        options?: FactoryOptions<Partial<P>>,
-        factory?: FactoryFunction<P>,
+        options?: FactoryBuildOptions<P>,
     ): Ref<P> {
-        return new Ref<P>(() =>
-            forgeInstance.build(options, factory),
-        );
+        return new Ref<P>(() => forgeInstance.build(options));
     }
 
     static useBatch<P>(
         forgeInstance: InterfaceForge<P>,
         size: number,
-        options?: FactoryOptions<Partial<P>>,
-        factory?: FactoryFunction<P>,
+        options?: FactoryBuildOptions<P>,
     ): Ref<P[]> {
         return new Ref<P[]>(() =>
-            forgeInstance.batch(size, options, factory),
+            forgeInstance.batch(size, options),
         );
     }
 

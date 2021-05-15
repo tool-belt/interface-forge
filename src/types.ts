@@ -15,3 +15,8 @@ export type FactorySchema<T> = {
         ? T[K]
         : T[K] | Ref<T[K]> | InterfaceForge<T[K]> | Generator<number, number, number>;
 };
+
+export interface FactoryBuildOptions<T> {
+    overrides?: FactoryOptions<Partial<T>>,
+    factory?: FactoryFunction<T>,
+}
