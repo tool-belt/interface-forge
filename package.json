@@ -5,13 +5,11 @@
     "description": "Gracefully generate testing data using TypeScript interfaces.",
     "scripts": {
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
+        "lint": "eslint --fix 'src/**/*.ts'",
+        "prepare": "husky install",
         "test": "jest",
-        "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
-        "check:script": "eslint --fix-dry-run 'src/**/*.ts'",
-        "lint:script": "eslint --fix 'src/**/*.ts'",
-        "format": "prettier --write '**/*.{js,md,json,yaml,yml}'",
-        "prepare": "husky install"
+        "test:watch": "jest --watch"
     },
     "repository": "https://github.com/Goldziher/interfaceForge",
     "bugs": "https://github.com/Goldziher/interfaceForge/issues",
@@ -23,8 +21,6 @@
     "author": "Na'aman Hirschfeld",
     "devDependencies": {
         "@types/jest": "^26.0.23",
-        "@types/merge-deep": "^3.0.0",
-        "@types/node": "^15.0.3",
         "@typescript-eslint/eslint-plugin": "^4.23.0",
         "@typescript-eslint/parser": "^4.23.0",
         "eslint": "^7.26.0",

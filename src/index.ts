@@ -1,11 +1,3 @@
-import { Ref } from './ref';
-import { InterfaceForge } from './interface-forge';
-import { FactoryFunction, FactorySchema, FactoryOptions } from './types';
-
-export {
-    Ref,
-    FactoryFunction,
-    FactoryOptions,
-    FactorySchema,
-    InterfaceForge,
-};
+export * from './ref';
+export * from './interface-forge';
+export * from './types';
