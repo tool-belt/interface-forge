@@ -4,6 +4,13 @@
     "version": "1.0.0",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
+    "keywords": [
+        "typescript",
+        "factory",
+        "mock",
+        "interface",
+        "testing"
+    ],
     "repository": "https://github.com/Goldziher/interfaceForge",
     "bugs": "https://github.com/Goldziher/interfaceForge/issues",
     "main": "dist/index.js",
