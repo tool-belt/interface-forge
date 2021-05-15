@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { InterfaceForge } from '../src';
+import { TypeFactory } from '../src';
 
 interface Options {
     type: '1' | '2' | '3' | 'all' | 'none';
@@ -19,13 +19,13 @@ describe('InterfaceFactory', () => {
     };
     describe('.build', () => {
         it('builds correctly with defaults object literal', async () => {
-            const factory = new InterfaceForge<ComplexObject>(defaults);
+            const factory = new TypeFactory<ComplexObject>(defaults);
             expect(await factory.build()).toStrictEqual<ComplexObject>(
                 defaults,
             );
         });
         it('builds correctly with defaults function', async () => {
-            const factory = new InterfaceForge<ComplexObject>(() => ({
+            const factory = new TypeFactory<ComplexObject>(() => ({
                 ...defaults,
                 value: 99,
             }));
@@ -35,7 +35,7 @@ describe('InterfaceFactory', () => {
             });
         });
         it('builds correctly with builder function', async () => {
-            const factory = new InterfaceForge<ComplexObject>(
+            const factory = new TypeFactory<ComplexObject>(
                 defaults,
                 (defaults, iteration) => ({
                     ...defaults,
@@ -50,7 +50,7 @@ describe('InterfaceFactory', () => {
             });
         });
         it('merges options correctly when passed object literal', async () => {
-            const factory = new InterfaceForge<ComplexObject>(defaults);
+            const factory = new TypeFactory<ComplexObject>(defaults);
             expect(
                 await factory.build({ overrides: { name: 'newObject' } }),
             ).toStrictEqual<ComplexObject>({
@@ -59,7 +59,7 @@ describe('InterfaceFactory', () => {
             });
         });
         it('merges options correctly when passed options function', async () => {
-            const factory = new InterfaceForge<ComplexObject>(defaults);
+            const factory = new TypeFactory<ComplexObject>(defaults);
             expect(
                 await factory.build({
                     overrides: () => ({ name: 'newObject' }),
@@ -72,7 +72,7 @@ describe('InterfaceFactory', () => {
     });
     describe('.batch', () => {
         it('returns an array of unique objects', async () => {
-            const factory = new InterfaceForge<ComplexObject>(
+            const factory = new TypeFactory<ComplexObject>(
                 defaults,
                 (defaults, iteration) => ({
                     ...defaults,
@@ -86,9 +86,9 @@ describe('InterfaceFactory', () => {
     });
     describe('parse schema', () => {
         it('parses schema correctly for embedded instance', async () => {
-            const factory = new InterfaceForge<ComplexObject>({
+            const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                options: new InterfaceForge<any>({
+                options: new TypeFactory<any>({
                     type: 'none',
                 }),
             });
@@ -100,9 +100,9 @@ describe('InterfaceFactory', () => {
             });
         });
         it('parses schema correctly using .bind', async () => {
-            const factory = new InterfaceForge<ComplexObject>({
+            const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                value: InterfaceForge.bind(async () => Promise.resolve(99)),
+                value: TypeFactory.bind(async () => Promise.resolve(99)),
             });
             expect(await factory.build()).toStrictEqual<ComplexObject>({
                 ...defaults,
@@ -110,10 +110,10 @@ describe('InterfaceFactory', () => {
             });
         });
         it('parses schema correctly using .use', async () => {
-            const factory = new InterfaceForge<ComplexObject>({
+            const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                options: InterfaceForge.use<Options>(
-                    new InterfaceForge<Options>({
+                options: TypeFactory.use<Options>(
+                    new TypeFactory<Options>({
                         type: 'none',
                     }),
                     { overrides: { type: 'all' } },
@@ -127,13 +127,13 @@ describe('InterfaceFactory', () => {
             });
         });
         it('parses schema correctly using .useBatch', async () => {
-            const factory = new InterfaceForge<ComplexObject>({
+            const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                options: InterfaceForge.use<Options>(
-                    new InterfaceForge<Options>({
+                options: TypeFactory.use<Options>(
+                    new TypeFactory<Options>({
                         type: 'none',
-                        children: InterfaceForge.useBatch(
-                            new InterfaceForge<ComplexObject>(defaults),
+                        children: TypeFactory.useBatch(
+                            new TypeFactory<ComplexObject>(defaults),
                             5,
                             {
                                 factory: (values, iteration) => ({
@@ -161,9 +161,9 @@ describe('InterfaceFactory', () => {
             expect(result?.options?.children?.length).toEqual(5);
         });
         it('parses schema correctly using .iterate', async () => {
-            const factory = new InterfaceForge<ComplexObject>({
+            const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                value: InterfaceForge.iterate([1, 2, 3]),
+                value: TypeFactory.iterate([1, 2, 3]),
             });
             expect(await factory.build()).toStrictEqual<ComplexObject>({
                 ...defaults,
@@ -186,7 +186,7 @@ describe('InterfaceFactory', () => {
     describe('.iterate', () => {
         it('cycles through values correctly', () => {
             const list = [1, 2, 3];
-            const generator = InterfaceForge.iterate(list);
+            const generator = TypeFactory.iterate(list);
             expect(generator.next().value).toEqual(1);
             expect(generator.next().value).toEqual(2);
             expect(generator.next().value).toEqual(3);

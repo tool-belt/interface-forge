@@ -7,7 +7,7 @@ import {
 import { Ref } from './ref';
 import { isOfType } from './utils';
 
-export class InterfaceForge<T> {
+export class TypeFactory<T> {
     private readonly _defaults: FactoryOptions<T>;
     public counter: number;
     public factory?: FactoryFunction<T>;
@@ -27,7 +27,7 @@ export class InterfaceForge<T> {
     private async _parse_schema(schema: FactorySchema<T>): Promise<T> {
         const output: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(schema)) {
-            if (value instanceof InterfaceForge) {
+            if (value instanceof TypeFactory) {
                 output[key] = await value.build();
             } else if (value instanceof Ref) {
                 output[key] = await value.fn({ ...schema });
@@ -74,14 +74,14 @@ export class InterfaceForge<T> {
     }
 
     static use<P>(
-        forgeInstance: InterfaceForge<P>,
+        forgeInstance: TypeFactory<P>,
         options?: FactoryBuildOptions<P>,
     ): Ref<P> {
         return new Ref<P>(() => forgeInstance.build(options));
     }
 
     static useBatch<P>(
-        forgeInstance: InterfaceForge<P>,
+        forgeInstance: TypeFactory<P>,
         size: number,
         options?: FactoryBuildOptions<P>,
     ): Ref<P[]> {

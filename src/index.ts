@@ -1,3 +1,3 @@
 export * from './ref';
-export * from './interface-forge';
+export * from './type-factory';
 export * from './types';

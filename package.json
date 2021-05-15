@@ -1,8 +1,16 @@
 {
     "name": "interface-forge",
+    "author": "Na'aman Hirschfeld",
     "version": "1.0.0",
     "license": "MIT",
-    "description": "Gracefully generate testing data using TypeScript interfaces.",
+    "description": "Gracefully generate testing data using TypeScript",
+    "repository": "https://github.com/Goldziher/interfaceForge",
+    "bugs": "https://github.com/Goldziher/interfaceForge/issues",
+    "main": "dist/index.js",
+    "typings": "dist/index",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
         "lint": "eslint --fix 'src/**/*.ts'",
@@ -11,14 +19,6 @@
         "test:coverage": "jest --coverage",
         "test:watch": "jest --watch"
     },
-    "repository": "https://github.com/Goldziher/interfaceForge",
-    "bugs": "https://github.com/Goldziher/interfaceForge/issues",
-    "main": "dist/index.js",
-    "typings": "dist/index",
-    "files": [
-        "dist/"
-    ],
-    "author": "Na'aman Hirschfeld",
     "devDependencies": {
         "@types/jest": "^26.0.23",
         "@typescript-eslint/eslint-plugin": "^4.23.0",
