@@ -20,6 +20,7 @@ Interface-Forge allows you to gracefully generate test data using TypeScript.
     -   [Using the .useBatch static method](#using-the-usebatch-static-method)
     -   [Using the .iterate method](#using-the-iterate-method)
     -   [Using the .bind method](#using-the-bind-method)
+-   [Contributing](#contributing)
 
 ## Installation
 
@@ -68,17 +69,18 @@ Then pass the type as a generic argument when creating an instance of TypeFactor
 import { TypeFactory } from 'interface-forge';
 import { User } from './types';
 
-const UserFactory = new TypeFactory<User>({
+// i is type number
+const UserFactory = new TypeFactory<User>((i) => ({
     firstName: 'John',
     lastName: 'Smith',
     email: 'js@example.com',
     profile: {
         profession: 'cook',
         gender: 'male',
-        age: 27,
+        age: 27 + i,
     },
     cats: [],
-});
+}));
 ```
 
 Then use the factory to create an object of the desired type in a test file:
@@ -91,7 +93,7 @@ describe('User', () => {
 
     beforeEach(async () => {
         // you can pass override values when calling build
-        user = await UserFactory.build({
+        user = await UserFactory.build(() => ({
             firstName: 'Johanne',
             profile: {
                 profession: 'Journalist',
@@ -99,7 +101,7 @@ describe('User', () => {
                 age: 31,
             },
             cats: [],
-        });
+        }));
         // user == {
         //     firstName: "Johanne",
         //     lastName: "Smith",
@@ -119,8 +121,8 @@ describe('User', () => {
 ### Passing default values
 
 When creating an TypeFactory instance you must pass default values as the first parameter to the constructor. Default
-values can be either an object literal, a sync function returning an object literal, or an async function returning a
-promise resolving to an object literal:
+values can be either an object, a sync function returning an object, or an async function returning a promise resolving
+to an object:
 
 ```typescript
 // factories.ts
@@ -133,15 +135,21 @@ const UserFactoryWithObjectLiteral = new TypeFactory<User>({
 });
 
 // using a sync function literal
-const UserFactoryWithSyncFunction = new TypeFactory<User>(() => ({
+const UserFactoryWithSyncFunction = new TypeFactory<User>((iteration) => {
     // ...
-}));
+    return {
+        // ... values
+    };
+});
 
 // using an async function
-const UserFactoryWithAsyncFunction = new TypeFactory<User>(async () =>
-    Promise.resolve({
-        // ...
-    }),
+const UserFactoryWithAsyncFunction = new TypeFactory<User>(
+    async (iteration) => {
+        // ... async code
+        return {
+            // ... values
+        };
+    },
 );
 ```
 
@@ -182,11 +190,11 @@ describe('User', () => {
 
     beforeEach(async () => {
         user = await UserFactory.build({
-            overrides: async () =>
-                Promise.resolve({
-                    // ...
-                }),
-            factory: (values: User, iteration: number) => {
+            overrides: async (iteration) => ({
+                // ...
+            }),
+            // values: user, iteration: number
+            factory: (values, iteration) => {
                 // ...
             },
         });
@@ -210,11 +218,11 @@ describe('User', () => {
     beforeEach(async () => {
         // you can pass override values when calling build
         users = await UserFactory.batch(3, {
-            overrides: async () =>
-                Promise.resolve({
-                    // ...
-                }),
-            factory: (values: User, iteration: number) => {
+            overrides: async (iteration) => ({
+                // ...
+            }),
+            // values: user, iteration: number
+            factory: (values, iteration) => {
                 // ...
             },
         });
@@ -270,10 +278,11 @@ const UserProfileFactory = new TypeFactory<UserProfile>({
 
 const UserFactory = new TypeFactory<User>({
     // ...
-    profile: TypeFactory.use(UserProfileFactory, {
-        overrides: () => ({
+    profile: TypeFactory.use<UserProfile>(UserProfileFactory, {
+        overrides: (iteration) => ({
             // ...
         }),
+        // values: UserProfile, iteration: number
         factory: (values, iteration) => {
             // ...
         },
@@ -290,6 +299,7 @@ The `.useBatch` is the batch equivalent of the `.use` method. It allows you to p
 build a batch of objects while passing args at build-time:
 
 ```typescript
+import { Pet } from './types';
 import { TypeFactory } from './type-factory';
 
 const PetFactory = new TypeFactory<Pet>({
@@ -298,8 +308,14 @@ const PetFactory = new TypeFactory<Pet>({
 
 const UserFactory = new TypeFactory<User>({
     // ...
-    cats: TypeFactory.useBatch(PetFactory, 3, {
-        // ...
+    cats: TypeFactory.useBatch<Pet>(PetFactory, 3, {
+        overrides: (iteration) => ({
+            // ...
+        }),
+        // values: Pet, iteration: number
+        factory: (values, iteration) => {
+            // ...
+        },
     }),
 });
 ```
@@ -329,12 +345,12 @@ describe('User', () => {
     let user2: User;
 
     beforeEach(async () => {
-        user1 = await UserFactory.build({});
+        user1 = await UserFactory.build();
         // user == {
         //     firstName: "John",
         //     ...
         // }
-        user2 = await UserFactory.build({});
+        user2 = await UserFactory.build();
         // user == {
         //     firstName: "Bob",
         //     ...
@@ -347,10 +363,7 @@ describe('User', () => {
 ### Using the .bind method
 
 The `.bind` method allows you to pass any `sync` or `async` function for a schema value. The function will be called at
-build time with two parameters:
-
--   `values`: the default values merged with whatever values have been passed at build time.
--   `iteration`: the current build iteration
+build time with the current iteration of the factory
 
 ```typescript
 import { TypeFactory } from './type-factory';
@@ -361,9 +374,19 @@ const UserFactory = new TypeFactory<User>({
     lastName: TypeFactory.bind(() => faker.last.firstName()),
     email: TypeFactory.bind(() => faker.internet.email()),
     profile: {
-        profession: 'cook',
+        profession: TypeFactory.bind((iteration): string => {
+            if (iteration % 2 === 0) {
+                return 'cook';
+            } else {
+                return 'librarian';
+            }
+        }),
         gender: TypeFactory.bind(() => faker.name.gender()),
-        age: TypeFactory.bind((_, i) => faker.datatype.number(i + 20)),
+        age: TypeFactory.bind((iteration) => faker.datatype.number(i + 20)),
     },
 });
 ```
+
+## Contributing
+
+Contributions are welcome. Please see the [contributing guide](CONTRIBUTING.md)

@@ -20,17 +20,17 @@ export class TypeFactory<T> {
 
     get defaults(): Promise<FactorySchema<T>> {
         return typeof this._defaults === 'function'
-            ? Promise.resolve(this._defaults())
+            ? Promise.resolve(this._defaults(this.counter))
             : Promise.resolve(this._defaults);
     }
 
-    private async _parse_schema(schema: FactorySchema<T>): Promise<T> {
+    private async _parse_schema(schema: FactorySchema<T>, iteration: number): Promise<T> {
         const output: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(schema)) {
             if (value instanceof TypeFactory) {
                 output[key] = await value.build();
             } else if (value instanceof Ref) {
-                output[key] = await value.fn({ ...schema });
+                output[key] = await value.fn(iteration);
             } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
                 output[key] = await value.next().value;
             } else {
@@ -53,10 +53,11 @@ export class TypeFactory<T> {
                 await this.defaults,
                 await Promise.resolve(
                     typeof options?.overrides === 'function'
-                        ? options.overrides()
+                        ? options.overrides(iteration)
                         : options?.overrides,
                 ),
             ),
+            iteration
         );
         const fn = options?.factory ?? this.factory;
         return Promise.resolve(fn ? fn(value, iteration) : value);
@@ -69,7 +70,7 @@ export class TypeFactory<T> {
         );
     }
 
-    static bind<P>(fn: (values: any) => Promise<P> | P): Ref<P> {
+    static bind<P>(fn: (iteration: number) => Promise<P> | P): Ref<P> {
         return new Ref<P>(fn);
     }
 

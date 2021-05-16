@@ -8,7 +8,7 @@ export type FactoryFunction<T> = (
 
 export type FactoryOptions<T> =
     | FactorySchema<T>
-    | (() => FactorySchema<T> | Promise<FactorySchema<T>>);
+    | ((iteration: number) => FactorySchema<T> | Promise<FactorySchema<T>>);
 
 export type FactorySchema<T> = {
     [K in keyof T]: T[K] extends CallableFunction

@@ -1,8 +1,8 @@
 export class Ref<T> {
-    readonly fn: (values: any) => Promise<T> | T;
+    readonly fn: (iteration: number) => Promise<T> | T;
 
     constructor(
-        fn: (values: any) => Promise<T> | T,
+        fn: (iteration: number) => Promise<T> | T,
     ) {
         this.fn = fn
     }
