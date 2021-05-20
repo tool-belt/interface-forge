@@ -1,7 +1,7 @@
 {
     "name": "interface-forge",
     "author": "Na'aman Hirschfeld",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
     "keywords": [
