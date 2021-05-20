@@ -10,3 +10,7 @@
 
 -   updated iteration logic
 -   updated readme
+
+[1.0.3]
+
+-   updated typings
