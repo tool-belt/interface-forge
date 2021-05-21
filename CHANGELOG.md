@@ -14,3 +14,7 @@
 [1.0.3]
 
 -   updated typings
+
+[1.1.0]
+
+-   added required build args
