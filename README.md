@@ -235,7 +235,7 @@ describe('User', () => {
 
 Although the above examples of default values use a simple object literal with static values, TypeFactory in fact
 expects what is called a `FactorySchema` in the code. This is an object that can handle different types of values -
-including other instances of TypeFactory, bound functions and generators.
+including other instances of TypeFactory, bound functions, generators.
 
 ### Using TypeFactory instances in factory schemas
 
@@ -363,7 +363,7 @@ describe('User', () => {
 ### Using the .bind method
 
 The `.bind` method allows you to pass any `sync` or `async` function for a schema value. The function will be called at
-build time with the current iteration of the factory
+build time with the current iteration of the factory:
 
 ```typescript
 import { TypeFactory } from './type-factory';
@@ -384,6 +384,29 @@ const UserFactory = new TypeFactory<User>({
         gender: TypeFactory.bind(() => faker.name.gender()),
         age: TypeFactory.bind((iteration) => faker.datatype.number(i + 20)),
     },
+});
+```
+
+### Designating a key as a required build argument
+
+Sometimes its desirable to designate a property or some properties as a required build argument. To do this simply call
+the `.required` method for each required property:
+
+```typescript
+const UserFactory = new TypeFactory<User>({
+    firstName: TypeFactory.required(),
+    lastName: TypeFactory.required(),
+    // ...
+});
+
+describe('User', () => {
+    let user: User;
+
+    beforeEach(async () => {
+        user = await UserFactory.build();
+        // Error: [interface-forge] missing required build arguments: firstName, lastName
+    });
+    // ...
 });
 ```
 

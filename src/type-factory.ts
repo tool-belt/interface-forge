@@ -7,6 +7,8 @@ import {
 import { Ref } from './ref';
 import { isOfType } from './utils';
 
+export class BuildArgProxy {}
+
 export class TypeFactory<T> {
     private readonly _defaults: FactoryOptions<T>;
     public counter: number;
@@ -24,7 +26,7 @@ export class TypeFactory<T> {
             : Promise.resolve(this._defaults);
     }
 
-    private async _parse_schema(schema: FactorySchema<T>, iteration: number): Promise<T> {
+    private async parse_schema(schema: FactorySchema<T>, iteration: number): Promise<T> {
         const output: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(schema)) {
             if (value instanceof TypeFactory) {
@@ -40,6 +42,20 @@ export class TypeFactory<T> {
         return output as T;
     }
 
+    private validate_schema(schema: FactorySchema<T>): void {
+        const missingValues: string[] = []
+        Object.entries(schema).forEach(([key, value]) => {
+            if (value instanceof BuildArgProxy) {
+                missingValues.push(key)
+            }
+        })
+        if (missingValues.length) {
+            throw new Error(
+                `[interface-forge] missing required build arguments: ${missingValues.join(", ")}`
+            )
+        }
+    }
+
     resetCounter(value = 0): void {
         this.counter = value;
     }
@@ -47,16 +63,18 @@ export class TypeFactory<T> {
     async build(options?: FactoryBuildOptions<T>): Promise<T> {
         const iteration = this.counter;
         this.counter++;
-        const value = await this._parse_schema(
-            Object.assign(
-                {},
-                await this.defaults,
-                await Promise.resolve(
-                    typeof options?.overrides === 'function'
-                        ? options.overrides(iteration)
-                        : options?.overrides,
-                ),
+        const mergedSchema = Object.assign(
+            {},
+            await this.defaults,
+            await Promise.resolve(
+                typeof options?.overrides === 'function'
+                    ? options.overrides(iteration)
+                    : options?.overrides,
             ),
+        )
+        this.validate_schema(mergedSchema)
+        const value = await this.parse_schema(
+            mergedSchema,
             iteration
         );
         const fn = options?.factory ?? this.factory;
@@ -104,5 +122,9 @@ export class TypeFactory<T> {
                 yield value;
             }
         })();
+    }
+
+    static required(): BuildArgProxy {
+        return new BuildArgProxy
     }
 }

@@ -1,5 +1,5 @@
 import { Ref } from './ref';
-import { TypeFactory } from './type-factory';
+import { TypeFactory, BuildArgProxy } from './type-factory';
 
 export type FactoryFunction<T> = (
     values: T,
@@ -13,7 +13,7 @@ export type FactoryOptions<T> =
 export type FactorySchema<T> = {
     [K in keyof T]: T[K] extends CallableFunction
         ? T[K]
-        : T[K] | Ref<T[K]> | TypeFactory<T[K]> | Generator<number, number, number>;
+        : T[K] | Ref<T[K]> | TypeFactory<T[K]> | Generator<number, number, number> | BuildArgProxy;
 };
 
 export interface FactoryBuildOptions<T> {

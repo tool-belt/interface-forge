@@ -182,6 +182,18 @@ describe('InterfaceFactory', () => {
                 value: 1,
             });
         });
+        it('parses schema correctly using .required', async () => {
+            const factory = new TypeFactory<ComplexObject>({
+                ...defaults,
+                options: TypeFactory.required()
+            });
+            try {
+                await factory.build()
+            } catch(e) {
+                expect((e as Error).message).toEqual(`[interface-forge] missing required build arguments: options`)
+            }
+            expect(async () => await factory.build({overrides: {options: {}}})).not.toThrow()
+        });
     });
     describe('.iterate', () => {
         it('cycles through values correctly', () => {

@@ -4,6 +4,7 @@ coverage/
 *.log
 
 .husky/
-.idea/sonarlint/issuestore/*
+.idea/sonarlint/
+.idea/azure/
 .idea/workspace.xml
 .idea/watcherTasks.xml
