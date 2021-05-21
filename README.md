@@ -20,6 +20,7 @@ Interface-Forge allows you to gracefully generate test data using TypeScript.
     -   [Using the .useBatch static method](#using-the-usebatch-static-method)
     -   [Using the .iterate method](#using-the-iterate-method)
     -   [Using the .bind method](#using-the-bind-method)
+    -   [Designating a key as a required build argument](#designating-a-key-as-a-required-build-argument)
 -   [Contributing](#contributing)
 
 ## Installation
