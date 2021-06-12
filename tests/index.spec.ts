@@ -15,7 +15,7 @@ interface ComplexObject {
 describe('InterfaceFactory', () => {
     const defaults: ComplexObject = {
         name: 'testObject',
-        value: 0,
+        value: null,
     };
     describe('.build', () => {
         it('builds correctly with defaults object literal', async () => {

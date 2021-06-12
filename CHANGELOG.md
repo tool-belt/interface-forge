@@ -18,3 +18,7 @@
 [1.1.0]
 
 -   added required build args
+
+[1.1.1]
+
+-   fix issue with handling of null values in isOfType helper
