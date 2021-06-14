@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TypeFactory } from '../src';
 
+const typeOptions = ['1', '2', '3', 'all', 'none'];
+
 interface Options {
     type: '1' | '2' | '3' | 'all' | 'none';
     children?: ComplexObject[];
@@ -73,7 +75,12 @@ describe('InterfaceFactory', () => {
     describe('.batch', () => {
         it('returns an array of unique objects', async () => {
             const factory = new TypeFactory<ComplexObject>(
-                defaults,
+                {
+                    ...defaults,
+                    options: {
+                        type: TypeFactory.iterate(typeOptions),
+                    },
+                },
                 (defaults, iteration) => ({
                     ...defaults,
                     value: iteration,
@@ -82,6 +89,9 @@ describe('InterfaceFactory', () => {
             const result = await factory.batch(5);
             expect(result).toBeInstanceOf(Array);
             expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
+            expect(result.map(({ options }) => options?.type)).toEqual(
+                typeOptions,
+            );
         });
     });
     describe('parse schema', () => {
@@ -185,14 +195,18 @@ describe('InterfaceFactory', () => {
         it('parses schema correctly using .required', async () => {
             const factory = new TypeFactory<ComplexObject>({
                 ...defaults,
-                options: TypeFactory.required()
+                options: TypeFactory.required(),
             });
             try {
-                await factory.build()
-            } catch(e) {
-                expect((e as Error).message).toEqual(`[interface-forge] missing required build arguments: options`)
+                await factory.build();
+            } catch (e) {
+                expect((e as Error).message).toEqual(
+                    `[interface-forge] missing required build arguments: options`,
+                );
             }
-            expect(async () => await factory.build({overrides: {options: {}}})).not.toThrow()
+            expect(
+                async () => await factory.build({ overrides: { options: {} } }),
+            ).not.toThrow();
         });
     });
     describe('.iterate', () => {

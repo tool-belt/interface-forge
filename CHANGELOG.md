@@ -21,4 +21,8 @@
 
 [1.1.1]
 
--   fix issue with handling of null values in isOfType helper
+-   fixed issue with handling of null values in isOfType helper
+
+[1.1.2]
+
+-   fixed issue with resolving nest schema values

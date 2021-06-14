@@ -26,33 +26,46 @@ export class TypeFactory<T> {
             : Promise.resolve(this._defaults);
     }
 
-    private async parse_schema(schema: FactorySchema<T>, iteration: number): Promise<T> {
+    private static async parse_schema<T>(
+        schema: FactorySchema<T>,
+        iteration: number,
+    ): Promise<T> {
         const output: Record<string, unknown> = {};
-        for (const [key, value] of Object.entries(schema)) {
+        for (const [key, rawValue] of Object.entries(schema)) {
+            const value = await Promise.resolve(rawValue);
             if (value instanceof TypeFactory) {
                 output[key] = await value.build();
             } else if (value instanceof Ref) {
                 output[key] = await value.fn(iteration);
             } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
                 output[key] = await value.next().value;
+            } else if (
+                typeof value === 'object' &&
+                !Array.isArray(value) &&
+                value !== null
+            ) {
+                output[key] = await TypeFactory.parse_schema(value, iteration);
             } else {
-                output[key] = await Promise.resolve(value);
+                output[key] = value;
             }
         }
+
         return output as T;
     }
 
     private validate_schema(schema: FactorySchema<T>): void {
-        const missingValues: string[] = []
+        const missingValues: string[] = [];
         Object.entries(schema).forEach(([key, value]) => {
             if (value instanceof BuildArgProxy) {
-                missingValues.push(key)
+                missingValues.push(key);
             }
-        })
+        });
         if (missingValues.length) {
             throw new Error(
-                `[interface-forge] missing required build arguments: ${missingValues.join(", ")}`
-            )
+                `[interface-forge] missing required build arguments: ${missingValues.join(
+                    ', ',
+                )}`,
+            );
         }
     }
 
@@ -71,11 +84,11 @@ export class TypeFactory<T> {
                     ? options.overrides(iteration)
                     : options?.overrides,
             ),
-        )
-        this.validate_schema(mergedSchema)
-        const value = await this.parse_schema(
+        );
+        this.validate_schema(mergedSchema);
+        const value = await TypeFactory.parse_schema<T>(
             mergedSchema,
-            iteration
+            iteration,
         );
         const fn = options?.factory ?? this.factory;
         return Promise.resolve(fn ? fn(value, iteration) : value);
@@ -104,9 +117,7 @@ export class TypeFactory<T> {
         size: number,
         options?: FactoryBuildOptions<P>,
     ): Ref<P[]> {
-        return new Ref<P[]>(() =>
-            forgeInstance.batch(size, options),
-        );
+        return new Ref<P[]>(() => forgeInstance.batch(size, options));
     }
 
     static iterate<P>(list: P[]): Generator<P, P, P> {
@@ -125,6 +136,6 @@ export class TypeFactory<T> {
     }
 
     static required(): BuildArgProxy {
-        return new BuildArgProxy
+        return new BuildArgProxy();
     }
 }
