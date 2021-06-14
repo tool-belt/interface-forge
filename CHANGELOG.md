@@ -26,3 +26,7 @@
 [1.1.2]
 
 -   fixed issue with resolving nest schema values
+
+[1.1.3]
+
+-   fixed issue with iterating Dates

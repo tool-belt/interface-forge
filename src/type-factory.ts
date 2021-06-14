@@ -41,8 +41,8 @@ export class TypeFactory<T> {
                 output[key] = await value.next().value;
             } else if (
                 typeof value === 'object' &&
-                !Array.isArray(value) &&
-                value !== null
+                value !== null &&
+                value.toString() === '[object Object]'
             ) {
                 output[key] = await TypeFactory.parse_schema(value, iteration);
             } else {
