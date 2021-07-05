@@ -54,6 +54,15 @@ describe('InterfaceFactory', () => {
         it('merges options correctly when passed object literal', async () => {
             const factory = new TypeFactory<ComplexObject>(defaults);
             expect(
+                await factory.build({ name: 'newObject' }),
+            ).toStrictEqual<ComplexObject>({
+                ...defaults,
+                name: 'newObject',
+            });
+        });
+        it('merges options correctly when passed object literal in overrides key', async () => {
+            const factory = new TypeFactory<ComplexObject>(defaults);
+            expect(
                 await factory.build({ overrides: { name: 'newObject' } }),
             ).toStrictEqual<ComplexObject>({
                 ...defaults,

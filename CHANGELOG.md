@@ -34,3 +34,7 @@
 [1.1.4]
 
 -   fixed issue with iterating Dates
+
+[1.1.5]
+
+-   updated build options

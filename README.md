@@ -176,7 +176,7 @@ you wish to begin iteration at a value other than 0, you can pass the this as a 
 ### The .build method
 
 To use the factory to generate an object you should call `.build`. This method is `async` so it has to be awaited.
-The `.build` method accepts an optional `options` object with two optional keys:
+The `.build` method accepts an optional `options` object. This object can either be a defaults objects or an object with two optional keys:
 
 -   `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
     literal. The values of the object are merged with the defaults using `Object.assign` - hence newer values passed in

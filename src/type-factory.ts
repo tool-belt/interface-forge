@@ -26,7 +26,7 @@ export class TypeFactory<T> {
             : Promise.resolve(this._defaults);
     }
 
-    private static async parse_schema<T>(
+    private static async parseSchema<T>(
         schema: FactorySchema<T>,
         iteration: number,
     ): Promise<T> {
@@ -44,7 +44,7 @@ export class TypeFactory<T> {
                 value !== null &&
                 value.toString() === '[object Object]'
             ) {
-                output[key] = await TypeFactory.parse_schema(value, iteration);
+                output[key] = await TypeFactory.parseSchema(value, iteration);
             } else {
                 output[key] = value;
             }
@@ -53,7 +53,7 @@ export class TypeFactory<T> {
         return output as T;
     }
 
-    private validate_schema(schema: FactorySchema<T>): void {
+    private validateSchema(schema: FactorySchema<T>): void {
         const missingValues: string[] = [];
         Object.entries(schema).forEach(([key, value]) => {
             if (value instanceof BuildArgProxy) {
@@ -69,6 +69,28 @@ export class TypeFactory<T> {
         }
     }
 
+    private async parseOptions(
+        options: FactoryBuildOptions<T> | undefined,
+        iteration: number,
+    ): Promise<[overrides: FactoryOptions<Partial<T>> | undefined, factory: FactoryFunction<T> | undefined]> {
+        const overrides = (
+            options
+                ? Reflect.has(options, 'overrides')
+                    ? Reflect.get(options, 'overrides')
+                    : !Reflect.has(options, 'factory')
+                    ? options
+                    : {}
+                : {}
+        ) as FactoryOptions<T>;
+        const resolvedOverrides =
+            typeof overrides === 'function' ? await overrides(iteration) : overrides;
+        const factory =
+            options && Reflect.has(options, 'factory')
+                ? (Reflect.get(options, 'factory') as FactoryFunction<T>)
+                : this.factory;
+        return [resolvedOverrides, factory];
+    }
+
     resetCounter(value = 0): void {
         this.counter = value;
     }
@@ -76,22 +98,16 @@ export class TypeFactory<T> {
     async build(options?: FactoryBuildOptions<T>): Promise<T> {
         const iteration = this.counter;
         this.counter++;
+        const [overrides, factory] = await this.parseOptions(options, iteration)
+        const defaults = await this.defaults
         const mergedSchema = Object.assign(
             {},
-            await this.defaults,
-            await Promise.resolve(
-                typeof options?.overrides === 'function'
-                    ? options.overrides(iteration)
-                    : options?.overrides,
-            ),
+            defaults,
+            overrides,
         );
-        this.validate_schema(mergedSchema);
-        const value = await TypeFactory.parse_schema<T>(
-            mergedSchema,
-            iteration,
-        );
-        const fn = options?.factory ?? this.factory;
-        return Promise.resolve(fn ? fn(value, iteration) : value);
+        this.validateSchema(mergedSchema);
+        const value = await TypeFactory.parseSchema<T>(mergedSchema, iteration);
+        return factory ? factory(value, iteration) : value
     }
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
