@@ -69,10 +69,12 @@ export class TypeFactory<T> {
         }
     }
 
-    private async parseOptions(
+    private parseOptions(
         options: FactoryBuildOptions<T> | undefined,
-        iteration: number,
-    ): Promise<[overrides: FactoryOptions<Partial<T>> | undefined, factory: FactoryFunction<T> | undefined]> {
+    ): [
+        overrides: FactoryOptions<Partial<T>> | undefined,
+        factory: FactoryFunction<T> | undefined,
+    ] {
         const overrides = (
             options
                 ? Reflect.has(options, 'overrides')
@@ -82,13 +84,11 @@ export class TypeFactory<T> {
                     : {}
                 : {}
         ) as FactoryOptions<T>;
-        const resolvedOverrides =
-            typeof overrides === 'function' ? await overrides(iteration) : overrides;
         const factory =
             options && Reflect.has(options, 'factory')
                 ? (Reflect.get(options, 'factory') as FactoryFunction<T>)
                 : this.factory;
-        return [resolvedOverrides, factory];
+        return [overrides, factory];
     }
 
     resetCounter(value = 0): void {
@@ -98,16 +98,20 @@ export class TypeFactory<T> {
     async build(options?: FactoryBuildOptions<T>): Promise<T> {
         const iteration = this.counter;
         this.counter++;
-        const [overrides, factory] = await this.parseOptions(options, iteration)
-        const defaults = await this.defaults
+        const [overrides, factory] = this.parseOptions(options);
+        const defaults = await this.defaults;
         const mergedSchema = Object.assign(
             {},
             defaults,
-            overrides,
+            await Promise.resolve(
+                typeof overrides === 'function'
+                    ? overrides(iteration)
+                    : overrides,
+            ),
         );
         this.validateSchema(mergedSchema);
         const value = await TypeFactory.parseSchema<T>(mergedSchema, iteration);
-        return factory ? factory(value, iteration) : value
+        return factory ? factory(value, iteration) : value;
     }
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {

@@ -80,6 +80,21 @@ describe('InterfaceFactory', () => {
                 name: 'newObject',
             });
         });
+        it('merges options correctly when passed options async function', async () => {
+            const factoryOne = new TypeFactory<ComplexObject>(defaults)
+            const factoryTwo = new TypeFactory<ComplexObject>(async () => {
+                const defaults = await factoryOne.build()
+                return defaults
+            });
+            expect(
+                await factoryTwo.build({
+                    overrides: async () => Promise.resolve({ name: 'newObject' }),
+                }),
+            ).toStrictEqual<ComplexObject>({
+                ...defaults,
+                name: 'newObject',
+            });
+        });
     });
     describe('.batch', () => {
         it('returns an array of unique objects', async () => {

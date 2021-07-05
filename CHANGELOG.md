@@ -38,3 +38,7 @@
 [1.1.5]
 
 -   updated build options
+
+[1.1.6]
+
+-   fix iteration error
