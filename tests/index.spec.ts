@@ -1,24 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TypeFactory } from '../src';
+import { ComplexObject, Options } from './test-types';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
 
-interface Options {
-    type: '1' | '2' | '3' | 'all' | 'none';
-    children?: ComplexObject[];
-}
-
-interface ComplexObject {
-    name: string;
-    value: number | null;
-    options?: Options;
-}
+const defaults: ComplexObject = {
+    name: 'testObject',
+    value: null,
+};
 
 describe('InterfaceFactory', () => {
-    const defaults: ComplexObject = {
-        name: 'testObject',
-        value: null,
-    };
     describe('.build', () => {
         it('builds correctly with defaults object literal', async () => {
             const factory = new TypeFactory<ComplexObject>(defaults);
