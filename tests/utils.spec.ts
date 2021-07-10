@@ -1,12 +1,13 @@
+import { ComplexObject, Options } from './test-types';
+import { TypeFactory } from '../src';
 import {
     isPromise,
     isRecord,
-    parseFactorySchemaAsync, parseFactorySchemaSync,
+    parseFactorySchemaAsync,
+    parseFactorySchemaSync,
     throwIfPromise,
     validateFactorySchema,
 } from '../src/utils';
-import { TypeFactory } from '../src';
-import { ComplexObject, Options } from './test-types';
 
 const defaults: ComplexObject = {
     name: 'testObject',
@@ -40,7 +41,7 @@ describe('throwIfPromise', () => {
     it('throws when promise and passes value otherwise', () => {
         expect(() =>
             throwIfPromise(new Promise((resolve) => resolve(null)), 'test'),
-        ).toThrowError(
+        ).toThrow(
             `[interface-forge] Promise value encountered during build sync for key test`,
         );
         expect(throwIfPromise({}, 'test')).toEqual({});
@@ -141,7 +142,11 @@ describe('parse schema', () => {
             expect(result?.options?.children?.length).toEqual(5);
         });
         it('parses schema correctly using generator fn', async () => {
-            const generator = TypeFactory.iterate([new Promise((resolve) => resolve(1)), 2, 3]);
+            const generator = TypeFactory.iterate([
+                new Promise((resolve) => resolve(1)),
+                2,
+                3,
+            ]);
             expect(
                 await parseFactorySchemaAsync<ComplexObject>(
                     {
@@ -193,7 +198,7 @@ describe('parse schema', () => {
         });
     });
     describe('parseFactorySchemaSync', () => {
-        it('parses schema correctly for embedded instance',  () => {
+        it('parses schema correctly for embedded instance', () => {
             expect(
                 parseFactorySchemaSync<ComplexObject>(
                     {
@@ -211,14 +216,12 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .bind',  () => {
+        it('parses schema correctly using .bind', () => {
             expect(
                 parseFactorySchemaSync<ComplexObject>(
                     {
                         ...defaults,
-                        value: TypeFactory.bind( () =>
-                            99,
-                        ),
+                        value: TypeFactory.bind(() => 99),
                     },
                     0,
                 ),
@@ -227,7 +230,7 @@ describe('parse schema', () => {
                 value: 99,
             });
         });
-        it('parses schema correctly using .use',  () => {
+        it('parses schema correctly using .use', () => {
             expect(
                 parseFactorySchemaSync<ComplexObject>(
                     {
@@ -248,7 +251,7 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .useBatch',  () => {
+        it('parses schema correctly using .useBatch', () => {
             const result = parseFactorySchemaSync<ComplexObject>(
                 {
                     ...defaults,
@@ -345,13 +348,13 @@ describe('validateFactorySchema', () => {
                 ...defaults,
                 options: TypeFactory.required() as any,
             }),
-        ).toThrowError(
+        ).toThrow(
             `[interface-forge] missing required build arguments: options`,
         );
     });
     it('doesnt throw for normal values', () => {
-        expect(
-            validateFactorySchema<ComplexObject>(defaults),
-        ).toEqual(defaults)
+        expect(validateFactorySchema<ComplexObject>(defaults)).toEqual(
+            defaults,
+        );
     });
 });

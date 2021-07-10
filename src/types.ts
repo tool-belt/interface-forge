@@ -1,5 +1,5 @@
+import { BuildArgProxy, TypeFactory } from './type-factory';
 import { Ref } from './ref';
-import { TypeFactory, BuildArgProxy } from './type-factory';
 
 export type FactoryFunction<T> = (
     values: T,
@@ -8,17 +8,24 @@ export type FactoryFunction<T> = (
 
 export type FactoryOptions<T> =
     | FactorySchema<T>
-    | ((iteration: number) => (FactorySchema<T> | Promise<FactorySchema<T>>));
+    | ((iteration: number) => FactorySchema<T> | Promise<FactorySchema<T>>);
 
 export type FactorySchema<T> = {
     [K in keyof T]: T[K] extends CallableFunction
         ? T[K]
-        : T[K] | Ref<T[K]> | TypeFactory<T[K]> | Generator<number, number, number> | BuildArgProxy;
+        :
+              | T[K]
+              | Ref<T[K]>
+              | TypeFactory<T[K]>
+              | Generator<number, number, number>
+              | BuildArgProxy;
 };
 
 export interface OverridesAndFactory<T> {
-    overrides?: FactoryOptions<Partial<T>>,
-    factory?: FactoryFunction<T>,
+    overrides?: FactoryOptions<Partial<T>>;
+    factory?: FactoryFunction<T>;
 }
 
-export type FactoryBuildOptions<T> = OverridesAndFactory<T> |  FactoryOptions<Partial<T>>
+export type FactoryBuildOptions<T> =
+    | OverridesAndFactory<T>
+    | FactoryOptions<Partial<T>>;

@@ -177,7 +177,7 @@ export class TypeFactory<T> {
     }
 
     static slice<E>(arr: E[], size: number): E[] {
-        size = size > arr.length ? arr.length : size
-        return [...arr].sort(() => 0.5 - Math.random()).slice(0, size)
+        size = size > arr.length ? arr.length : size;
+        return [...arr].sort(() => 0.5 - Math.random()).slice(0, size);
     }
 }

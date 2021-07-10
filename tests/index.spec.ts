@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { TypeFactory } from '../src';
 import { ComplexObject, Options } from './test-types';
+import { TypeFactory } from '../src';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
 
@@ -72,14 +71,14 @@ describe('InterfaceFactory', () => {
             });
         });
         it('merges options correctly when passed options async function', async () => {
-            const factoryOne = new TypeFactory<ComplexObject>(defaults)
+            const factoryOne = new TypeFactory<ComplexObject>(defaults);
             const factoryTwo = new TypeFactory<ComplexObject>(async () => {
-                const defaults = await factoryOne.build()
-                return defaults
+                return await factoryOne.build();
             });
             expect(
                 await factoryTwo.build({
-                    overrides: async () => Promise.resolve({ name: 'newObject' }),
+                    overrides: async () =>
+                        Promise.resolve({ name: 'newObject' }),
                 }),
             ).toStrictEqual<ComplexObject>({
                 ...defaults,
