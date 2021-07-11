@@ -189,6 +189,7 @@ describe('.batch', () => {
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
     });
 });
+
 describe('.batchSync', () => {
     it('returns an array of unique objects', () => {
         const factory = new TypeFactory<ComplexObject>(

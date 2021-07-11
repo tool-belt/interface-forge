@@ -4,14 +4,13 @@ import {
     FactoryFunction,
     FactoryOptions,
     FactorySchema,
-    OverridesAndFactory,
     UseOptions,
 } from './types';
 import {
-    isOfType,
     isPromise,
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
+    parseOptions,
     validateFactorySchema,
 } from './utils';
 import { iterate, sample } from './helpers';
@@ -48,37 +47,6 @@ export class TypeFactory<T> {
             : this._defaults;
     }
 
-    private parseOptions(
-        options: FactoryBuildOptions<T> | undefined,
-        iteration: number,
-    ): [
-        overrides?:
-            | FactorySchema<Partial<T>>
-            | Promise<FactorySchema<Partial<T>>>,
-        factory?: FactoryFunction<T>,
-    ] {
-        if (!options) {
-            return [undefined, this.factory];
-        }
-        if (
-            isOfType<OverridesAndFactory<T>>(options, 'overrides') ||
-            isOfType<OverridesAndFactory<T>>(options, 'factory')
-        ) {
-            const { overrides, factory } = options;
-            return [
-                typeof overrides === 'function'
-                    ? overrides(iteration)
-                    : overrides,
-                factory ?? this.factory,
-            ];
-        }
-
-        return [
-            typeof options === 'function' ? options(iteration) : options,
-            this.factory,
-        ];
-    }
-
     resetCounter(value = 0): void {
         this.counter = value;
     }
@@ -86,10 +54,12 @@ export class TypeFactory<T> {
     async build(options?: FactoryBuildOptions<T>): Promise<T> {
         const iteration = this.counter;
         this.counter++;
-        const [overrides, factory] = this.parseOptions(options, iteration);
-        const defaults = await this.defaults;
+        const [overrides, factory = this.factory] = parseOptions<T>(
+            options,
+            iteration,
+        );
         const mergedSchema = validateFactorySchema(
-            Object.assign({}, defaults, await overrides),
+            Object.assign({}, await this.defaults, await overrides),
         );
         const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
         return factory ? factory(value, iteration) : value;
@@ -98,7 +68,10 @@ export class TypeFactory<T> {
     buildSync(options?: FactoryBuildOptions<T>): T {
         const iteration = this.counter;
         this.counter++;
-        const [overrides, factory] = this.parseOptions(options, iteration);
+        const [overrides, factory = this.factory] = parseOptions<T>(
+            options,
+            iteration,
+        );
         if (isPromise(this.defaults)) {
             throw new Error(ERROR_MESSAGES.PROMISE_DEFAULTS);
         }
@@ -143,6 +116,7 @@ export class TypeFactory<T> {
         return iterate<P>(iterable);
     }
 
+    /* istanbul ignore next */
     static sample<P>(iterable: Iterable<P>): Generator<P, P, P> {
         return sample<P>(iterable);
     }
