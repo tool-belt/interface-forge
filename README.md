@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/Goldziher/interfaceForge/branch/main/graph/badge.svg?token=1QdttZtggc)](https://codecov.io/gh/Goldziher/interfaceForge)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1fe90a85d374b3d38d9c/maintainability)](https://codeclimate.com/github/Goldziher/interfaceForge/maintainability)
 
-Interface-Forge allows you to gracefully generate test data using TypeScript.
+Interface-Forge allows you to gracefully generate mock data using TypeScript.
 
 # Table of Contents
 
@@ -11,16 +11,19 @@ Interface-Forge allows you to gracefully generate test data using TypeScript.
 -   [Usage](#usage)
     -   [Basic Example](#basic-example)
     -   [Passing default values](#passing-default-values)
+        -   [Note regarding iteration](#note-regarding-iteration)
     -   [Passing a Factory Function](#passing-a-factory-function)
-    -   [The .build method](#the-build-method)
-    -   [The .batch method](#the-batch-method)
+    -   [Building Objects](#building-objects)
+    -   [Batch building](#batch-building)
+        -   [Note regarding async](#note-regarding-async)
 -   [Factory Schema](#factory-schema)
     -   [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
-    -   [Using the .use static method](#using-the-use-static-method)
-    -   [Using the .useBatch static method](#using-the-usebatch-static-method)
-    -   [Using the .iterate method](#using-the-iterate-method)
-    -   [Using the .bind method](#using-the-bind-method)
-    -   [Designating a key as a required build argument](#designating-a-key-as-a-required-build-argument)
+    -   [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
+    -   [Using .use with custom functions](#using-use-with-custom-functions)
+    -   [Designating a required build-time argument](#designating-a-required-build-time-argument)
+    -   [Using Generators](#using-generators)
+        -   [The .iterate method](#the-iterate-method)
+        -   [The .sample method](#the-sample-method)
 -   [Contributing](#contributing)
 
 ## Installation
@@ -39,7 +42,7 @@ npm install --save-dev interface-forge
 
 ### Basic Example
 
-To create a factory you need some typescript types:
+To create a factory you need some TS types:
 
 ```typescript
 // types.ts
@@ -63,7 +66,7 @@ export interface User {
 }
 ```
 
-Then pass the type as a generic argument when creating an instance of TypeFactory alongside default values:
+Pass the desired type as a generic argument when instantiating TypeFactory, alongside default values for the factory:
 
 ```typescript
 // factories.ts
@@ -90,40 +93,35 @@ Then use the factory to create an object of the desired type in a test file:
 // User.spec.ts
 
 describe('User', () => {
-    let user: User;
-
-    beforeEach(async () => {
-        // you can pass override values when calling build
-        user = await UserFactory.build(() => ({
-            firstName: 'Johanne',
-            profile: {
-                profession: 'Journalist',
-                gender: 'Female',
-                age: 31,
-            },
-            cats: [],
-        }));
-        // user == {
-        //     firstName: "Johanne",
-        //     lastName: "Smith",
-        //     email: "js@example.com",
-        //     profile: {
-        //         profession: "Journalist",
-        //         gender: "Female",
-        //         age: 31
-        //     },
-        //     cats: []
-        // }
+    // you can pass override values when calling build
+    const user = UserFactory.buildSync({
+        firstName: 'Johanne',
+        profile: {
+            profession: 'Journalist',
+            gender: 'Female',
+            age: 31,
+        },
+        cats: [],
     });
+    // user == {
+    //     firstName: "Johanne",
+    //     lastName: "Smith",
+    //     email: "js@example.com",
+    //     profile: {
+    //         profession: "Journalist",
+    //         gender: "Female",
+    //         age: 31
+    //     },
+    //     cats: []
+    // }
     // ...
 });
 ```
 
 ### Passing default values
 
-When creating an TypeFactory instance you must pass default values as the first parameter to the constructor. Default
-values can be either an object, a sync function returning an object, or an async function returning a promise resolving
-to an object:
+When creating an instance of you must pass default values as the first parameter to the constructor. Defaults can be
+either an object, a sync function returning an object, or an async function returning a promise resolving to an object:
 
 ```typescript
 // factories.ts
@@ -156,6 +154,11 @@ const UserFactoryWithAsyncFunction = new TypeFactory<User>(
 
 For further details about what can be inside the defaults object see [_Factory Schema_](#factory-schema).
 
+#### Note regarding iteration
+
+Iteration begins at 0 by default. You can reset the internal counter by calling the `.resetCounter` method. If you wish
+to begin iteration at a value other than 0, you can pass the this as a parameter to `.resetCounter`.
+
 ### Passing a Factory Function
 
 You can also pass a second optional parameter to the TypeFactory constructor which is a factory function with the
@@ -170,13 +173,12 @@ values after these have been parsed. I.e. if you passed a function as the first 
 function will be called and its return value will be passed to the factory function. The factory function should return
 the final object or a Promise resolving to the final object.
 
-**NOTE**: Iteration begins at 0 by default. You can reset the internal counter by calling the `.resetCounter` method. If
-you wish to begin iteration at a value other than 0, you can pass the this as a parameter to `.resetCounter`.
+### Building Objects
 
-### The .build method
-
-To use the factory to generate an object you should call `.build`. This method is `async` so it has to be awaited.
-The `.build` method accepts an optional `options` object. This object can either be a defaults objects or an object with two optional keys:
+To use the factory to generate an object you should call either `.build` or `.buildSync`. The difference between the two
+is that `.build` is async while `.buildSync` is not. You can pass options to the build method - these can either be an
+object containing key-value pairs that (partially) override the defaults with which the factory was initialized, a
+function or async function returning such overrides, or an object with two optional keys:
 
 -   `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
     literal. The values of the object are merged with the defaults using `Object.assign` - hence newer values passed in
@@ -187,9 +189,23 @@ The `.build` method accepts an optional `options` object. This object can either
 
 ```typescript
 describe('User', () => {
-    let user: User;
-
+    const user = UserFactory.buildSync({ firstName: "George" })
+    // or
+    const user = UserFactory.buildSync((iteration) => ({ firstName: "George" + " " + iteration.toString() }))
+    // or
+    const user = UserFactory.buildSync({
+        overrides: () => ({ ... }),
+        factory: (values, iteration) => {
+            // ...
+        }
+    })
+    // or
+    let user: User
     beforeEach(async () => {
+        user = await UserFactory.build({ firstName: "George" })
+        // or
+        user = await UserFactory.build(() => ({ firstName: "George" }))
+        // or
         user = await UserFactory.build({
             overrides: async (iteration) => ({
                 // ...
@@ -202,15 +218,52 @@ describe('User', () => {
     });
     // ...
 });
+
+describe('User', () => {
+    const users = UserFactory.batchSync(3, { firstName: "George" })
+    // or
+    const users = UserFactory.batchSync(3, (iteration) => ({ firstName: "George" + " " + iteration.toString() }))
+    // or
+    const users = UserFactory.batchSync(3, {
+        overrides: () => ({ ... }),
+        factory: (values, iteration) => {
+            // ...
+        }
+    })
+
+    // or
+    let users: User[]
+    beforeEach(async () => {
+        users = await UserFactory.batch(3, { firstName: "George" })
+        // or
+        users = await UserFactory.batch(3, () => ({ firstName: "George" }))
+        // or
+        users = await UserFactory.batch(3, {
+            overrides: async (iteration) => ({
+                // ...
+            }),
+            // values: user, iteration: number
+            factory: (values, iteration) => {
+                // ...
+            },
+        });
+    });
+    // ...
+});
+
+// OR
 ```
 
-### The .batch method
+### Batch building
 
-If you need to generate multiple objects at the same time, you can use the `.batch` method. This method is also `async`,
-and it returns a promise resolving to an array of objects of the given type. It accepts two parameters:
+If you need to generate multiple objects at the same time, you can use either `.batch` or `.batchSync` methods. The
+difference between the two is that `.batch` is async while `.batchSync` is not. Thus `.batch` returns a promise
+resolving to an array of objects of the given type, and `.batchSync` returns the array directly.
+
+Both methods accept two parameters:
 
 -   `size`: the number of objects to create - this is a _required parameter_.
--   `options`: the same as for [`.build`](#the-build-method).
+-   `options`: the same as for [the regular build methods](#building-objects).
 
 ```typescript
 describe('User', () => {
@@ -232,11 +285,16 @@ describe('User', () => {
 });
 ```
 
+#### Note regarding async
+
+If you call `.buildSync` or `.batchSync` on a factory that has been initialized with async defaults, or while passing
+async overrides / factory function to the method, an informative error will be thrown.
+
 ## Factory Schema
 
 Although the above examples of default values use a simple object literal with static values, TypeFactory in fact
 expects what is called a `FactorySchema` in the code. This is an object that can handle different types of values -
-including other instances of TypeFactory, bound functions, generators.
+including other instances of TypeFactory, functions and generators.
 
 ### Using TypeFactory instances in factory schemas
 
@@ -262,13 +320,15 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-The UserProfileFactory's `.build` method will be called when the UserFactory is being built.
+When building and instance of UserFactory, the nested UserProfileFactory's will be built. The decision whether to use
+the async or sync build methods depends on what method was called on the containing factory. Thus if the async
+UserFactory.build()
+is called, then then async UserProfileFactory.build() will be called in the nested factory etc.
 
-### Using the .use static method
+### Using the .use static method with nested factories
 
-The caveat of placing an instance of InterfaceForce as a `FactorySchema` value is that you cannot pass values to the
-sub-factory when `.build` is called. To solve this you can use the `.use` static method, which allows you to pass args
-at build-time:
+The caveat of placing an instance of TypeFactory as a `FactorySchema` value is that you cannot pass values to the
+sub-factory at build-time. To solve this you can use the `.use` static method, which allows you to pass args:
 
 ```typescript
 const UserProfileFactory = new TypeFactory<UserProfile>({
@@ -292,52 +352,105 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-You can pass the same kind of options as you would when calling the `.build` method on the factory directly.
+You can pass the same kind of options as for [the regular build methods](#building-objects).
 
-### Using the .useBatch static method
-
-The `.useBatch` is the batch equivalent of the `.use` method. It allows you to place an instance of TypeFactory and
-build a batch of objects while passing args at build-time:
+If you want to build multiple objects, i.e. to call `.batch` or `.batchSync` for a nested factory, simple pass as part
+of the options a `{ batch: number }` key-value pair:
 
 ```typescript
-import { Pet } from './types';
-import { TypeFactory } from './type-factory';
-
-const PetFactory = new TypeFactory<Pet>({
-    name: TypeFactory.iterate(['Miezi', 'Eli', 'Garfield']),
-});
-
 const UserFactory = new TypeFactory<User>({
     // ...
-    cats: TypeFactory.useBatch<Pet>(PetFactory, 3, {
-        overrides: (iteration) => ({
-            // ...
-        }),
-        // values: Pet, iteration: number
+    profile: TypeFactory.use<UserProfile>(UserProfileFactory, {
+        batch: 3,
+        overrides: (iteration) => ({}),
         factory: (values, iteration) => {
             // ...
         },
+    })
+    // or
+    profile: TypeFactory.use<UserProfile>(UserProfileFactory, {
+        batch: 3
+        //...
     }),
+    // or
+    profile: TypeFactory.use<UserProfile>(UserProfileFactory, () => ({
+        batch: 3
+        //...
+    })),
 });
 ```
 
-You can pass the same kind of options as you would when calling the `.batch` method on the factory directly.
+### Using .use with custom functions
 
-### Using the .iterate method
+The `.use` method also allows you to pass any `sync` or `async` function for a schema value. The function will be called
+at build time with the current iteration of the factory:
 
-Use the `iterate` static method to create an (infinite) iterator. Each time the `.build` method is called, the iterator
-will yield the next value in the array. When reaching the array's end, iteration will begin from position 0 again:
+```typescript
+import { TypeFactory } from './type-factory';
+import faker from 'faker';
+
+const UserFactory = new TypeFactory<User>({
+    // ...
+    profile: {
+        // ...
+        profession: TypeFactory.use((iteration): string => {
+            if (iteration % 2 === 0) {
+                return 'cook';
+            } else {
+                return 'librarian';
+            }
+        }),
+    },
+});
+```
+
+### Designating a required build-time argument
+
+Sometimes its desirable to designate a property as an argument that must be supplied at build-time. To do this simply
+call the `.required` static method for each required property:
 
 ```typescript
 const UserFactory = new TypeFactory<User>({
-    firstName: TypeFactory.iterate([
-        'John',
-        'Bob',
-        'Will',
-        'Mary',
-        'Sue',
-        'Willma',
-    ]),
+    firstName: TypeFactory.required(),
+    lastName: TypeFactory.required(),
+    // ...
+});
+
+describe('User', () => {
+    let user: User;
+
+    beforeEach(async () => {
+        user = await UserFactory.build();
+        // Error: [interface-forge] missing required build arguments: firstName, lastName
+        // To avoid an error:
+        // user = await UserFactory.build({ firstName: "Moishe", lastName: "Zuchmir" });
+    });
+    // ...
+});
+```
+
+### Using Generators
+
+You can place
+a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) as a
+factory schema value value. At build-time, the generator's `.next` method will be called. You should be careful though
+when doing this that the generator function does not return or yield `{done: true}` during build-time.
+
+There are two built-in convenience static methods that create _infinite_ generators: `.iterate` and `.sample`. Both
+methods accept an [iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) as a
+value, e.g. an Array, Set, Map etc.
+
+**NOTE** do not pass an infinite iterator to these builtin methods because that will create an infinite loop.
+
+#### The .iterate method
+
+Use the `iterate` static method to create an infinite iterator that yields the values passed to it serially. Each
+time `.next` is called, the next value in the iterator is returned. When reaching the iterator's end, iteration will
+begin from position 0 again:
+
+```typescript
+const UserFactory = new TypeFactory<User>({
+    firstName: TypeFactory.iterate(['John', 'Bob']),
     // ...
 });
 
@@ -356,56 +469,49 @@ describe('User', () => {
         //     firstName: "Bob",
         //     ...
         // }
+        user3 = await UserFactory.build();
+        // user == {
+        //     firstName: "John",
+        //     ...
+        // }
     });
     // ...
 });
 ```
 
-### Using the .bind method
+#### The .sample method
 
-The `.bind` method allows you to pass any `sync` or `async` function for a schema value. The function will be called at
-build time with the current iteration of the factory:
-
-```typescript
-import { TypeFactory } from './type-factory';
-import faker from 'faker';
-
-const UserFactory = new TypeFactory<User>({
-    firstName: TypeFactory.bind(() => faker.name.firstName()),
-    lastName: TypeFactory.bind(() => faker.last.firstName()),
-    email: TypeFactory.bind(() => faker.internet.email()),
-    profile: {
-        profession: TypeFactory.bind((iteration): string => {
-            if (iteration % 2 === 0) {
-                return 'cook';
-            } else {
-                return 'librarian';
-            }
-        }),
-        gender: TypeFactory.bind(() => faker.name.gender()),
-        age: TypeFactory.bind((iteration) => faker.datatype.number(i + 20)),
-    },
-});
-```
-
-### Designating a key as a required build argument
-
-Sometimes its desirable to designate a property or some properties as a required build argument. To do this simply call
-the `.required` method for each required property:
+Use the `sample` static method to create an infinite iterator that returns a random value each time its called. If the
+iterator contains more than one item, the current and previous values are guaranteed to be different.
 
 ```typescript
 const UserFactory = new TypeFactory<User>({
-    firstName: TypeFactory.required(),
-    lastName: TypeFactory.required(),
+    firstName: TypeFactory.sample([
+        'John',
+        'Bob',
+        'Will',
+        'Mary',
+        'Sue',
+        'Willma',
+    ]),
     // ...
 });
 
 describe('User', () => {
-    let user: User;
+    let user1: User;
+    let user2: User;
 
     beforeEach(async () => {
-        user = await UserFactory.build();
-        // Error: [interface-forge] missing required build arguments: firstName, lastName
+        user1 = await UserFactory.build();
+        // user == {
+        //     firstName: "Sue",
+        //     ...
+        // }
+        user2 = await UserFactory.build();
+        // user == {
+        //     firstName: "Will",
+        //     ...
+        // }
     });
     // ...
 });
