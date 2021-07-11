@@ -1,5 +1,5 @@
 import { ComplexObject, Options } from './test-types';
-import { TypeFactory } from '../src';
+import { ERROR_MESSAGES, TypeFactory } from '../src';
 import {
     isPromise,
     isRecord,
@@ -41,9 +41,7 @@ describe('throwIfPromise', () => {
     it('throws when promise and passes value otherwise', () => {
         expect(() =>
             throwIfPromise(new Promise((resolve) => resolve(null)), 'test'),
-        ).toThrow(
-            `[interface-forge] Promise value encountered during build sync for key test`,
-        );
+        ).toThrow(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', 'test'));
         expect(throwIfPromise({}, 'test')).toEqual({});
     });
 });
@@ -68,14 +66,12 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .bind', async () => {
+        it('parses schema correctly using .use with function', async () => {
             expect(
                 await parseFactorySchemaAsync<ComplexObject>(
                     {
                         ...defaults,
-                        value: TypeFactory.bind(async () =>
-                            Promise.resolve(99),
-                        ),
+                        value: TypeFactory.use(async () => Promise.resolve(99)),
                     },
                     0,
                 ),
@@ -84,7 +80,7 @@ describe('parse schema', () => {
                 value: 99,
             });
         });
-        it('parses schema correctly using .use', async () => {
+        it('parses schema correctly using .use with TypeFactory + options', async () => {
             expect(
                 await parseFactorySchemaAsync<ComplexObject>(
                     {
@@ -105,17 +101,18 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .useBatch', async () => {
+        it('parses schema correctly using .use with batch=5', async () => {
             const result = await parseFactorySchemaAsync<ComplexObject>(
                 {
                     ...defaults,
                     options: TypeFactory.use<Options>(
                         new TypeFactory<Options>({
                             type: 'none',
-                            children: TypeFactory.useBatch(
+                            children: TypeFactory.use(
                                 new TypeFactory<ComplexObject>(defaults),
-                                5,
+
                                 {
+                                    batch: 5,
                                     factory: (values, iteration) => ({
                                         ...values,
                                         value: iteration,
@@ -216,12 +213,12 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .bind', () => {
+        it('parses schema correctly using .use with function', () => {
             expect(
                 parseFactorySchemaSync<ComplexObject>(
                     {
                         ...defaults,
-                        value: TypeFactory.bind(() => 99),
+                        value: TypeFactory.use(() => 99),
                     },
                     0,
                 ),
@@ -230,12 +227,12 @@ describe('parse schema', () => {
                 value: 99,
             });
         });
-        it('parses schema correctly using .use', () => {
+        it('parses schema correctly using .use with factory', () => {
             expect(
                 parseFactorySchemaSync<ComplexObject>(
                     {
                         ...defaults,
-                        options: TypeFactory.useSync<Options>(
+                        options: TypeFactory.use<Options>(
                             new TypeFactory<Options>({
                                 type: 'none',
                             }),
@@ -251,17 +248,18 @@ describe('parse schema', () => {
                 },
             });
         });
-        it('parses schema correctly using .useBatch', () => {
+        it('parses schema correctly using .use with batch=5', () => {
             const result = parseFactorySchemaSync<ComplexObject>(
                 {
                     ...defaults,
-                    options: TypeFactory.useSync<Options>(
+                    options: TypeFactory.use<Options>(
                         new TypeFactory<Options>({
                             type: 'none',
-                            children: TypeFactory.useBatchSync(
+                            children: TypeFactory.use(
                                 new TypeFactory<ComplexObject>(defaults),
-                                5,
+
                                 {
+                                    batch: 5,
                                     factory: (values, iteration) => ({
                                         ...values,
                                         value: iteration,
@@ -349,7 +347,10 @@ describe('validateFactorySchema', () => {
                 options: TypeFactory.required() as any,
             }),
         ).toThrow(
-            `[interface-forge] missing required build arguments: options`,
+            ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
+                ':missingArgs',
+                'options',
+            ),
         );
     });
     it('doesnt throw for normal values', () => {

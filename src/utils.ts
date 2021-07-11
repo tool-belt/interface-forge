@@ -1,6 +1,6 @@
-import { BuildArgProxy, TypeFactory } from './type-factory';
+import { BuildArgProxy, Ref, TypeFactory } from './type-factory';
+import { ERROR_MESSAGES } from './constants';
 import { FactorySchema } from './types';
-import { Ref } from './ref';
 
 export function isRecord(variable: unknown): variable is Record<any, unknown> {
     const recordsStringResults = [
@@ -32,9 +32,7 @@ export function isPromise<T = any>(variable: unknown): variable is Promise<T> {
 
 export function throwIfPromise<T>(value: T, key: string): T {
     if (isPromise(value)) {
-        throw new Error(
-            `[interface-forge] Promise value encountered during build sync for key ${key}`,
-        );
+        throw new Error(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', key));
     }
     return value;
 }
@@ -49,7 +47,15 @@ export function parseFactorySchemaSync<T>(
         if (value instanceof TypeFactory) {
             output[key] = value.buildSync();
         } else if (value instanceof Ref) {
-            output[key] = throwIfPromise(value.fn(iteration), key);
+            if (value.value instanceof TypeFactory) {
+                const { value: factory } = value;
+                const { batch, ...options } = value.options ?? {};
+                output[key] = batch
+                    ? factory.batchSync(batch, options)
+                    : factory.buildSync(options);
+            } else {
+                output[key] = value.value(iteration);
+            }
         } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
             output[key] = throwIfPromise(value.next().value, key);
         } else if (isRecord(value)) {
@@ -72,7 +78,15 @@ export async function parseFactorySchemaAsync<T>(
         if (value instanceof TypeFactory) {
             output[key] = await value.build();
         } else if (value instanceof Ref) {
-            output[key] = await value.fn(iteration);
+            if (value.value instanceof TypeFactory) {
+                const { value: factory } = value;
+                const { batch, ...options } = value.options ?? {};
+                output[key] = batch
+                    ? await factory.batch(batch, options)
+                    : await factory.build(options);
+            } else {
+                output[key] = await value.value(iteration);
+            }
         } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
             output[key] = await value.next().value;
         } else if (typeof value === 'object' && value !== null) {
@@ -96,9 +110,10 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
     });
     if (missingValues.length) {
         throw new Error(
-            `[interface-forge] missing required build arguments: ${missingValues.join(
-                ', ',
-            )}`,
+            ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
+                ':missingArgs',
+                missingValues.join(', '),
+            ),
         );
     }
     return schema;

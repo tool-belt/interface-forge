@@ -1,11 +1,12 @@
+import { ERROR_MESSAGES } from './constants';
 import {
     FactoryBuildOptions,
     FactoryFunction,
     FactoryOptions,
     FactorySchema,
     OverridesAndFactory,
+    UseOptions,
 } from './types';
-import { Ref } from './ref';
 import {
     isOfType,
     isPromise,
@@ -13,8 +14,22 @@ import {
     parseFactorySchemaSync,
     validateFactorySchema,
 } from './utils';
+import { iterate, sample } from './helpers';
 
 export class BuildArgProxy {}
+
+export class Ref<T> {
+    readonly value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>;
+    readonly options?: UseOptions<T>;
+
+    constructor(
+        value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>,
+        options?: Record<string, any>,
+    ) {
+        this.value = value;
+        this.options = options;
+    }
+}
 
 export class TypeFactory<T> {
     private readonly _defaults: FactoryOptions<T>;
@@ -28,25 +43,19 @@ export class TypeFactory<T> {
     }
 
     get defaults(): Promise<FactorySchema<T>> | FactorySchema<T> {
-        const value =
-            typeof this._defaults === 'function'
-                ? this._defaults(this.counter)
-                : this._defaults;
-        if (isPromise<FactorySchema<T>>(value)) {
-            return Promise.resolve(value);
-        }
-        return value;
+        return typeof this._defaults === 'function'
+            ? this._defaults(this.counter)
+            : this._defaults;
     }
 
     private parseOptions(
         options: FactoryBuildOptions<T> | undefined,
         iteration: number,
     ): [
-        overrides:
+        overrides?:
             | FactorySchema<Partial<T>>
-            | Promise<FactorySchema<Partial<T>>>
-            | undefined,
-        factory: FactoryFunction<T> | undefined,
+            | Promise<FactorySchema<Partial<T>>>,
+        factory?: FactoryFunction<T>,
     ] {
         if (!options) {
             return [undefined, this.factory];
@@ -91,20 +100,20 @@ export class TypeFactory<T> {
         this.counter++;
         const [overrides, factory] = this.parseOptions(options, iteration);
         if (isPromise(this.defaults)) {
-            throw new Error(
-                '[interface-forge] buildSync does not support promise based defaults',
-            );
+            throw new Error(ERROR_MESSAGES.PROMISE_DEFAULTS);
         }
         if (isPromise(overrides)) {
-            throw new Error(
-                '[interface-forge] buildSync does not support promise based build overrides',
-            );
+            throw new Error(ERROR_MESSAGES.PROMISE_OVERRIDES);
         }
         const mergedSchema = validateFactorySchema(
             Object.assign({}, this.defaults, overrides),
         );
         const value = parseFactorySchemaSync<T>(mergedSchema, iteration);
-        return (factory ? factory(value, iteration) : value) as T;
+        const result = factory ? factory(value, iteration) : value;
+        if (isPromise(result)) {
+            throw new Error(ERROR_MESSAGES.PROMISE_FACTORY);
+        }
+        return result;
     }
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
@@ -123,61 +132,18 @@ export class TypeFactory<T> {
         return new BuildArgProxy();
     }
 
-    static bind<P>(fn: (iteration: number) => Promise<P> | P): Ref<P> {
-        return new Ref<P>(fn);
-    }
-
     static use<P>(
-        forgeInstance: TypeFactory<P>,
-        options?: FactoryBuildOptions<P>,
+        value: ((iteration: number) => Promise<P> | P) | TypeFactory<P>,
+        options?: UseOptions<P>,
     ): Ref<P> {
-        return new Ref<P>(async () => forgeInstance.build(options));
+        return new Ref<P>(value, options);
     }
 
-    static useSync<P>(
-        forgeInstance: TypeFactory<P>,
-        options?: FactoryBuildOptions<P>,
-    ): Ref<P> {
-        return new Ref<P>(() => forgeInstance.buildSync(options));
+    static iterate<P>(iterable: Iterable<P>): Generator<P, P, P> {
+        return iterate<P>(iterable);
     }
 
-    static useBatch<P>(
-        forgeInstance: TypeFactory<P>,
-        size: number,
-        options?: FactoryBuildOptions<P>,
-    ): Ref<P[]> {
-        return new Ref<P[]>(async () => forgeInstance.batch(size, options));
-    }
-
-    static useBatchSync<P>(
-        forgeInstance: TypeFactory<P>,
-        size: number,
-        options?: FactoryBuildOptions<P>,
-    ): Ref<P[]> {
-        return new Ref<P[]>(() => forgeInstance.batchSync(size, options));
-    }
-
-    static iterate<E>(arr: E[]): Generator<E, E, E> {
-        return (function* () {
-            let counter = 0;
-            while (true) {
-                const value = arr[counter];
-                if (counter === arr.length - 1) {
-                    counter = 0;
-                } else {
-                    counter++;
-                }
-                yield value;
-            }
-        })();
-    }
-
-    static sample<E>(arr: E[]): E {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    static slice<E>(arr: E[], size: number): E[] {
-        size = size > arr.length ? arr.length : size;
-        return [...arr].sort(() => 0.5 - Math.random()).slice(0, size);
+    static sample<P>(iterable: Iterable<P>): Generator<P, P, P> {
+        return sample<P>(iterable);
     }
 }
