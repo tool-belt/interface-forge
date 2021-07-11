@@ -1,4 +1,4 @@
-[1.0.0]
+# 1.0.0
 
 -   initial release
 
@@ -15,7 +15,7 @@
 
 -   updated typings
 
-[1.1.0]
+# 1.1.0
 
 -   added required build args
 
@@ -42,3 +42,9 @@
 [1.1.6]
 
 -   fix iteration error
+
+# 1.2.0
+
+-   added buildSync and batchSync
+-   removed .bind and compressed functionality into .use
+-   added .sample method
