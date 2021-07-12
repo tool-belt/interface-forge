@@ -156,11 +156,10 @@ export function fileName(path: string): string {
     return path.substr(-5).toLowerCase() === '.json' ? path : path + '.json';
 }
 
-export function fileError(filename: string) {
+export function fileError() {
     return (error: NodeJS.ErrnoException | null): void => {
         if (error)
             throw new Error('[interface-forge] ' + JSON.stringify(error));
-        console.log(`file ${filename} successfully written.`);
     };
 }
 

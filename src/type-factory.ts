@@ -133,7 +133,7 @@ export class TypeFactory<T> {
         if (file) return file;
 
         const result = await this.build(options);
-        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        fs.writeFile(path, JSON.stringify(result), fileError());
         return result;
     }
 
@@ -143,7 +143,7 @@ export class TypeFactory<T> {
         if (file) return file;
 
         const result = this.buildSync(options);
-        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        fs.writeFile(path, JSON.stringify(result), fileError());
         return result;
     }
 
@@ -157,7 +157,7 @@ export class TypeFactory<T> {
         if (file) return file;
 
         const result = await this.batch(size, options);
-        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        fs.writeFile(path, JSON.stringify(result), fileError());
         return result;
     }
 
@@ -171,7 +171,7 @@ export class TypeFactory<T> {
         if (file) return file;
 
         const result = this.batchSync(size, options);
-        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        fs.writeFile(path, JSON.stringify(result), fileError());
         return result;
     }
 }
