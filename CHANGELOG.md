@@ -48,3 +48,7 @@
 -   added buildSync and batchSync
 -   removed .bind and compressed functionality into .use
 -   added .sample method
+
+[1.2.1]
+
+-   removed counter reset from batch methods

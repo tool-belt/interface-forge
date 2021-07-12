@@ -90,14 +90,12 @@ export class TypeFactory<T> {
     }
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
-        this.resetCounter();
         return Promise.all(
             new Array(size).fill(null).map(() => this.build(options)),
         );
     }
 
     batchSync(size: number, options?: FactoryBuildOptions<T>): T[] {
-        this.resetCounter();
         return new Array(size).fill(null).map(() => this.buildSync(options));
     }
 
