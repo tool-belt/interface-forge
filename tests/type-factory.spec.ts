@@ -1,5 +1,6 @@
 import { ComplexObject } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
+import fs from 'fs';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
 
@@ -206,17 +207,13 @@ describe('.batch', () => {
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
     });
-    it('increments counter correctly', async () => {
+    it('increments counter correctly', () => {
         const factory = new TypeFactory<{
             id: number;
         }>((i) => ({ id: i }));
-        const results = (
-            await Promise.all(
-                new Array(10)
-                    .fill(null)
-                    .map(async () => await factory.batch(10)),
-            )
-        )
+        const results = new Array(10)
+            .fill(null)
+            .map(() => factory.batchSync(10))
             .flat()
             .map(({ id }) => id);
         expect([...new Set(results)]).toHaveLength(100);
@@ -244,17 +241,200 @@ describe('.batchSync', () => {
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
     });
-    it('increments counter correctly', () => {
-        const factory = new TypeFactory<{
-            id: number;
-        }>((i) => ({ id: i }));
-        const results = new Array(10)
-            .fill(null)
-            .map(() => factory.batchSync(10))
-            .flat()
-            .map(({ id }) => id);
-        expect([...new Set(results)]).toHaveLength(100);
-        expect(results[0]).toEqual(0);
-        expect(results[results.length - 1]).toEqual(99);
+
+    describe('.write', () => {
+        it('returns old contents if file exists', async () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            const mockExistsSync = jest.fn(() => true);
+            const testData = {
+                'id': 0,
+                'value': 'test',
+                'is-JSON': true,
+            };
+            const json = JSON.stringify(testData);
+            fs.existsSync = mockExistsSync;
+            // @ts-ignore
+            fs.readFileSync = () => json;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = await factory.write('testfile');
+            expect(mockExistsSync).toHaveBeenCalled();
+            expect(result).toEqual(testData);
+
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
+        });
+        it('returns new contents if file did not exist', async () => {
+            const originalExistsSync = fs.existsSync;
+            const originalWriteFile = fs.writeFile;
+            const mockExistsSync = jest.fn(() => false);
+            fs.existsSync = mockExistsSync;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = await factory.write('testfile');
+            expect(mockWriteFile).toHaveBeenCalled();
+            expect(result.value).toEqual(99);
+
+            fs.existsSync = originalExistsSync;
+            fs.writeFile = originalWriteFile;
+        });
+    });
+
+    describe('.writeSync', () => {
+        it('returns old contents if file exists', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            const mockExistsSync = jest.fn(() => true);
+            const testData = {
+                'id': 0,
+                'value': 'test',
+                'is-JSON': true,
+            };
+            const json = JSON.stringify(testData);
+            fs.existsSync = mockExistsSync;
+            // @ts-ignore
+            fs.readFileSync = () => json;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = factory.writeSync('testfile');
+            expect(mockExistsSync).toHaveBeenCalled();
+            expect(result).toEqual(testData);
+
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
+        });
+        it('returns new contents if file did not exist', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalWriteFile = fs.writeFile;
+            const mockExistsSync = jest.fn(() => false);
+            fs.existsSync = mockExistsSync;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = factory.writeSync('testfile');
+            expect(mockWriteFile).toHaveBeenCalled();
+            expect(result.value).toEqual(99);
+
+            fs.existsSync = originalExistsSync;
+            fs.writeFile = originalWriteFile;
+        });
+    });
+
+    describe('.writeBatch', () => {
+        it('returns old contents if file exists', async () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            const mockExistsSync = jest.fn(() => true);
+            const testData = [
+                {
+                    'id': 0,
+                    'value': 'test',
+                    'is-JSON': true,
+                },
+            ];
+            const json = JSON.stringify(testData);
+            fs.existsSync = mockExistsSync;
+            // @ts-ignore
+            fs.readFileSync = () => json;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = await factory.writeBatch('testfile', 1);
+            expect(mockExistsSync).toHaveBeenCalled();
+            expect(result).toEqual(testData);
+
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
+        });
+        it('returns new contents if file did not exist', async () => {
+            const originalExistsSync = fs.existsSync;
+            const originalWriteFile = fs.writeFile;
+            const mockExistsSync = jest.fn(() => false);
+            fs.existsSync = mockExistsSync;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = await factory.writeBatch('testfile', 1);
+            expect(mockWriteFile).toHaveBeenCalled();
+            expect(result[0].value).toEqual(99);
+
+            fs.existsSync = originalExistsSync;
+            fs.writeFile = originalWriteFile;
+        });
+    });
+
+    describe('.writeBatchSync', () => {
+        it('returns old contents if file exists', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            const mockExistsSync = jest.fn(() => true);
+            const testData = [
+                {
+                    'id': 0,
+                    'value': 'test',
+                    'is-JSON': true,
+                },
+            ];
+            const json = JSON.stringify(testData);
+            fs.existsSync = mockExistsSync;
+            // @ts-ignore
+            fs.readFileSync = () => json;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = factory.writeBatchSync('testfile', 1);
+            expect(mockExistsSync).toHaveBeenCalled();
+            expect(result).toEqual(testData);
+
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
+        });
+        it('returns new contents if file did not exist', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalWriteFile = fs.writeFile;
+            const mockExistsSync = jest.fn(() => false);
+            fs.existsSync = mockExistsSync;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+
+            const factory = new TypeFactory<ComplexObject>(() => ({
+                ...defaults,
+                value: 99,
+            }));
+            const result = factory.writeBatchSync('testfile', 1);
+            expect(mockWriteFile).toHaveBeenCalled();
+            expect(result[0].value).toEqual(99);
+
+            fs.existsSync = originalExistsSync;
+            fs.writeFile = originalWriteFile;
+        });
     });
 });
