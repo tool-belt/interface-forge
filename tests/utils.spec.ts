@@ -1,6 +1,9 @@
 import { ComplexObject, Options } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
 import {
+    fileError,
+    fileExists,
+    fileName,
     isPromise,
     isRecord,
     parseFactorySchemaAsync,
@@ -9,6 +12,7 @@ import {
     throwIfPromise,
     validateFactorySchema,
 } from '../src/utils';
+import fs from 'fs';
 
 const defaults: ComplexObject = {
     name: 'testObject',
@@ -403,6 +407,57 @@ describe('parseOptions', () => {
             const result = parseOptions({ overrides, factory }, 1);
             expect(overrides).toHaveBeenCalledWith(1);
             expect(result).toEqual([{ key: 1 }, factory]);
+        });
+    });
+
+    describe('fileName', () => {
+        it('appends missing .json extension', () => {
+            const path = '/dev/filename.txt';
+            expect(fileName(path)).toEqual(path + '.json');
+        });
+        it('does not append .json extension if provided', () => {
+            const path = '/dev/filename.json';
+            expect(fileName(path)).toEqual(path);
+        });
+    });
+
+    describe('fileError', () => {
+        it('throws error if provided', () => {
+            const error = new Error('test');
+            expect(() => fileError(error)).toThrow(
+                '[interface-forge] ' + JSON.stringify(error),
+            );
+        });
+        it('does not throw if no error provided', () => {
+            const error = null;
+            expect(() => fileError(error)).not.toThrow();
+        });
+    });
+
+    describe('fileExists', () => {
+        it('returns parsed file contents if file exists', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            const testData = {
+                'id': 0,
+                'value': 'test',
+                'is-JSON': true,
+            };
+            const json = JSON.stringify(testData);
+            fs.existsSync = () => true;
+            // @ts-ignore
+            fs.readFileSync = () => json;
+            expect(fileExists('filename')).toEqual(testData);
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
+        });
+        it('returns null if file does not exist', () => {
+            const originalExistsSync = fs.existsSync;
+            const originalReadFileSync = fs.readFileSync;
+            fs.existsSync = () => false;
+            expect(fileExists('filename')).toBeNull();
+            fs.existsSync = originalExistsSync;
+            fs.readFileSync = originalReadFileSync;
         });
     });
 });

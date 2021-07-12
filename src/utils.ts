@@ -156,15 +156,12 @@ export function fileName(path: string): string {
     return path.substr(-5).toLowerCase() === '.json' ? path : path + '.json';
 }
 
-export function fileError() {
-    return (error: NodeJS.ErrnoException | null): void => {
-        if (error)
-            throw new Error('[interface-forge] ' + JSON.stringify(error));
-    };
+export function fileError(error: NodeJS.ErrnoException | null): void {
+    if (error) throw new Error('[interface-forge] ' + JSON.stringify(error));
 }
 
 export function fileExists<T>(filename: string): T | null {
     if (fs.existsSync(filename))
-        return JSON.parse(fs.readFileSync(filename, 'utf-8').toString()) as T;
+        return JSON.parse(fs.readFileSync(filename, 'utf-8')) as T;
     return null;
 }
