@@ -6,6 +6,7 @@ import {
     FactorySchema,
     OverridesAndFactory,
 } from './types';
+import fs from 'fs';
 
 export function isRecord(variable: unknown): variable is Record<any, unknown> {
     const recordsStringResults = [
@@ -149,4 +150,22 @@ export function parseOptions<T>(
         typeof options === 'function' ? options(iteration) : options,
         undefined,
     ];
+}
+
+export function fileName(path: string): string {
+    return path.substr(-5).toLowerCase() === '.json' ? path : path + '.json';
+}
+
+export function fileError(filename: string) {
+    return (error: NodeJS.ErrnoException | null): void => {
+        if (error)
+            throw new Error('[interface-forge] ' + JSON.stringify(error));
+        console.log(`file ${filename} successfully written.`);
+    };
+}
+
+export function fileExists<T>(filename: string): T | null {
+    if (fs.existsSync(filename))
+        return JSON.parse(fs.readFileSync(filename, 'utf-8').toString()) as T;
+    return null;
 }

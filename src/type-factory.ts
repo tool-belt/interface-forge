@@ -7,6 +7,9 @@ import {
     UseOptions,
 } from './types';
 import {
+    fileError,
+    fileExists,
+    fileName,
     isPromise,
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
@@ -14,6 +17,7 @@ import {
     validateFactorySchema,
 } from './utils';
 import { iterate, sample } from './helpers';
+import fs from 'fs';
 
 export class BuildArgProxy {}
 
@@ -121,5 +125,53 @@ export class TypeFactory<T> {
     /* istanbul ignore next */
     static sample<P>(iterable: Iterable<P>): Generator<P, P, P> {
         return sample<P>(iterable);
+    }
+
+    async write(path: string, options?: FactoryBuildOptions<T>): Promise<T> {
+        const filename = fileName(path);
+        const file = fileExists<T>(filename);
+        if (file) return file;
+
+        const result = await this.build(options);
+        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        return result;
+    }
+
+    writeSync(path: string, options?: FactoryBuildOptions<T>): T {
+        const filename = fileName(path);
+        const file = fileExists<T>(filename);
+        if (file) return file;
+
+        const result = this.buildSync(options);
+        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        return result;
+    }
+
+    async writeBatch(
+        path: string,
+        size: number,
+        options?: FactoryBuildOptions<T>,
+    ): Promise<T[]> {
+        const filename = fileName(path);
+        const file = fileExists<T[]>(filename);
+        if (file) return file;
+
+        const result = await this.batch(size, options);
+        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        return result;
+    }
+
+    writeBatchSync(
+        path: string,
+        size: number,
+        options?: FactoryBuildOptions<T>,
+    ): T[] {
+        const filename = fileName(path);
+        const file = fileExists<T[]>(filename);
+        if (file) return file;
+
+        const result = this.batchSync(size, options);
+        fs.writeFile(path, JSON.stringify(result), fileError(filename));
+        return result;
     }
 }
