@@ -35,6 +35,7 @@
     ],
     "scripts": {
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
+        "format": "prettier --write '**/*.{js,md,json,yaml,yml}'",
         "lint": "eslint --fix '**/*.ts'",
         "prepare": "husky install",
         "test": "jest",

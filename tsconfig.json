@@ -1,22 +1,19 @@
 {
-  "include": [
-    "**/*.ts"
-  ],
-  "compilerOptions": {
-    "alwaysStrict": true,
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "lib": [
-      "ESNext"
-    ],
-    "module": "CommonJS",
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "target": "ES2015"
-  }
+    "include": ["**/*.ts"],
+    "exclude": ["docs"],
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "inlineSourceMap": true,
+        "lib": ["ESNext"],
+        "module": "CommonJS",
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "target": "ES2015"
+    }
 }
