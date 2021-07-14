@@ -31,20 +31,22 @@ export class Ref<T> {
 }
 
 export class TypeFactory<T> {
-    private readonly _defaults: FactoryOptions<T>;
+    private readonly defaults: FactoryOptions<T>;
     public counter: number;
     public factory?: FactoryFunction<T>;
 
     constructor(defaults: FactoryOptions<T>, factory?: FactoryFunction<T>) {
-        this._defaults = defaults;
+        this.defaults = defaults;
         this.factory = factory;
         this.counter = 0;
     }
 
-    get defaults(): Promise<FactorySchema<T>> | FactorySchema<T> {
-        return typeof this._defaults === 'function'
-            ? this._defaults(this.counter)
-            : this._defaults;
+    getDefaults(
+        iteration: number,
+    ): Promise<FactorySchema<T>> | FactorySchema<T> {
+        return typeof this.defaults === 'function'
+            ? this.defaults(iteration)
+            : this.defaults;
     }
 
     resetCounter(value = 0): void {
@@ -54,12 +56,13 @@ export class TypeFactory<T> {
     async build(options?: FactoryBuildOptions<T>): Promise<T> {
         const iteration = this.counter;
         this.counter++;
+        const defaults = await this.getDefaults(iteration);
         const [overrides, factory = this.factory] = parseOptions<T>(
             options,
             iteration,
         );
         const mergedSchema = validateFactorySchema(
-            Object.assign({}, await this.defaults, await overrides),
+            Object.assign({}, defaults, await overrides),
         );
         const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
         return factory ? factory(value, iteration) : value;
@@ -72,14 +75,15 @@ export class TypeFactory<T> {
             options,
             iteration,
         );
-        if (isPromise(this.defaults)) {
+        const defaults = this.getDefaults(iteration);
+        if (isPromise(defaults)) {
             throw new Error(ERROR_MESSAGES.PROMISE_DEFAULTS);
         }
         if (isPromise(overrides)) {
             throw new Error(ERROR_MESSAGES.PROMISE_OVERRIDES);
         }
         const mergedSchema = validateFactorySchema(
-            Object.assign({}, this.defaults, overrides),
+            Object.assign({}, defaults, overrides),
         );
         const value = parseFactorySchemaSync<T>(mergedSchema, iteration);
         const result = factory ? factory(value, iteration) : value;
@@ -91,7 +95,7 @@ export class TypeFactory<T> {
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
         return Promise.all(
-            new Array(size).fill(null).map(() => this.build(options)),
+            new Array(size).fill(null).map(async () => this.build(options)),
         );
     }
 

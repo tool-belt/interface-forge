@@ -52,3 +52,7 @@
 [1.2.1]
 
 -   removed counter reset from batch methods
+
+[1.2.2]
+
+-   fixed counter issue with async defaults

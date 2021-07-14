@@ -169,6 +169,24 @@ describe('.buildSync', () => {
     });
 });
 
+describe('resetCounter', () => {
+    const factory = new TypeFactory<ComplexObject>(defaults);
+    it('resets to zero by default', () => {
+        expect(factory.counter).toEqual(0);
+        factory.buildSync();
+        expect(factory.counter).toEqual(1);
+        factory.resetCounter();
+        expect(factory.counter).toEqual(0);
+    });
+    it('resets to passed value', () => {
+        expect(factory.counter).toEqual(0);
+        factory.buildSync();
+        expect(factory.counter).toEqual(1);
+        factory.resetCounter(5);
+        expect(factory.counter).toEqual(5);
+    });
+});
+
 describe('.batch', () => {
     it('returns an array of unique objects', async () => {
         const factory = new TypeFactory<ComplexObject>(
@@ -187,6 +205,23 @@ describe('.batch', () => {
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
+    });
+    it('increments counter correctly', async () => {
+        const factory = new TypeFactory<{
+            id: number;
+        }>((i) => ({ id: i }));
+        const results = (
+            await Promise.all(
+                new Array(10)
+                    .fill(null)
+                    .map(async () => await factory.batch(10)),
+            )
+        )
+            .flat()
+            .map(({ id }) => id);
+        expect([...new Set(results)]).toHaveLength(100);
+        expect(results[0]).toEqual(0);
+        expect(results[results.length - 1]).toEqual(99);
     });
 });
 
@@ -208,5 +243,18 @@ describe('.batchSync', () => {
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
+    });
+    it('increments counter correctly', () => {
+        const factory = new TypeFactory<{
+            id: number;
+        }>((i) => ({ id: i }));
+        const results = new Array(10)
+            .fill(null)
+            .map(() => factory.batchSync(10))
+            .flat()
+            .map(({ id }) => id);
+        expect([...new Set(results)]).toHaveLength(100);
+        expect(results[0]).toEqual(0);
+        expect(results[results.length - 1]).toEqual(99);
     });
 });
