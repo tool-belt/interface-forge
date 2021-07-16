@@ -409,12 +409,12 @@ describe('parseOptions', () => {
     });
 
     describe('fileAppendJson', () => {
-        it('appends missing .json extension', () => {
-            const path = '/dev/filename.txt';
+        it('appends missing .json extension, if none provided', () => {
+            const path = '/dev/filename';
             expect(fileAppendJson(path)).toEqual(path + '.json');
         });
-        it('does not append .json extension if provided', () => {
-            const path = '/dev/filename.json';
+        it('does not append .json extension, if provided', () => {
+            const path = '/dev/filename.JSON';
             expect(fileAppendJson(path)).toEqual(path);
         });
     });

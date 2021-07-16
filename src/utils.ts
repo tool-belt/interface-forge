@@ -180,7 +180,6 @@ export function saveFixture<T>(filePath: string, data: T | T[]): void {
         ? listProps(data[0])
         : listProps(data);
     const save: FixtureStatic<T | T[]> = {
-        created: new Date().toUTCString(),
         data,
         structure,
     };

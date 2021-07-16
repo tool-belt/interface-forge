@@ -1,4 +1,9 @@
-import { FactoryBuildOptions, FactoryFunction, FactoryOptions } from './types';
+import {
+    FactoryBuildOptions,
+    FactoryFunction,
+    FactoryOptions,
+    FixtureStatic,
+} from './types';
 import { TypeFactory } from './type-factory';
 import {
     fileAppendJson,
@@ -6,6 +11,32 @@ import {
     saveFixture,
     structuralMatch,
 } from './utils';
+
+type WriteBuildAsync<T> = (
+    path: string,
+    options?: FactoryBuildOptions<T>,
+) => Promise<T>;
+type WriteBuildSync<T> = (path: string, options?: FactoryBuildOptions<T>) => T;
+type WriteBatchAsync<T> = (
+    path: string,
+    size: number,
+    options?: FactoryBuildOptions<T>,
+) => Promise<T[]>;
+type WriteBatchSync<T> = (
+    path: string,
+    size: number,
+    options?: FactoryBuildOptions<T>,
+) => T[];
+
+type PropsBuildAsync = { batch: false; synchronous: false };
+type PropsBuildSync = { batch: false; synchronous: true };
+type PropsBatchAsync = { batch: true; synchronous: false };
+type PropsBatchSync = { batch: true; synchronous: true };
+
+const propsBuildAsync = { batch: false, synchronous: false };
+const propsBuildSync = { batch: false, synchronous: true };
+const propsBatchAsync = { batch: true, synchronous: false };
+const propsBatchSync = { batch: true, synchronous: true };
 
 export class FixtureFactory<T> extends TypeFactory<T> {
     private defaultPath = '';
@@ -20,74 +51,64 @@ export class FixtureFactory<T> extends TypeFactory<T> {
     }
 
     public static = {
-        build: (path: string, options?: FactoryBuildOptions<T>): Promise<T> =>
-            this.write(path, options),
-        buildSync: (path: string, options?: FactoryBuildOptions<T>): T =>
-            this.writeSync(path, options),
-        batch: (
-            path: string,
-            size: number,
-            options?: FactoryBuildOptions<T>,
-        ): Promise<T[]> => this.writeBatch(path, size, options),
-        batchSync: (
-            path: string,
-            size: number,
-            options?: FactoryBuildOptions<T>,
-        ): T[] => this.writeBatchSync(path, size, options),
+        build: this.writeMethod(propsBuildAsync as PropsBuildAsync),
+        buildSync: this.writeMethod(propsBuildSync as PropsBuildSync),
+        batch: this.writeMethod(propsBatchAsync as PropsBatchAsync),
+        batchSync: this.writeMethod(propsBatchSync as PropsBatchSync),
     };
 
-    private async write(
-        path: string,
-        options?: FactoryBuildOptions<T>,
-    ): Promise<T> {
+    private save<R>(path: string, build: R) {
         const fileName = fileAppendJson(this.defaultPath + path);
-        const file = readFileIfExists<T>(fileName);
-        const build = await this.build(options);
+        const file = readFileIfExists<R>(fileName);
         const needsNewBuild = !file || !structuralMatch(build, file.data);
-        if (!needsNewBuild && !!file) return file.data;
+        if (!needsNewBuild) return (file as FixtureStatic<R>).data;
 
-        saveFixture<T>(fileName, build);
+        saveFixture<R>(fileName, build);
         return build;
     }
 
-    private writeSync(path: string, options?: FactoryBuildOptions<T>): T {
-        const fileName = fileAppendJson(this.defaultPath + path);
-        const file = readFileIfExists<T>(fileName);
-        const build = this.buildSync(options);
-        const needsNewBuild = !file || !structuralMatch(build, file.data);
-        if (!needsNewBuild && !!file) return file.data;
-
-        saveFixture<T>(fileName, build);
-        return build;
-    }
-
-    private async writeBatch(
-        path: string,
-        size: number,
-        options?: FactoryBuildOptions<T>,
-    ): Promise<T[]> {
-        const fileName = fileAppendJson(this.defaultPath + path);
-        const file = readFileIfExists<T[]>(fileName);
-        const batch = await this.batch(size, options);
-        const needsNewBuild = !file || !structuralMatch(batch[0], file.data[0]);
-        if (!needsNewBuild && !!file) return file.data;
-
-        saveFixture<T>(fileName, batch);
-        return batch;
-    }
-
-    private writeBatchSync(
-        path: string,
-        size: number,
-        options?: FactoryBuildOptions<T>,
-    ): T[] {
-        const fileName = fileAppendJson(this.defaultPath + path);
-        const file = readFileIfExists<T[]>(fileName);
-        const batch = this.batchSync(size, options);
-        const needsNewBuild = !file || !structuralMatch(batch[0], file.data[0]);
-        if (!needsNewBuild && !!file) return file.data;
-
-        saveFixture<T>(fileName, batch);
-        return batch;
+    private writeMethod(props: PropsBuildAsync): WriteBuildAsync<T>;
+    private writeMethod(props: PropsBuildSync): WriteBuildSync<T>;
+    private writeMethod(props: PropsBatchAsync): WriteBatchAsync<T>;
+    private writeMethod(props: PropsBatchSync): WriteBatchSync<T>;
+    private writeMethod({
+        batch,
+        synchronous,
+    }: {
+        batch: boolean;
+        synchronous: boolean;
+    }) {
+        if (!batch) {
+            if (!synchronous)
+                return async (
+                    path: string,
+                    options?: FactoryBuildOptions<T>,
+                ): Promise<T> => {
+                    const build = await this.build(options);
+                    return this.save<T>(path, build);
+                };
+            if (synchronous)
+                return (path: string, options?: FactoryBuildOptions<T>): T => {
+                    const build = this.buildSync(options);
+                    return this.save<T>(path, build);
+                };
+        }
+        if (!synchronous)
+            return async (
+                path: string,
+                size: number,
+                options?: FactoryBuildOptions<T>,
+            ): Promise<T[]> => {
+                const build = await this.batch(size, options);
+                return this.save<T[]>(path, build);
+            };
+        return (
+            path: string,
+            size: number,
+            options?: FactoryBuildOptions<T>,
+        ): T[] => {
+            const build = this.batchSync(size, options);
+            return this.save<T[]>(path, build);
+        };
     }
 }
