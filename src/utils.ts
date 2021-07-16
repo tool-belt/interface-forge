@@ -160,11 +160,7 @@ export function fileAppendJson(filePath: string): string {
 }
 
 export function throwFileError(error: NodeJS.ErrnoException | null): void {
-    if (error) {
-        // eslint-disable-next-line no-console
-        console.error('[interface-forge]', error);
-        throw new Error('[interface-forge] ' + JSON.stringify(error));
-    }
+    if (error) throw new Error('[interface-forge] ' + JSON.stringify(error));
 }
 
 export function readFileIfExists<T>(filename: string): FixtureStatic<T> | null {
@@ -187,15 +183,21 @@ export function saveFixture<T>(filePath: string, data: T | T[]): void {
 }
 
 export function listProps(
-    object: Record<string, any>,
+    input: Record<string, any>,
     output: string[] = [],
-    stack = '',
+    chain = '',
 ): string[] {
-    for (const property in object) {
-        if (object[property] && typeof object[property] == 'object') {
-            listProps(object[property], output, stack + '.' + property);
+    for (const property of Object.getOwnPropertyNames(input)) {
+        if (input[property] && Array.isArray(input[property])) {
+            let i = 0;
+            for (const item of input[property]) {
+                listProps(item, output, `${chain}.${property}[${i}]`);
+                i++;
+            }
+        } else if (input[property] && typeof input[property] === 'object') {
+            listProps(input[property], output, chain + '.' + property);
         } else {
-            output.push(stack + '.' + property);
+            output.push(chain + '.' + property);
         }
     }
     return output;

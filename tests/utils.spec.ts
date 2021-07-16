@@ -459,11 +459,11 @@ describe('parseOptions', () => {
         });
     });
 
-    describe('listKeys', () => {
+    describe('listProps', () => {
         it('builds meaninful string[] for object structure comparison', () => {
             const list = listProps(threeLevelDefaults);
             expect(JSON.stringify(list)).toEqual(
-                '[".name",".value",".options.type",".options.children.0.name",".options.children.0.value"]',
+                '[".name",".value",".options.type",".options.children[0].name",".options.children[0].value"]',
             );
         });
     });

@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from './constants';
 import {
     FactoryBuildOptions,
     FactoryFunction,
@@ -11,6 +12,8 @@ import {
     saveFixture,
     structuralMatch,
 } from './utils';
+import fs from 'fs';
+import fsPath from 'path';
 
 type WriteBuildAsync<T> = (
     path: string,
@@ -39,26 +42,28 @@ const propsBatchAsync = { batch: true, synchronous: false };
 const propsBatchSync = { batch: true, synchronous: true };
 
 export class FixtureFactory<T> extends TypeFactory<T> {
-    private defaultPath = '';
+    private defaultPath = './';
 
     constructor(
+        defaultPath: string,
         defaults: FactoryOptions<T>,
         factory?: FactoryFunction<T>,
-        defaultPath?: string,
     ) {
         super(defaults, factory);
-        if (defaultPath) this.defaultPath = defaultPath;
+        if (!defaultPath) throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
+        this.defaultPath = defaultPath + '/';
+        if (!fs.existsSync(defaultPath)) fs.mkdirSync(defaultPath);
     }
 
     public static = {
-        build: this.writeMethod(propsBuildAsync as PropsBuildAsync),
-        buildSync: this.writeMethod(propsBuildSync as PropsBuildSync),
-        batch: this.writeMethod(propsBatchAsync as PropsBatchAsync),
-        batchSync: this.writeMethod(propsBatchSync as PropsBatchSync),
+        build: this.saveMethod(propsBuildAsync as PropsBuildAsync),
+        buildSync: this.saveMethod(propsBuildSync as PropsBuildSync),
+        batch: this.saveMethod(propsBatchAsync as PropsBatchAsync),
+        batchSync: this.saveMethod(propsBatchSync as PropsBatchSync),
     };
 
     private save<R>(path: string, build: R) {
-        const fileName = fileAppendJson(this.defaultPath + path);
+        const fileName = fileAppendJson(fsPath.join(this.defaultPath, path));
         const file = readFileIfExists<R>(fileName);
         const needsNewBuild = !file || !structuralMatch(build, file.data);
         if (!needsNewBuild) return (file as FixtureStatic<R>).data;
@@ -67,33 +72,27 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         return build;
     }
 
-    private writeMethod(props: PropsBuildAsync): WriteBuildAsync<T>;
-    private writeMethod(props: PropsBuildSync): WriteBuildSync<T>;
-    private writeMethod(props: PropsBatchAsync): WriteBatchAsync<T>;
-    private writeMethod(props: PropsBatchSync): WriteBatchSync<T>;
-    private writeMethod({
+    private saveMethod(props: PropsBuildAsync): WriteBuildAsync<T>;
+    private saveMethod(props: PropsBuildSync): WriteBuildSync<T>;
+    private saveMethod(props: PropsBatchAsync): WriteBatchAsync<T>;
+    private saveMethod(props: PropsBatchSync): WriteBatchSync<T>;
+    private saveMethod({
         batch,
         synchronous,
     }: {
         batch: boolean;
         synchronous: boolean;
     }) {
-        if (!batch) {
-            if (!synchronous)
-                return async (
-                    path: string,
-                    options?: FactoryBuildOptions<T>,
-                ): Promise<T> => {
-                    const build = await this.build(options);
-                    return this.save<T>(path, build);
-                };
+        if (batch) {
             if (synchronous)
-                return (path: string, options?: FactoryBuildOptions<T>): T => {
-                    const build = this.buildSync(options);
-                    return this.save<T>(path, build);
+                return (
+                    path: string,
+                    size: number,
+                    options?: FactoryBuildOptions<T>,
+                ): T[] => {
+                    const build = this.batchSync(size, options);
+                    return this.save<T[]>(path, build);
                 };
-        }
-        if (!synchronous)
             return async (
                 path: string,
                 size: number,
@@ -102,13 +101,18 @@ export class FixtureFactory<T> extends TypeFactory<T> {
                 const build = await this.batch(size, options);
                 return this.save<T[]>(path, build);
             };
-        return (
+        }
+        if (synchronous)
+            return (path: string, options?: FactoryBuildOptions<T>): T => {
+                const build = this.buildSync(options);
+                return this.save<T>(path, build);
+            };
+        return async (
             path: string,
-            size: number,
             options?: FactoryBuildOptions<T>,
-        ): T[] => {
-            const build = this.batchSync(size, options);
-            return this.save<T[]>(path, build);
+        ): Promise<T> => {
+            const build = await this.build(options);
+            return this.save<T>(path, build);
         };
     }
 }
