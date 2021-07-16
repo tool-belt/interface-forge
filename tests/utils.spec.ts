@@ -1,23 +1,21 @@
 import { ComplexObject, Options } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
+import { defaults, threeLevelDefaults } from './utils';
 import {
-    fileError,
-    fileExists,
-    fileName,
+    fileAppendJson,
     isPromise,
     isRecord,
+    listProps,
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
     parseOptions,
+    readFileIfExists,
+    structuralMatch,
+    throwFileError,
     throwIfPromise,
     validateFactorySchema,
 } from '../src/utils';
 import fs from 'fs';
-
-const defaults: ComplexObject = {
-    name: 'testObject',
-    value: null,
-};
 
 describe('isRecord', () => {
     it('returns true for records and false for non-records', () => {
@@ -410,31 +408,31 @@ describe('parseOptions', () => {
         });
     });
 
-    describe('fileName', () => {
+    describe('fileAppendJson', () => {
         it('appends missing .json extension', () => {
             const path = '/dev/filename.txt';
-            expect(fileName(path)).toEqual(path + '.json');
+            expect(fileAppendJson(path)).toEqual(path + '.json');
         });
         it('does not append .json extension if provided', () => {
             const path = '/dev/filename.json';
-            expect(fileName(path)).toEqual(path);
+            expect(fileAppendJson(path)).toEqual(path);
         });
     });
 
-    describe('fileError', () => {
+    describe('throwFileError', () => {
         it('throws error if provided', () => {
             const error = new Error('test');
-            expect(() => fileError(error)).toThrow(
+            expect(() => throwFileError(error)).toThrow(
                 '[interface-forge] ' + JSON.stringify(error),
             );
         });
         it('does not throw if no error provided', () => {
             const error = null;
-            expect(() => fileError(error)).not.toThrow();
+            expect(() => throwFileError(error)).not.toThrow();
         });
     });
 
-    describe('fileExists', () => {
+    describe('readFileIfExists', () => {
         it('returns parsed file contents if file exists', () => {
             const originalExistsSync = fs.existsSync;
             const originalReadFileSync = fs.readFileSync;
@@ -447,7 +445,7 @@ describe('parseOptions', () => {
             fs.existsSync = () => true;
             // @ts-ignore
             fs.readFileSync = () => json;
-            expect(fileExists('filename')).toEqual(testData);
+            expect(readFileIfExists('filename')).toEqual(testData);
             fs.existsSync = originalExistsSync;
             fs.readFileSync = originalReadFileSync;
         });
@@ -455,9 +453,29 @@ describe('parseOptions', () => {
             const originalExistsSync = fs.existsSync;
             const originalReadFileSync = fs.readFileSync;
             fs.existsSync = () => false;
-            expect(fileExists('filename')).toBeNull();
+            expect(readFileIfExists('filename')).toBeNull();
             fs.existsSync = originalExistsSync;
             fs.readFileSync = originalReadFileSync;
+        });
+    });
+
+    describe('listKeys', () => {
+        it('builds meaninful string[] for object structure comparison', () => {
+            const list = listProps(threeLevelDefaults);
+            expect(JSON.stringify(list)).toEqual(
+                '[".name",".value",".options.type",".options.children.0.name",".options.children.0.value"]',
+            );
+        });
+    });
+
+    describe('structuralMatch', () => {
+        it('returns true if structure matches', () => {
+            expect(structuralMatch(defaults, defaults)).toEqual(true);
+        });
+        it('returns false if structure does not match', () => {
+            expect(
+                structuralMatch(defaults, { ...defaults, children: undefined }),
+            ).toEqual(false);
         });
     });
 });

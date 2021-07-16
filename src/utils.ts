@@ -4,6 +4,7 @@ import {
     FactoryBuildOptions,
     FactoryFunction,
     FactorySchema,
+    FixtureStatic,
     OverridesAndFactory,
 } from './types';
 import fs from 'fs';
@@ -152,16 +153,58 @@ export function parseOptions<T>(
     ];
 }
 
-export function fileName(path: string): string {
-    return path.substr(-5).toLowerCase() === '.json' ? path : path + '.json';
+export function fileAppendJson(filePath: string): string {
+    return filePath.split('.').pop()?.toLowerCase() === 'json'
+        ? filePath
+        : filePath + '.json';
 }
 
-export function fileError(error: NodeJS.ErrnoException | null): void {
-    if (error) throw new Error('[interface-forge] ' + JSON.stringify(error));
+export function throwFileError(error: NodeJS.ErrnoException | null): void {
+    if (error) {
+        // eslint-disable-next-line no-console
+        console.error('[interface-forge]', error);
+        throw new Error('[interface-forge] ' + JSON.stringify(error));
+    }
 }
 
-export function fileExists<T>(filename: string): T | null {
+export function readFileIfExists<T>(filename: string): FixtureStatic<T> | null {
     if (fs.existsSync(filename))
-        return JSON.parse(fs.readFileSync(filename, 'utf-8')) as T;
+        return JSON.parse(
+            fs.readFileSync(filename, 'utf-8'),
+        ) as FixtureStatic<T>;
     return null;
+}
+
+export function saveFixture<T>(filePath: string, data: T | T[]): void {
+    const structure = Array.isArray(data)
+        ? listProps(data[0])
+        : listProps(data);
+    const save: FixtureStatic<T | T[]> = {
+        created: new Date().toUTCString(),
+        data,
+        structure,
+    };
+    fs.writeFile(filePath, JSON.stringify(save), throwFileError);
+}
+
+export function listProps(
+    object: Record<string, any>,
+    output: string[] = [],
+    stack = '',
+): string[] {
+    for (const property in object) {
+        if (object[property] && typeof object[property] == 'object') {
+            listProps(object[property], output, stack + '.' + property);
+        } else {
+            output.push(stack + '.' + property);
+        }
+    }
+    return output;
+}
+
+export function structuralMatch(
+    obj1: Record<string, any>,
+    obj2: Record<string, any>,
+): boolean {
+    return JSON.stringify(listProps(obj1)) === JSON.stringify(listProps(obj2));
 }

@@ -43,6 +43,5 @@
     "lint-staged": {
         "*.ts": "eslint --fix",
         "*.{js,md,json,yaml,yml}": "prettier --write"
-    },
-    "dependencies": {}
+    }
 }
