@@ -450,7 +450,7 @@ describe('parseOptions', () => {
         it('builds meaninful string[] for object structure comparison', () => {
             const list = mapKeyPaths(threeLevelDefaults);
             expect(JSON.stringify(list)).toEqual(
-                '[".name",".value",".options.type",".options.children[0].name",".options.children[0].value"]',
+                '[".name",".options.type",".value",".options.children[0].name",".options.children[0].value"]',
             );
         });
     });

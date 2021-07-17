@@ -191,6 +191,7 @@ export function mapKeyPaths(
     output: string[] = [],
     chain = '',
 ): string[] {
+    output.sort();
     for (const property of Object.getOwnPropertyNames(input)) {
         const subChain = `${chain}.${property}`;
         if (input[property] && Array.isArray(input[property])) {

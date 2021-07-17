@@ -15,32 +15,6 @@ import {
 import fs from 'fs';
 import fsPath from 'path';
 
-type WriteBuildAsync<T> = (
-    path: string,
-    options?: FactoryBuildOptions<T>,
-) => Promise<T>;
-type WriteBuildSync<T> = (path: string, options?: FactoryBuildOptions<T>) => T;
-type WriteBatchAsync<T> = (
-    path: string,
-    size: number,
-    options?: FactoryBuildOptions<T>,
-) => Promise<T[]>;
-type WriteBatchSync<T> = (
-    path: string,
-    size: number,
-    options?: FactoryBuildOptions<T>,
-) => T[];
-
-type PropsBuildAsync = { batch: false; synchronous: false };
-type PropsBuildSync = { batch: false; synchronous: true };
-type PropsBatchAsync = { batch: true; synchronous: false };
-type PropsBatchSync = { batch: true; synchronous: true };
-
-const propsBuildAsync = { batch: false, synchronous: false };
-const propsBuildSync = { batch: false, synchronous: true };
-const propsBatchAsync = { batch: true, synchronous: false };
-const propsBatchSync = { batch: true, synchronous: true };
-
 export class FixtureFactory<T> extends TypeFactory<T> {
     private defaultPath: string;
 
@@ -55,11 +29,21 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         if (!fs.existsSync(defaultPath)) fs.mkdirSync(defaultPath);
     }
 
-    public static = {
-        build: this.saveMethod(propsBuildAsync as PropsBuildAsync),
-        buildSync: this.saveMethod(propsBuildSync as PropsBuildSync),
-        batch: this.saveMethod(propsBatchAsync as PropsBatchAsync),
-        batchSync: this.saveMethod(propsBatchSync as PropsBatchSync),
+    static = {
+        build: (path: string, options?: FactoryBuildOptions<T>): Promise<T> =>
+            this.saveBuildAsync(path, options),
+        buildSync: (path: string, options?: FactoryBuildOptions<T>): T =>
+            this.saveBuildSync(path, options),
+        batch: (
+            path: string,
+            size: number,
+            options?: FactoryBuildOptions<T>,
+        ): Promise<T[]> => this.saveBatchAsync(path, size, options),
+        batchSync: (
+            path: string,
+            size: number,
+            options?: FactoryBuildOptions<T>,
+        ): T[] => this.saveBatchSync(path, size, options),
     };
 
     private save<R>(path: string, build: R) {
@@ -72,47 +56,34 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         return build;
     }
 
-    private saveMethod(props: PropsBuildAsync): WriteBuildAsync<T>;
-    private saveMethod(props: PropsBuildSync): WriteBuildSync<T>;
-    private saveMethod(props: PropsBatchAsync): WriteBatchAsync<T>;
-    private saveMethod(props: PropsBatchSync): WriteBatchSync<T>;
-    private saveMethod({
-        batch,
-        synchronous,
-    }: {
-        batch: boolean;
-        synchronous: boolean;
-    }) {
-        if (batch) {
-            if (synchronous)
-                return (
-                    path: string,
-                    size: number,
-                    options?: FactoryBuildOptions<T>,
-                ): T[] => {
-                    const build = this.batchSync(size, options);
-                    return this.save<T[]>(path, build);
-                };
-            return async (
-                path: string,
-                size: number,
-                options?: FactoryBuildOptions<T>,
-            ): Promise<T[]> => {
-                const build = await this.batch(size, options);
-                return this.save<T[]>(path, build);
-            };
-        }
-        if (synchronous)
-            return (path: string, options?: FactoryBuildOptions<T>): T => {
-                const build = this.buildSync(options);
-                return this.save<T>(path, build);
-            };
-        return async (
-            path: string,
-            options?: FactoryBuildOptions<T>,
-        ): Promise<T> => {
-            const build = await this.build(options);
-            return this.save<T>(path, build);
-        };
+    private async saveBuildAsync(
+        path: string,
+        options?: FactoryBuildOptions<T>,
+    ): Promise<T> {
+        const build = await this.build(options);
+        return this.save<T>(path, build);
+    }
+
+    private saveBuildSync(path: string, options?: FactoryBuildOptions<T>): T {
+        const build = this.buildSync(options);
+        return this.save<T>(path, build);
+    }
+
+    private async saveBatchAsync(
+        path: string,
+        size: number,
+        options?: FactoryBuildOptions<T>,
+    ): Promise<T[]> {
+        const build = await this.batch(size, options);
+        return this.save<T[]>(path, build);
+    }
+
+    private saveBatchSync(
+        path: string,
+        size: number,
+        options?: FactoryBuildOptions<T>,
+    ): T[] {
+        const build = this.batchSync(size, options);
+        return this.save<T[]>(path, build);
     }
 }
