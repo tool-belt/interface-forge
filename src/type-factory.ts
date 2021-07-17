@@ -6,14 +6,14 @@ import {
     FactorySchema,
     UseOptions,
 } from './types';
+import { isPromise } from './utils/guards';
+import { iterate, sample } from './helpers';
 import {
-    isPromise,
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
-    parseOptions,
     validateFactorySchema,
-} from './utils';
-import { iterate, sample } from './helpers';
+} from './utils/schema';
+import { parseOptions } from './utils/options';
 
 export class BuildArgProxy {}
 

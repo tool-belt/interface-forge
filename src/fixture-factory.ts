@@ -1,89 +1,76 @@
 import { ERROR_MESSAGES } from './constants';
-import {
-    FactoryBuildOptions,
-    FactoryFunction,
-    FactoryOptions,
-    FixtureStatic,
-} from './types';
+import { FactoryBuildOptions, FactoryFunction, FactoryOptions } from './types';
 import { TypeFactory } from './type-factory';
-import {
-    deepCompareKeys,
-    normalizeFilename,
-    readFileIfExists,
-    saveFixture,
-} from './utils';
+import { haveSameKeyPaths, readFileIfExists } from './utils/file';
+import { normalizeFilename } from './utils/options';
 import fs from 'fs';
-import fsPath from 'path';
+import path from 'path';
 
 export class FixtureFactory<T> extends TypeFactory<T> {
-    private defaultPath: string;
+    private readonly defaultPath: string;
 
     constructor(
         defaultPath: string,
         defaults: FactoryOptions<T>,
         factory?: FactoryFunction<T>,
     ) {
+        if (!defaultPath) {
+            throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
+        }
         super(defaults, factory);
-        if (!defaultPath) throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
         this.defaultPath = defaultPath + '/';
-        if (!fs.existsSync(defaultPath)) fs.mkdirSync(defaultPath);
     }
 
-    static = {
-        build: (path: string, options?: FactoryBuildOptions<T>): Promise<T> =>
-            this.saveBuildAsync(path, options),
-        buildSync: (path: string, options?: FactoryBuildOptions<T>): T =>
-            this.saveBuildSync(path, options),
-        batch: (
-            path: string,
-            size: number,
-            options?: FactoryBuildOptions<T>,
-        ): Promise<T[]> => this.saveBatchAsync(path, size, options),
-        batchSync: (
-            path: string,
-            size: number,
-            options?: FactoryBuildOptions<T>,
-        ): T[] => this.saveBatchSync(path, size, options),
-    };
-
-    private save<R>(path: string, build: R) {
-        const fileName = normalizeFilename(fsPath.join(this.defaultPath, path));
-        const file = readFileIfExists<R>(fileName);
-        const needsNewBuild = !file || !deepCompareKeys(build, file.data);
-        if (!needsNewBuild) return (file as FixtureStatic<R>).data;
-
-        saveFixture<R>(fileName, build);
-        return build;
+    private getOrCreateFixture(fileName: string, build: T | T[]): T | T[] {
+        try {
+            if (!fs.existsSync(this.defaultPath)) {
+                fs.mkdirSync(this.defaultPath);
+            }
+            const filePath = path.join(
+                this.defaultPath,
+                normalizeFilename(fileName),
+            );
+            const data = readFileIfExists<T>(filePath);
+            if (data && haveSameKeyPaths(build, data)) {
+                return data;
+            }
+            fs.writeFileSync(filePath, JSON.stringify(build));
+            return build;
+        } catch (error) {
+            throw new Error(
+                ERROR_MESSAGES.FILE_WRITE.replace(
+                    ':json',
+                    JSON.stringify(error),
+                ),
+            );
+        }
     }
 
-    private async saveBuildAsync(
-        path: string,
-        options?: FactoryBuildOptions<T>,
-    ): Promise<T> {
-        const build = await this.build(options);
-        return this.save<T>(path, build);
+    async save(fileName: string, options?: FactoryBuildOptions<T>): Promise<T> {
+        const instance = await this.build(options);
+        return this.getOrCreateFixture(fileName, instance) as T;
     }
 
-    private saveBuildSync(path: string, options?: FactoryBuildOptions<T>): T {
-        const build = this.buildSync(options);
-        return this.save<T>(path, build);
+    saveSync(fileName: string, options?: FactoryBuildOptions<T>): T {
+        const instance = this.buildSync(options);
+        return this.getOrCreateFixture(fileName, instance) as T;
     }
 
-    private async saveBatchAsync(
-        path: string,
+    async saveBatch(
+        fileName: string,
         size: number,
         options?: FactoryBuildOptions<T>,
     ): Promise<T[]> {
-        const build = await this.batch(size, options);
-        return this.save<T[]>(path, build);
+        const batch = await this.batch(size, options);
+        return this.getOrCreateFixture(fileName, batch) as T[];
     }
 
-    private saveBatchSync(
-        path: string,
+    saveBatchSync(
+        fileName: string,
         size: number,
         options?: FactoryBuildOptions<T>,
     ): T[] {
-        const build = this.batchSync(size, options);
-        return this.save<T[]>(path, build);
+        const batch = this.batchSync(size, options);
+        return this.getOrCreateFixture(fileName, batch) as T[];
     }
 }

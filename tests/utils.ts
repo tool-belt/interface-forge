@@ -19,3 +19,12 @@ export const threeLevelDefaults: ComplexObject = {
         children: [defaults],
     },
 };
+
+export const annoyinglyComplexObject: any = {
+    ...twoLevelDefaults,
+    options: {
+        type: '1',
+        children: [threeLevelDefaults],
+        arrayOfArray: [[[threeLevelDefaults]]],
+    },
+};

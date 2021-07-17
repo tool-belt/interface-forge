@@ -1,20 +1,19 @@
 import { ComplexObject, Options } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
+import { annoyinglyComplexObject, defaults } from './utils';
 import {
-    deepCompareKeys,
-    isPromise,
-    isRecord,
+    haveSameKeyPaths,
     mapKeyPaths,
-    normalizeFilename,
+    readFileIfExists,
+} from '../src/utils/file';
+import { isPromise, isRecord } from '../src/utils/guards';
+import { normalizeFilename, parseOptions } from '../src/utils/options';
+import {
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
-    parseOptions,
-    readFileIfExists,
-    saveFixture,
-    throwIfPromise,
     validateFactorySchema,
-} from '../src/utils';
-import { defaults, threeLevelDefaults } from './utils';
+} from '../src/utils/schema';
+import { throwIfPromise } from '../src/utils/general';
 import fs from 'fs';
 
 describe('isRecord', () => {
@@ -447,64 +446,83 @@ describe('parseOptions', () => {
     });
 
     describe('mapKeyPaths', () => {
-        it('builds meaninful string[] for object structure comparison', () => {
-            const list = mapKeyPaths(threeLevelDefaults);
-            expect(JSON.stringify(list)).toEqual(
-                '[".name",".options.type",".value",".options.children[0].name",".options.children[0].value"]',
-            );
+        it('builds meaningful string[] for deep-key comparison', () => {
+            const list = mapKeyPaths(annoyinglyComplexObject);
+            expect(list).toEqual([
+                'name',
+                'value',
+                'options',
+                'type',
+                'options.type',
+                'children',
+                'options.children[0].name',
+                'options.children[0].value',
+                'options.children[0].options.type',
+                'options.children[0].options.children[0].name',
+                'options.children[0].options.children[0].value',
+                'arrayOfArray',
+                'options.arrayOfArray[0][0][0].name',
+                'options.arrayOfArray[0][0][0].value',
+                'options.arrayOfArray[0][0][0].options.type',
+                'options.arrayOfArray[0][0][0].options.children[0].name',
+                'options.arrayOfArray[0][0][0].options.children[0].value',
+            ]);
         });
     });
 
     describe('deepCompareKeys', () => {
         it('returns true if structure matches', () => {
-            expect(deepCompareKeys(defaults, defaults)).toEqual(true);
+            expect(haveSameKeyPaths(defaults, defaults)).toEqual(true);
         });
         it('returns false if structure does not match', () => {
             expect(
-                deepCompareKeys(defaults, { ...defaults, children: undefined }),
+                haveSameKeyPaths(defaults, {
+                    ...defaults,
+                    children: undefined,
+                }),
             ).toEqual(false);
         });
     });
 
-    describe('saveFixture', () => {
-        it('throws on fs.writeFile() error', () => {
-            const originalWriteFile = fs.writeFile;
-            const mockWriteFile = jest.fn();
-            // @ts-ignore
-            fs.writeFile = mockWriteFile;
-            const error = {
-                code: 'A123',
-                message: 'could not write',
-                name: 'permission_denied',
-            };
-            const json = ERROR_MESSAGES.FILE_WRITE.replace(
-                ':json',
-                JSON.stringify(error),
-            );
-            mockWriteFile.mockImplementation(
-                (_path: any, _data: any, callback: fs.NoParamCallback) => {
-                    callback(error);
-                },
-            );
-            expect(() => saveFixture('filename', ['data'])).toThrow(json);
-            expect(mockWriteFile).toHaveBeenCalled();
-            mockWriteFile.mockReset();
-            fs.writeFile = originalWriteFile;
-        });
-        it('does not throw if no fs.writeFile() error', () => {
-            const originalWriteFile = fs.writeFile;
-            const mockWriteFile = jest.fn();
-            // @ts-ignore
-            fs.writeFile = mockWriteFile;
-            mockWriteFile.mockImplementation(
-                (_path: any, _data: any, callback: fs.NoParamCallback) => {
-                    callback(null);
-                },
-            );
-            expect(() => saveFixture('filename', ['data'])).not.toThrow();
-            expect(mockWriteFile).toHaveBeenCalled();
-            mockWriteFile.mockReset();
-            fs.writeFile = originalWriteFile;
-        });
-    });
+    // describe('saveFixture', () => {
+    //     it('throws on fs.writeFile() error', () => {
+    //         const originalWriteFile = fs.writeFile;
+    //         const mockWriteFile = jest.fn();
+    //         // @ts-ignore
+    //         fs.writeFile = mockWriteFile;
+    //         const error = {
+    //             code: 'A123',
+    //             message: 'could not write',
+    //             name: 'permission_denied',
+    //         };
+    //         const json = ERROR_MESSAGES.FILE_WRITE.replace(
+    //             ':json',
+    //             JSON.stringify(error),
+    //         );
+    //         mockWriteFile.mockImplementation(
+    //             (_path: any, _data: any, callback: fs.NoParamCallback) => {
+    //                 callback(error);
+    //             },
+    //         );
+    //         expect(() => saveFixture('filename', ['data'])).toThrow(json);
+    //         expect(mockWriteFile).toHaveBeenCalled();
+    //         mockWriteFile.mockReset();
+    //         fs.writeFile = originalWriteFile;
+    //     });
+    //     it('does not throw if no fs.writeFile() error', () => {
+    //         const originalWriteFile = fs.writeFile;
+    //         const mockWriteFile = jest.fn();
+    //         // @ts-ignore
+    //         fs.writeFile = mockWriteFile;
+    //         mockWriteFile.mockImplementation(
+    //             (_path: any, _data: any, callback: fs.NoParamCallback) => {
+    //                 callback(null);
+    //             },
+    //         );
+    //         expect(() => saveFixture('filename', ['data'])).not.toThrow();
+    //         expect(mockWriteFile).toHaveBeenCalled();
+    //         mockWriteFile.mockReset();
+    //         fs.writeFile = originalWriteFile;
+    //     });
+    // });
 });
