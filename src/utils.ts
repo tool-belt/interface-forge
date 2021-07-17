@@ -153,14 +153,10 @@ export function parseOptions<T>(
     ];
 }
 
-export function fileAppendJson(filePath: string): string {
+export function normalizeFilename(filePath: string): string {
     return filePath.split('.').pop()?.toLowerCase() === 'json'
         ? filePath
         : filePath + '.json';
-}
-
-export function throwFileError(error: NodeJS.ErrnoException | null): void {
-    if (error) throw new Error('[interface-forge] ' + JSON.stringify(error));
 }
 
 export function readFileIfExists<T>(filename: string): FixtureStatic<T> | null {
@@ -173,39 +169,50 @@ export function readFileIfExists<T>(filename: string): FixtureStatic<T> | null {
 
 export function saveFixture<T>(filePath: string, data: T | T[]): void {
     const structure = Array.isArray(data)
-        ? listProps(data[0])
-        : listProps(data);
+        ? mapKeyPaths(data[0])
+        : mapKeyPaths(data);
     const save: FixtureStatic<T | T[]> = {
         data,
         structure,
     };
-    fs.writeFile(filePath, JSON.stringify(save), throwFileError);
+    fs.writeFile(filePath, JSON.stringify(save), (error) => {
+        if (error)
+            throw new Error(
+                ERROR_MESSAGES.FILE_WRITE.replace(
+                    ':json',
+                    JSON.stringify(error),
+                ),
+            );
+    });
 }
 
-export function listProps(
+export function mapKeyPaths(
     input: Record<string, any>,
     output: string[] = [],
     chain = '',
 ): string[] {
     for (const property of Object.getOwnPropertyNames(input)) {
+        const subChain = `${chain}.${property}`;
         if (input[property] && Array.isArray(input[property])) {
             let i = 0;
             for (const item of input[property]) {
-                listProps(item, output, `${chain}.${property}[${i}]`);
+                mapKeyPaths(item, output, `${subChain}[${i}]`);
                 i++;
             }
-        } else if (input[property] && typeof input[property] === 'object') {
-            listProps(input[property], output, chain + '.' + property);
+        } else if (input[property] && isRecord(input[property])) {
+            mapKeyPaths(input[property], output, subChain);
         } else {
-            output.push(chain + '.' + property);
+            output.push(subChain);
         }
     }
     return output;
 }
 
-export function structuralMatch(
+export function deepCompareKeys(
     obj1: Record<string, any>,
     obj2: Record<string, any>,
 ): boolean {
-    return JSON.stringify(listProps(obj1)) === JSON.stringify(listProps(obj2));
+    return (
+        JSON.stringify(mapKeyPaths(obj1)) === JSON.stringify(mapKeyPaths(obj2))
+    );
 }

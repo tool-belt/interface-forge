@@ -1,7 +1,7 @@
 import { ComplexObject } from './test-types';
 import { FixtureFactory, FixtureStatic } from '../src';
 import { defaults } from './utils';
-import { listProps, throwFileError } from '../src//utils';
+import { mapKeyPaths } from '../src//utils';
 import fs from 'fs';
 
 const originalExistsSync = fs.existsSync;
@@ -52,7 +52,7 @@ describe('TypeFactory', () => {
         expect(mockWriteFile).toHaveBeenCalledWith(
             '/dev/path/testfile.json',
             '{"data":{"name":"testObject","value":null},"structure":[".name",".value"]}',
-            throwFileError,
+            expect.any(Function),
         );
     });
     it('creates default path, if it does not exist', async () => {
@@ -80,7 +80,7 @@ describe('.static.build', () => {
         mockExistsSync.mockReturnValueOnce(true);
         const save: FixtureStatic<ComplexObject> = {
             data: defaults,
-            structure: listProps(defaults),
+            structure: mapKeyPaths(defaults),
         };
         const json = JSON.stringify(save);
         mockReadFileSync.mockReturnValueOnce(json);
@@ -119,7 +119,7 @@ describe('.static.buildSync', () => {
         mockExistsSync.mockReturnValueOnce(true);
         const save: FixtureStatic<ComplexObject> = {
             data: defaults,
-            structure: listProps(defaults),
+            structure: mapKeyPaths(defaults),
         };
         const json = JSON.stringify(save);
         mockReadFileSync.mockReturnValueOnce(json);
@@ -157,7 +157,7 @@ describe('.static.batch', () => {
         mockExistsSync.mockReturnValueOnce(true);
         const save: FixtureStatic<ComplexObject[]> = {
             data: [defaults],
-            structure: listProps(defaults),
+            structure: mapKeyPaths(defaults),
         };
         const json = JSON.stringify(save);
         mockReadFileSync.mockReturnValueOnce(json);
@@ -196,7 +196,7 @@ describe('.static.batchSync', () => {
         mockExistsSync.mockReturnValueOnce(true);
         const save: FixtureStatic<ComplexObject[]> = {
             data: [defaults],
-            structure: listProps(defaults),
+            structure: mapKeyPaths(defaults),
         };
         const json = JSON.stringify(save);
         mockReadFileSync.mockReturnValueOnce(json);

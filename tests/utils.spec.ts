@@ -1,20 +1,20 @@
 import { ComplexObject, Options } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
-import { defaults, threeLevelDefaults } from './utils';
 import {
-    fileAppendJson,
+    deepCompareKeys,
     isPromise,
     isRecord,
-    listProps,
+    mapKeyPaths,
+    normalizeFilename,
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
     parseOptions,
     readFileIfExists,
-    structuralMatch,
-    throwFileError,
+    saveFixture,
     throwIfPromise,
     validateFactorySchema,
 } from '../src/utils';
+import { defaults, threeLevelDefaults } from './utils';
 import fs from 'fs';
 
 describe('isRecord', () => {
@@ -408,27 +408,14 @@ describe('parseOptions', () => {
         });
     });
 
-    describe('fileAppendJson', () => {
+    describe('normalizeFilename', () => {
         it('appends missing .json extension, if none provided', () => {
             const path = '/dev/filename';
-            expect(fileAppendJson(path)).toEqual(path + '.json');
+            expect(normalizeFilename(path)).toEqual(path + '.json');
         });
         it('does not append .json extension, if provided', () => {
             const path = '/dev/filename.JSON';
-            expect(fileAppendJson(path)).toEqual(path);
-        });
-    });
-
-    describe('throwFileError', () => {
-        it('throws error if provided', () => {
-            const error = new Error('test');
-            expect(() => throwFileError(error)).toThrow(
-                '[interface-forge] ' + JSON.stringify(error),
-            );
-        });
-        it('does not throw if no error provided', () => {
-            const error = null;
-            expect(() => throwFileError(error)).not.toThrow();
+            expect(normalizeFilename(path)).toEqual(path);
         });
     });
 
@@ -459,23 +446,65 @@ describe('parseOptions', () => {
         });
     });
 
-    describe('listProps', () => {
+    describe('mapKeyPaths', () => {
         it('builds meaninful string[] for object structure comparison', () => {
-            const list = listProps(threeLevelDefaults);
+            const list = mapKeyPaths(threeLevelDefaults);
             expect(JSON.stringify(list)).toEqual(
                 '[".name",".value",".options.type",".options.children[0].name",".options.children[0].value"]',
             );
         });
     });
 
-    describe('structuralMatch', () => {
+    describe('deepCompareKeys', () => {
         it('returns true if structure matches', () => {
-            expect(structuralMatch(defaults, defaults)).toEqual(true);
+            expect(deepCompareKeys(defaults, defaults)).toEqual(true);
         });
         it('returns false if structure does not match', () => {
             expect(
-                structuralMatch(defaults, { ...defaults, children: undefined }),
+                deepCompareKeys(defaults, { ...defaults, children: undefined }),
             ).toEqual(false);
+        });
+    });
+
+    describe('saveFixture', () => {
+        it('throws on fs.writeFile() error', () => {
+            const originalWriteFile = fs.writeFile;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+            const error = {
+                code: 'A123',
+                message: 'could not write',
+                name: 'permission_denied',
+            };
+            const json = ERROR_MESSAGES.FILE_WRITE.replace(
+                ':json',
+                JSON.stringify(error),
+            );
+            mockWriteFile.mockImplementation(
+                (_path: any, _data: any, callback: fs.NoParamCallback) => {
+                    callback(error);
+                },
+            );
+            expect(() => saveFixture('filename', ['data'])).toThrow(json);
+            expect(mockWriteFile).toHaveBeenCalled();
+            mockWriteFile.mockReset();
+            fs.writeFile = originalWriteFile;
+        });
+        it('does not throw if no fs.writeFile() error', () => {
+            const originalWriteFile = fs.writeFile;
+            const mockWriteFile = jest.fn();
+            // @ts-ignore
+            fs.writeFile = mockWriteFile;
+            mockWriteFile.mockImplementation(
+                (_path: any, _data: any, callback: fs.NoParamCallback) => {
+                    callback(null);
+                },
+            );
+            expect(() => saveFixture('filename', ['data'])).not.toThrow();
+            expect(mockWriteFile).toHaveBeenCalled();
+            mockWriteFile.mockReset();
+            fs.writeFile = originalWriteFile;
         });
     });
 });

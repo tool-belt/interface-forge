@@ -7,10 +7,10 @@ import {
 } from './types';
 import { TypeFactory } from './type-factory';
 import {
-    fileAppendJson,
+    deepCompareKeys,
+    normalizeFilename,
     readFileIfExists,
     saveFixture,
-    structuralMatch,
 } from './utils';
 import fs from 'fs';
 import fsPath from 'path';
@@ -42,7 +42,7 @@ const propsBatchAsync = { batch: true, synchronous: false };
 const propsBatchSync = { batch: true, synchronous: true };
 
 export class FixtureFactory<T> extends TypeFactory<T> {
-    private defaultPath = './';
+    private defaultPath: string;
 
     constructor(
         defaultPath: string,
@@ -63,9 +63,9 @@ export class FixtureFactory<T> extends TypeFactory<T> {
     };
 
     private save<R>(path: string, build: R) {
-        const fileName = fileAppendJson(fsPath.join(this.defaultPath, path));
+        const fileName = normalizeFilename(fsPath.join(this.defaultPath, path));
         const file = readFileIfExists<R>(fileName);
-        const needsNewBuild = !file || !structuralMatch(build, file.data);
+        const needsNewBuild = !file || !deepCompareKeys(build, file.data);
         if (!needsNewBuild) return (file as FixtureStatic<R>).data;
 
         saveFixture<R>(fileName, build);

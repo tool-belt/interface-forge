@@ -13,7 +13,7 @@ export const twoLevelDefaults: ComplexObject = {
 };
 
 export const threeLevelDefaults: ComplexObject = {
-    ...defaults,
+    ...twoLevelDefaults,
     options: {
         type: '1',
         children: [defaults],
