@@ -8,3 +8,4 @@ coverage/
 .idea/azure/
 .idea/workspace.xml
 .idea/watcherTasks.xml
+.vscode/

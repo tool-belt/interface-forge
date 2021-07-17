@@ -1,12 +1,8 @@
 import { ComplexObject } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
+import { defaults } from './utils';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
-
-const defaults: ComplexObject = {
-    name: 'testObject',
-    value: null,
-};
 
 describe('.build', () => {
     it('builds correctly with defaults object literal', async () => {
@@ -206,17 +202,13 @@ describe('.batch', () => {
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
     });
-    it('increments counter correctly', async () => {
+    it('increments counter correctly', () => {
         const factory = new TypeFactory<{
             id: number;
         }>((i) => ({ id: i }));
-        const results = (
-            await Promise.all(
-                new Array(10)
-                    .fill(null)
-                    .map(async () => await factory.batch(10)),
-            )
-        )
+        const results = new Array(10)
+            .fill(null)
+            .map(() => factory.batchSync(10))
             .flat()
             .map(({ id }) => id);
         expect([...new Set(results)]).toHaveLength(100);
@@ -243,18 +235,5 @@ describe('.batchSync', () => {
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
-    });
-    it('increments counter correctly', () => {
-        const factory = new TypeFactory<{
-            id: number;
-        }>((i) => ({ id: i }));
-        const results = new Array(10)
-            .fill(null)
-            .map(() => factory.batchSync(10))
-            .flat()
-            .map(({ id }) => id);
-        expect([...new Set(results)]).toHaveLength(100);
-        expect(results[0]).toEqual(0);
-        expect(results[results.length - 1]).toEqual(99);
     });
 });

@@ -4,8 +4,10 @@ import {
     FactoryBuildOptions,
     FactoryFunction,
     FactorySchema,
+    FixtureStatic,
     OverridesAndFactory,
 } from './types';
+import fs from 'fs';
 
 export function isRecord(variable: unknown): variable is Record<any, unknown> {
     const recordsStringResults = [
@@ -149,4 +151,69 @@ export function parseOptions<T>(
         typeof options === 'function' ? options(iteration) : options,
         undefined,
     ];
+}
+
+export function normalizeFilename(filePath: string): string {
+    return filePath.split('.').pop()?.toLowerCase() === 'json'
+        ? filePath
+        : filePath + '.json';
+}
+
+export function readFileIfExists<T>(filename: string): FixtureStatic<T> | null {
+    if (fs.existsSync(filename))
+        return JSON.parse(
+            fs.readFileSync(filename, 'utf-8'),
+        ) as FixtureStatic<T>;
+    return null;
+}
+
+export function saveFixture<T>(filePath: string, data: T | T[]): void {
+    const structure = Array.isArray(data)
+        ? mapKeyPaths(data[0])
+        : mapKeyPaths(data);
+    const save: FixtureStatic<T | T[]> = {
+        data,
+        structure,
+    };
+    fs.writeFile(filePath, JSON.stringify(save), (error) => {
+        if (error)
+            throw new Error(
+                ERROR_MESSAGES.FILE_WRITE.replace(
+                    ':json',
+                    JSON.stringify(error),
+                ),
+            );
+    });
+}
+
+export function mapKeyPaths(
+    input: Record<string, any>,
+    output: string[] = [],
+    chain = '',
+): string[] {
+    output.sort();
+    for (const property of Object.getOwnPropertyNames(input)) {
+        const subChain = `${chain}.${property}`;
+        if (input[property] && Array.isArray(input[property])) {
+            let i = 0;
+            for (const item of input[property]) {
+                mapKeyPaths(item, output, `${subChain}[${i}]`);
+                i++;
+            }
+        } else if (input[property] && isRecord(input[property])) {
+            mapKeyPaths(input[property], output, subChain);
+        } else {
+            output.push(subChain);
+        }
+    }
+    return output;
+}
+
+export function deepCompareKeys(
+    obj1: Record<string, any>,
+    obj2: Record<string, any>,
+): boolean {
+    return (
+        JSON.stringify(mapKeyPaths(obj1)) === JSON.stringify(mapKeyPaths(obj2))
+    );
 }

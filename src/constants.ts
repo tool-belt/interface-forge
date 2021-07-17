@@ -4,4 +4,6 @@ export enum ERROR_MESSAGES {
     PROMISE_FACTORY = '[interface-forge] buildSync does not support factory functions returning Promises',
     PROMISE_VALUE = '[interface-forge] Promise value encountered during buildSync for key :key',
     MISSING_BUILD_ARGS = '[interface-forge] missing required build arguments: :missingArgs',
+    MISSING_DEFAULT_PATH = '[interface-forge] missing required default path',
+    FILE_WRITE = '[interface-forge] file write error occured:\n\n:json',
 }
