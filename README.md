@@ -16,6 +16,7 @@ Interface-Forge allows you to gracefully generate mock data using TypeScript.
   - [Building Objects](#building-objects)
   - [Batch building](#batch-building)
     - [Note regarding async](#note-regarding-async)
+  - [Saving Objects](#saving-objects)
 - [Factory Schema](#factory-schema)
   - [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
   - [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
