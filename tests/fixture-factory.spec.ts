@@ -67,6 +67,23 @@ describe('FixtureFactory', () => {
             );
         });
     });
+    describe('getOrCreateFixture', () => {
+        it('throws an error on file write error', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
+            writeFileSyncSpy.mockImplementationOnce(() => {
+                throw new Error('');
+            });
+            const factory = new FixtureFactory<ComplexObject>(
+                __dirname,
+                defaults,
+            );
+            expect(() => factory.saveSync('testfile')).toThrow(
+                ERROR_MESSAGES.FILE_WRITE.replace(':filePath', __dirname),
+            );
+        });
+    });
     describe('.save', () => {
         it('returns old contents if file exists', async () => {
             existsSyncSpy.mockReturnValueOnce(true);

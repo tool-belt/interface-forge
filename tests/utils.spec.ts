@@ -6,6 +6,7 @@ import {
     mapKeyPaths,
     readFileIfExists,
     validateAndNormalizeFilename,
+    validateFilePath,
 } from '../src/utils/file';
 import { isPromise, isRecord } from '../src/utils/guards';
 import {
@@ -16,6 +17,7 @@ import {
 import { parseOptions } from '../src/utils/options';
 import { throwIfPromise } from '../src/utils/general';
 import fs from 'fs';
+import path from 'path';
 
 describe('isRecord', () => {
     it('returns true for records and false for non-records', () => {
@@ -418,6 +420,16 @@ describe('normalizeFilename', () => {
         const path = '/dev/filename.JSON';
         expect(validateAndNormalizeFilename(path)).toEqual(path);
     });
+    it('throws an error when empty filename is provided', () => {
+        expect(() => validateAndNormalizeFilename('')).toThrow(
+            ERROR_MESSAGES.MISSING_FILENAME,
+        );
+    });
+    it('throws an error when an extension other than .json is provided', () => {
+        expect(() => validateAndNormalizeFilename('x.txt')).toThrow(
+            ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
+        );
+    });
 });
 
 describe('readFileIfExists', () => {
@@ -444,6 +456,13 @@ describe('readFileIfExists', () => {
     it('returns null if file does not exist', () => {
         existsSyncSpy.mockReturnValueOnce(false);
         expect(readFileIfExists('filename')).toBeNull();
+    });
+    it('throws custom error if file content cannot be parsed', () => {
+        existsSyncSpy.mockReturnValueOnce(true);
+        readFileSyncSpy.mockReturnValueOnce(undefined);
+        expect(() => readFileIfExists('filename')).toThrow(
+            ERROR_MESSAGES.FILE_READ.replace(':filePath', 'filename'),
+        );
     });
 });
 
@@ -483,5 +502,35 @@ describe('deepCompareKeys', () => {
                 children: undefined,
             }),
         ).toEqual(false);
+    });
+});
+
+describe('validatePath', () => {
+    it('throws an error when path is an empty string', () => {
+        expect(() => validateFilePath('')).toThrow(
+            ERROR_MESSAGES.MISSING_DEFAULT_PATH,
+        );
+    });
+    it('throws an error when path does not exist', () => {
+        expect(() => validateFilePath('./imaginary/path')).toThrow(
+            ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
+                ':filePath',
+                path.resolve(path.normalize('./imaginary/path')),
+            ),
+        );
+    });
+    it('throws an error when lacking file permissions', () => {
+        const existsSyncSpy = jest.spyOn(fs, 'existsSync');
+        const accessSyncSpy = jest.spyOn(fs, 'accessSync');
+        existsSyncSpy.mockReturnValueOnce(true);
+        accessSyncSpy.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        expect(() => validateFilePath('./imaginary/path')).toThrow(
+            ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
+                ':filePath',
+                path.resolve(path.normalize('./imaginary/path')),
+            ),
+        );
     });
 });

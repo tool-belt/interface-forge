@@ -5,7 +5,7 @@ import {
     haveSameKeyPaths,
     readFileIfExists,
     validateAndNormalizeFilename,
-    validatePath,
+    validateFilePath,
 } from './utils/file';
 import fs from 'fs';
 import path from 'path';
@@ -18,11 +18,8 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         defaults: FactoryOptions<T>,
         factory?: FactoryFunction<T>,
     ) {
-        if (!filePath) {
-            throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
-        }
         super(defaults, factory);
-        this.filePath = validatePath(filePath);
+        this.filePath = validateFilePath(filePath);
     }
 
     private getOrCreateFixture(fileName: string, build: T | T[]): T | T[] {

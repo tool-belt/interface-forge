@@ -4,7 +4,10 @@ import { isRecord } from './guards';
 import fs from 'fs';
 import path from 'path';
 
-export function validatePath(filePath: string): string {
+export function validateFilePath(filePath: string): string {
+    if (!filePath) {
+        throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
+    }
     const resolvedPath = path.resolve(path.normalize(filePath));
     if (!fs.existsSync(resolvedPath)) {
         throw new Error(
@@ -28,10 +31,10 @@ export function validatePath(filePath: string): string {
 }
 
 export function validateAndNormalizeFilename(fileName: string): string {
-    const extension = path.extname(fileName);
     if (!fileName) {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
+    const extension = path.extname(fileName);
     if (!extension) {
         fileName = fileName + '.json';
     } else if (extension.toLowerCase() !== '.json') {
