@@ -1,35 +1,36 @@
 import { ERROR_MESSAGES } from './constants';
 import { FactoryBuildOptions, FactoryFunction, FactoryOptions } from './types';
 import { TypeFactory } from './type-factory';
-import { haveSameKeyPaths, readFileIfExists } from './utils/file';
-import { normalizeFilename } from './utils/options';
+import {
+    haveSameKeyPaths,
+    readFileIfExists,
+    validateAndNormalizeFilename,
+    validatePath,
+} from './utils/file';
 import fs from 'fs';
 import path from 'path';
 
 export class FixtureFactory<T> extends TypeFactory<T> {
-    private readonly defaultPath: string;
+    private readonly filePath: string;
 
     constructor(
-        defaultPath: string,
+        filePath: string,
         defaults: FactoryOptions<T>,
         factory?: FactoryFunction<T>,
     ) {
-        if (!defaultPath) {
+        if (!filePath) {
             throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
         }
         super(defaults, factory);
-        this.defaultPath = defaultPath + '/';
+        this.filePath = validatePath(filePath);
     }
 
     private getOrCreateFixture(fileName: string, build: T | T[]): T | T[] {
+        const filePath = path.join(
+            this.filePath,
+            validateAndNormalizeFilename(fileName),
+        );
         try {
-            if (!fs.existsSync(this.defaultPath)) {
-                fs.mkdirSync(this.defaultPath);
-            }
-            const filePath = path.join(
-                this.defaultPath,
-                normalizeFilename(fileName),
-            );
             const data = readFileIfExists<T>(filePath);
             if (data && haveSameKeyPaths(build, data)) {
                 return data;
@@ -38,10 +39,7 @@ export class FixtureFactory<T> extends TypeFactory<T> {
             return build;
         } catch (error) {
             throw new Error(
-                ERROR_MESSAGES.FILE_WRITE.replace(
-                    ':json',
-                    JSON.stringify(error),
-                ),
+                ERROR_MESSAGES.FILE_WRITE.replace(':filePath', filePath),
             );
         }
     }

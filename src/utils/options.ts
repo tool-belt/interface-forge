@@ -32,9 +32,3 @@ export function parseOptions<T>(
         undefined,
     ];
 }
-
-export function normalizeFilename(filePath: string): string {
-    return filePath.toLowerCase().includes('.json')
-        ? filePath
-        : filePath + '.json';
-}

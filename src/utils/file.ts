@@ -1,6 +1,49 @@
+import { ERROR_MESSAGES } from '../constants';
 import { getValueFromNestedArray } from './general';
 import { isRecord } from './guards';
 import fs from 'fs';
+import path from 'path';
+
+export function validatePath(filePath: string): string {
+    const resolvedPath = path.resolve(path.normalize(filePath));
+    if (!fs.existsSync(resolvedPath)) {
+        throw new Error(
+            ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
+                ':filePath',
+                resolvedPath,
+            ),
+        );
+    }
+    try {
+        fs.accessSync(resolvedPath, fs.constants.R_OK | fs.constants.W_OK);
+    } catch {
+        throw new Error(
+            ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
+                ':filePath',
+                resolvedPath,
+            ),
+        );
+    }
+    return resolvedPath;
+}
+
+export function validateAndNormalizeFilename(fileName: string): string {
+    const extension = path.extname(fileName);
+    if (!fileName) {
+        throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
+    }
+    if (!extension) {
+        fileName = fileName + '.json';
+    } else if (extension !== '.json') {
+        throw new Error(
+            ERROR_MESSAGES.INVALID_EXTENSION.replace(
+                ':fileExtension',
+                extension,
+            ),
+        );
+    }
+    return fileName;
+}
 
 export function readFileIfExists<T>(filename: string): T | null {
     if (fs.existsSync(filename))

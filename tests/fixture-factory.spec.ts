@@ -22,8 +22,7 @@ describe('FixtureFactory', () => {
 
         const factory = new FixtureFactory<ComplexObject>(
             '/dev/path/',
-            () => defaults,
-            undefined,
+            defaults,
         );
         await factory.save('testfile');
         expect(mockWriteFileSync).toHaveBeenCalledWith(
