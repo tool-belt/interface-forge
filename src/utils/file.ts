@@ -45,9 +45,19 @@ export function validateAndNormalizeFilename(fileName: string): string {
     return fileName;
 }
 
-export function readFileIfExists<T>(filename: string): T | null {
-    if (fs.existsSync(filename))
-        return JSON.parse(fs.readFileSync(filename, 'utf-8')) as T;
+export function readFileIfExists<T>(filePath: string): T | null {
+    if (fs.existsSync(filePath)) {
+        try {
+            const data = fs.readFileSync(filePath, {
+                encoding: 'utf-8',
+            });
+            return JSON.parse(data) as T;
+        } catch {
+            throw new Error(
+                ERROR_MESSAGES.FILE_READ.replace(':filePath', filePath),
+            );
+        }
+    }
     return null;
 }
 

@@ -30,14 +30,14 @@ export class FixtureFactory<T> extends TypeFactory<T> {
             this.filePath,
             validateAndNormalizeFilename(fileName),
         );
+        const data = readFileIfExists<T>(filePath);
         try {
-            const data = readFileIfExists<T>(filePath);
             if (data && haveSameKeyPaths(build, data)) {
                 return data;
             }
             fs.writeFileSync(filePath, JSON.stringify(build));
             return build;
-        } catch (error) {
+        } catch {
             throw new Error(
                 ERROR_MESSAGES.FILE_WRITE.replace(':filePath', filePath),
             );

@@ -1,5 +1,6 @@
 export enum ERROR_MESSAGES {
     FILE_WRITE = '[interface-forge] error writing file :filePath',
+    FILE_READ = '[interface-forge] error reading file :filePath',
     INSUFFICIENT_PERMISSIONS = '[interface-forge] insufficient user permissions for given path :filePath',
     INVALID_EXTENSION = '[interface-forge] file extension is not supported :fileExtension',
     MISSING_BUILD_ARGS = '[interface-forge] missing required build arguments: :missingArgs',
