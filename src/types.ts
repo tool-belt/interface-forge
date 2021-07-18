@@ -31,8 +31,3 @@ export type FactoryBuildOptions<T> =
     | FactoryOptions<Partial<T>>;
 
 export type UseOptions<T> = { batch?: number } & FactoryBuildOptions<T>;
-
-export interface FixtureStatic<T> {
-    data: T;
-    structure: string[];
-}

@@ -1,223 +1,183 @@
+import * as fileUtils from '../src/utils/file';
 import { ComplexObject } from './test-types';
-import { FixtureFactory, FixtureStatic } from '../src';
+import { ERROR_MESSAGES, FixtureFactory } from '../src';
 import { defaults } from './utils';
-import { mapKeyPaths } from '../src//utils';
 import fs from 'fs';
 
-const originalExistsSync = fs.existsSync;
-const originalReadFileSync = fs.readFileSync;
-const originalWriteFile = fs.writeFile;
-const originalMkdirSync = fs.mkdirSync;
-const mockExistsSync = jest.fn();
-const mockWriteFile = jest.fn();
-const mockMkdirSync = jest.fn();
-const mockReadFileSync = jest.fn();
+describe('FixtureFactory', () => {
+    const devPath = '/dev/path';
+    let existsSyncSpy: jest.SpyInstance;
+    let writeFileSyncSpy: jest.SpyInstance;
+    let readFileIfExistsSpy: jest.SpyInstance;
+    let accessSyncSpy: jest.SpyInstance;
 
-function setUp() {
-    fs.existsSync = mockExistsSync;
-    fs.readFileSync = mockReadFileSync;
-    // @ts-ignore
-    fs.writeFile = mockWriteFile;
-    fs.mkdirSync = mockMkdirSync;
-}
-
-function tearDown() {
-    mockExistsSync.mockReset();
-    mockReadFileSync.mockReset();
-    mockWriteFile.mockReset();
-    mockMkdirSync.mockReset();
-    fs.existsSync = originalExistsSync;
-    fs.readFileSync = originalReadFileSync;
-    fs.writeFile = originalWriteFile;
-    fs.mkdirSync = originalMkdirSync;
-}
-
-describe('TypeFactory', () => {
     beforeEach(() => {
-        setUp();
+        readFileIfExistsSpy = jest.spyOn(fileUtils, 'readFileIfExists');
+        readFileIfExistsSpy.mockImplementation(() => defaults);
+
+        accessSyncSpy = jest.spyOn(fs, 'accessSync');
+        existsSyncSpy = jest.spyOn(fs, 'existsSync');
+        writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+        writeFileSyncSpy.mockImplementation(() => undefined);
     });
+
     afterEach(() => {
-        tearDown();
+        jest.clearAllMocks();
     });
-    it('uses default path', async () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(false);
 
-        const factory = new FixtureFactory<ComplexObject>(
-            '/dev/path/',
-            () => defaults,
-            undefined,
-        );
-        await factory.static.build('testfile');
-        expect(mockWriteFile).toHaveBeenCalledWith(
-            '/dev/path/testfile.json',
-            '{"data":{"name":"testObject","value":null},"structure":[".name",".value"]}',
-            expect.any(Function),
-        );
-    });
-    it('creates default path, if it does not exist', async () => {
-        mockExistsSync.mockReturnValue(false);
+    describe('constructor', () => {
+        it('uses default path', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
 
-        const factory = new FixtureFactory<ComplexObject>(
-            '/dev/path/',
-            () => defaults,
-            undefined,
-        );
-        await factory.static.build('testfile');
-        expect(mockMkdirSync).toHaveBeenCalled();
+            const factory = new FixtureFactory<ComplexObject>(
+                devPath,
+                defaults,
+            );
+            await factory.save('testfile');
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(
+                '/dev/path/testfile.json',
+                JSON.stringify(defaults),
+            );
+        });
+        it('throws error if specified path does not exist', () => {
+            existsSyncSpy.mockReturnValue(false);
+            expect(
+                () => new FixtureFactory<ComplexObject>(devPath, defaults),
+            ).toThrow(
+                ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
+                    ':filePath',
+                    devPath,
+                ),
+            );
+        });
+        it('throws error if no file read/write permissions for specified path', () => {
+            existsSyncSpy.mockReturnValue(true);
+            accessSyncSpy.mockImplementation(() => {
+                throw new Error();
+            });
+            expect(
+                () => new FixtureFactory<ComplexObject>(devPath, defaults),
+            ).toThrow(
+                ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
+                    ':filePath',
+                    devPath,
+                ),
+            );
+        });
     });
-});
+    describe('.save', () => {
+        it('returns old contents if file exists', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
 
-describe('.static.build', () => {
-    beforeEach(() => {
-        setUp();
-    });
-    afterEach(() => {
-        tearDown();
-    });
-    it('returns old contents if file exists', async () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(true);
-        const save: FixtureStatic<ComplexObject> = {
-            data: defaults,
-            structure: mapKeyPaths(defaults),
-        };
-        const json = JSON.stringify(save);
-        mockReadFileSync.mockReturnValueOnce(json);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                name: 'differentString',
+            });
+            const result = await factory.save('testfile');
+            expect(existsSyncSpy).toHaveBeenCalled();
+            expect(result).toEqual(defaults);
+        });
+        it('returns new contents if file did not exist', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            name: 'differentString',
-        }));
-        const result = await factory.static.build('testfile');
-        expect(mockExistsSync).toHaveBeenCalled();
-        expect(result).toEqual(defaults);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                value: 99,
+            });
+            const result = await factory.save('testfile');
+            expect(writeFileSyncSpy).toHaveBeenCalled();
+            expect(result.value).toEqual(99);
+        });
     });
-    it('returns new contents if file did not exist', async () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(false);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            value: 99,
-        }));
-        const result = await factory.static.build('testfile');
-        expect(mockWriteFile).toHaveBeenCalled();
-        expect(result.value).toEqual(99);
-    });
-});
+    describe('.saveSync', () => {
+        it('returns old contents if file exists', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
 
-describe('.static.buildSync', () => {
-    beforeEach(() => {
-        setUp();
-    });
-    afterEach(() => {
-        tearDown();
-    });
-    it('returns old contents if file exists', () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(true);
-        const save: FixtureStatic<ComplexObject> = {
-            data: defaults,
-            structure: mapKeyPaths(defaults),
-        };
-        const json = JSON.stringify(save);
-        mockReadFileSync.mockReturnValueOnce(json);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                name: 'differentString',
+            });
+            const result = factory.saveSync('testfile');
+            expect(existsSyncSpy).toHaveBeenCalled();
+            expect(result).toEqual(defaults);
+        });
+        it('returns new contents if file did not exist', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            name: 'differentString',
-        }));
-        const result = factory.static.buildSync('testfile');
-        expect(mockExistsSync).toHaveBeenCalled();
-        expect(result).toEqual(defaults);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                value: 99,
+            });
+            const result = factory.saveSync('testfile');
+            expect(writeFileSyncSpy).toHaveBeenCalled();
+            expect(result.value).toEqual(99);
+        });
     });
-    it('returns new contents if file did not exist', () => {
-        mockExistsSync.mockReturnValueOnce(false);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            value: 99,
-        }));
-        const result = factory.static.buildSync('testfile');
-        expect(mockWriteFile).toHaveBeenCalled();
-        expect(result.value).toEqual(99);
-    });
-});
+    describe('.saveBatch', () => {
+        it('returns old contents if file exists', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValue([defaults]);
 
-describe('.static.batch', () => {
-    beforeEach(() => {
-        setUp();
-    });
-    afterEach(() => {
-        tearDown();
-    });
-    it('returns old contents if file exists', async () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(true);
-        const save: FixtureStatic<ComplexObject[]> = {
-            data: [defaults],
-            structure: mapKeyPaths(defaults),
-        };
-        const json = JSON.stringify(save);
-        mockReadFileSync.mockReturnValueOnce(json);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                name: 'differentString',
+            });
+            const result = await factory.saveBatch('testfile', 1);
+            expect(existsSyncSpy).toHaveBeenCalled();
+            expect(result).toEqual([defaults]);
+        });
+        it('returns new contents if file did not exist', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            name: 'differentString',
-        }));
-        const result = await factory.static.batch('testfile', 1);
-        expect(mockExistsSync).toHaveBeenCalled();
-        expect(result).toEqual([defaults]);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                value: 99,
+            });
+            const result = await factory.saveBatch('testfile', 1);
+            expect(writeFileSyncSpy).toHaveBeenCalled();
+            expect(result[0].value).toEqual(99);
+        });
     });
-    it('returns new contents if file did not exist', async () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(false);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            value: 99,
-        }));
-        const result = await factory.static.batch('testfile', 1);
-        expect(mockWriteFile).toHaveBeenCalled();
-        expect(result[0].value).toEqual(99);
-    });
-});
+    describe('.saveBatchSync', () => {
+        it('returns old contents if file exists', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce([defaults]);
 
-describe('.static.batchSync', () => {
-    beforeEach(() => {
-        setUp();
-    });
-    afterEach(() => {
-        tearDown();
-    });
-    it('returns old contents if file exists', () => {
-        mockExistsSync.mockReturnValueOnce(true);
-        mockExistsSync.mockReturnValueOnce(true);
-        const save: FixtureStatic<ComplexObject[]> = {
-            data: [defaults],
-            structure: mapKeyPaths(defaults),
-        };
-        const json = JSON.stringify(save);
-        mockReadFileSync.mockReturnValueOnce(json);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                name: 'differentString',
+            });
+            const result = factory.saveBatchSync('testfile', 1);
+            expect(existsSyncSpy).toHaveBeenCalled();
+            expect(result).toEqual([defaults]);
+        });
+        it('returns new contents if file did not exist', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            accessSyncSpy.mockReturnValueOnce(undefined);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
 
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            name: 'differentString',
-        }));
-        const result = factory.static.batchSync('testfile', 1);
-        expect(mockExistsSync).toHaveBeenCalled();
-        expect(result).toEqual([defaults]);
-    });
-    it('returns new contents if file did not exist', () => {
-        mockExistsSync.mockReturnValueOnce(false);
-
-        const factory = new FixtureFactory<ComplexObject>(__dirname, () => ({
-            ...defaults,
-            value: 99,
-        }));
-        const result = factory.static.batchSync('testfile', 1);
-        expect(mockWriteFile).toHaveBeenCalled();
-        expect(result[0].value).toEqual(99);
+            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+                ...defaults,
+                value: 99,
+            });
+            const result = factory.saveBatchSync('testfile', 1);
+            expect(writeFileSyncSpy).toHaveBeenCalled();
+            expect(result[0].value).toEqual(99);
+        });
     });
 });
