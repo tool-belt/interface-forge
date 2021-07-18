@@ -41,17 +41,20 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         }
     }
 
-    async save(fileName: string, options?: FactoryBuildOptions<T>): Promise<T> {
+    async fixture(
+        fileName: string,
+        options?: FactoryBuildOptions<T>,
+    ): Promise<T> {
         const instance = await this.build(options);
         return this.getOrCreateFixture(fileName, instance) as T;
     }
 
-    saveSync(fileName: string, options?: FactoryBuildOptions<T>): T {
+    fixtureSync(fileName: string, options?: FactoryBuildOptions<T>): T {
         const instance = this.buildSync(options);
         return this.getOrCreateFixture(fileName, instance) as T;
     }
 
-    async saveBatch(
+    async fixtureBatch(
         fileName: string,
         size: number,
         options?: FactoryBuildOptions<T>,
@@ -60,7 +63,7 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         return this.getOrCreateFixture(fileName, batch) as T[];
     }
 
-    saveBatchSync(
+    fixtureBatchSync(
         fileName: string,
         size: number,
         options?: FactoryBuildOptions<T>,

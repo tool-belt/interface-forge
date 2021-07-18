@@ -35,7 +35,7 @@ describe('FixtureFactory', () => {
                 devPath,
                 defaults,
             );
-            await factory.save('testfile');
+            await factory.fixture('testfile');
             expect(writeFileSyncSpy).toHaveBeenCalledWith(
                 '/dev/path/testfile.json',
                 JSON.stringify(defaults),
@@ -79,7 +79,7 @@ describe('FixtureFactory', () => {
                 __dirname,
                 defaults,
             );
-            expect(() => factory.saveSync('testfile')).toThrow(
+            expect(() => factory.fixtureSync('testfile')).toThrow(
                 ERROR_MESSAGES.FILE_WRITE.replace(':filePath', __dirname),
             );
         });
@@ -93,7 +93,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = await factory.save('testfile');
+            const result = await factory.fixture('testfile');
             expect(existsSyncSpy).toHaveBeenCalled();
             expect(result).toEqual(defaults);
         });
@@ -106,7 +106,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = await factory.save('testfile');
+            const result = await factory.fixture('testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result.value).toEqual(99);
         });
@@ -121,7 +121,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = factory.saveSync('testfile');
+            const result = factory.fixtureSync('testfile');
             expect(existsSyncSpy).toHaveBeenCalled();
             expect(result).toEqual(defaults);
         });
@@ -134,7 +134,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = factory.saveSync('testfile');
+            const result = factory.fixtureSync('testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result.value).toEqual(99);
         });
@@ -150,7 +150,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = await factory.saveBatch('testfile', 1);
+            const result = await factory.fixtureBatch('testfile', 1);
             expect(existsSyncSpy).toHaveBeenCalled();
             expect(result).toEqual([defaults]);
         });
@@ -163,7 +163,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = await factory.saveBatch('testfile', 1);
+            const result = await factory.fixtureBatch('testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result[0].value).toEqual(99);
         });
@@ -179,7 +179,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = factory.saveBatchSync('testfile', 1);
+            const result = factory.fixtureBatchSync('testfile', 1);
             expect(existsSyncSpy).toHaveBeenCalled();
             expect(result).toEqual([defaults]);
         });
@@ -192,7 +192,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = factory.saveBatchSync('testfile', 1);
+            const result = factory.fixtureBatchSync('testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result[0].value).toEqual(99);
         });
