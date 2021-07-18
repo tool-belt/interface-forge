@@ -34,7 +34,7 @@ export function validateAndNormalizeFilename(fileName: string): string {
     }
     if (!extension) {
         fileName = fileName + '.json';
-    } else if (extension !== '.json') {
+    } else if (extension.toLowerCase() !== '.json') {
         throw new Error(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(
                 ':fileExtension',

@@ -5,14 +5,15 @@ import {
     haveSameKeyPaths,
     mapKeyPaths,
     readFileIfExists,
+    validateAndNormalizeFilename,
 } from '../src/utils/file';
 import { isPromise, isRecord } from '../src/utils/guards';
-import { normalizeFilename, parseOptions } from '../src/utils/options';
 import {
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
     validateFactorySchema,
 } from '../src/utils/schema';
+import { parseOptions } from '../src/utils/options';
 import { throwIfPromise } from '../src/utils/general';
 import fs from 'fs';
 
@@ -410,11 +411,11 @@ describe('parseOptions', () => {
     describe('normalizeFilename', () => {
         it('appends missing .json extension, if none provided', () => {
             const path = '/dev/filename';
-            expect(normalizeFilename(path)).toEqual(path + '.json');
+            expect(validateAndNormalizeFilename(path)).toEqual(path + '.json');
         });
         it('does not append .json extension, if provided', () => {
             const path = '/dev/filename.JSON';
-            expect(normalizeFilename(path)).toEqual(path);
+            expect(validateAndNormalizeFilename(path)).toEqual(path);
         });
     });
 
