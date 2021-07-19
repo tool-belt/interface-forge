@@ -8,28 +8,6 @@ export function validateAndNormalizeFilename(filePath: string): string {
     if (!filePath) {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
-    const resolvedPath = path.resolve(path.normalize(filePath));
-    const basePath = path.extname(resolvedPath)
-        ? path.parse(resolvedPath).dir
-        : resolvedPath;
-    if (!fs.existsSync(basePath)) {
-        throw new Error(
-            ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
-                ':filePath',
-                resolvedPath,
-            ),
-        );
-    }
-    try {
-        fs.accessSync(basePath, fs.constants.R_OK | fs.constants.W_OK);
-    } catch {
-        throw new Error(
-            ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
-                ':filePath',
-                resolvedPath,
-            ),
-        );
-    }
     const extension = path.extname(filePath);
     if (!extension) {
         filePath = filePath + '.json';

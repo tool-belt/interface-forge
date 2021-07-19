@@ -293,27 +293,42 @@ async overrides / factory function to the method, an informative error will be t
 
 ### Creating and Using Fixtures
 
-To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of your factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing).
+To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of a factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing). The methods' naming corresponds to the respective build method: `.fixture`, `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
 
-The FixtureFactory's methods require a file name or a file path as a (first) parameter and their naming corresponds to the respective build method: `.fixture` `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
+The FixtureFactory's methods require a file name (or file path) as the first parameter. Per default this file name will be appended to the path from where the method is executed, i.e. if you are running `npm run test` from the project root directory, the file name will be appended to the project root directory. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead.
 
 ```typescript
 // factories.ts
 import { FixtureFactory } from 'interface-forge';
 import { User } from './types';
 
-const UserFactory = new FixtureFactory<User>({
-    // ...
-});
+const UserFactory = new FixtureFactory<User>(
+    {
+        // ...
+    },
+);
+
+const ProfileFactory = new FixtureFactory<Profile>(
+    {
+        // ...
+    },
+    undefined,
+    // path.join() and/or path.resolve() are recommended
+    path.join(__dirname, '__fixtures__')
+);
 
 describe('User', () => {
     it('matches snapshot', async () => {
         // compares stored data to a new build
-        // will be saved to: ${cwd}/users.json
+        // will be saved to: ${projectRoot}/users.json
         const users = await UserFactory.fixtureBatch('users', 3);
+
         // if the comparison fails, a new fixture will have been saved
         // so the snapshot should (and will) also fail
         expect(users).toMatchSnapshot();
+
+        // will be saved to: ${cwd}/__fixtures__/profile.json
+        const profile = ProfileFactory.fixtureSync('profile');
     });
     // ...
 });
@@ -349,7 +364,7 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-When building and instance of UserFactory, the nested UserProfileFactory's will be built. The decision whether to use
+When building an instance of UserFactory, the nested UserProfileFactory's will be built. The decision whether to use
 the async or sync build methods depends on what method was called on the containing factory. Thus if the async
 UserFactory.build()
 is called, then then async UserProfileFactory.build() will be called in the nested factory etc.

@@ -74,3 +74,8 @@
 [1.3.2]
 
 -   fixed validateAndNormalizeFilename
+
+[1.3.3]
+
+-   added less strict file path validation
+-   reintroduced FixtureFactory default path

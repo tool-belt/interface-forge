@@ -16,7 +16,6 @@ import {
 import { parseOptions } from '../src/utils/options';
 import { throwIfPromise } from '../src/utils/general';
 import fs from 'fs';
-import path from 'path';
 
 describe('isRecord', () => {
     it('returns true for records and false for non-records', () => {
@@ -491,32 +490,14 @@ describe('validateAndNormalizeFilename', () => {
 
     it('correctly detects a file name at the end of the file path', () => {
         existsSyncSpy.mockReturnValueOnce(true);
-        validateAndNormalizeFilename('/imaginary/path/name.json');
-        expect(existsSyncSpy).toHaveBeenCalledWith('/imaginary/path');
+        expect(
+            validateAndNormalizeFilename('/imaginary/path/name.json'),
+        ).toEqual('/imaginary/path/name.json');
     });
     it('correctly detects a file path without a file name', () => {
         existsSyncSpy.mockReturnValueOnce(true);
-        validateAndNormalizeFilename('/imaginary/path/name/');
-        expect(existsSyncSpy).toHaveBeenCalledWith('/imaginary/path/name');
-    });
-    it('throws an error if path does not exist', () => {
-        existsSyncSpy.mockReturnValueOnce(false);
-        expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
-            ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
-                ':filePath',
-                path.resolve(path.normalize('./imaginary/path')),
-            ),
-        );
-    });
-    it('throws an error if lacking file permissions', () => {
-        accessSyncSpy.mockImplementationOnce(() => {
-            throw new Error();
-        });
-        expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
-            ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
-                ':filePath',
-                path.resolve(path.normalize('./imaginary/path')),
-            ),
+        expect(validateAndNormalizeFilename('/imaginary/path/name')).toEqual(
+            '/imaginary/path/name.json',
         );
     });
     it('appends missing .json extension, if none provided', () => {

@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from './constants';
-import { FactoryBuildOptions } from './types';
+import { FactoryBuildOptions, FactoryFunction, FactoryOptions } from './types';
 import { TypeFactory } from './type-factory';
 import {
     haveSameKeyPaths,
@@ -7,10 +7,25 @@ import {
     validateAndNormalizeFilename,
 } from './utils/file';
 import fs from 'fs';
+import path from 'path';
 
 export class FixtureFactory<T> extends TypeFactory<T> {
+    private defaultPath: string | undefined;
+
+    constructor(
+        defaults: FactoryOptions<T>,
+        factory?: FactoryFunction<T>,
+        defaultPath?: string,
+    ) {
+        super(defaults, factory);
+        this.defaultPath = defaultPath;
+    }
+
     private getOrCreateFixture(filePath: string, build: T | T[]): T | T[] {
-        filePath = validateAndNormalizeFilename(filePath);
+        filePath = this.defaultPath
+            ? path.join(this.defaultPath, filePath)
+            : filePath;
+        filePath = validateAndNormalizeFilename(path.join(filePath));
         const data = readFileIfExists<T>(filePath);
         try {
             if (data && haveSameKeyPaths(build, data)) {
@@ -18,9 +33,12 @@ export class FixtureFactory<T> extends TypeFactory<T> {
             }
             fs.writeFileSync(filePath, JSON.stringify(build));
             return build;
-        } catch {
+        } catch (error) {
             throw new Error(
-                ERROR_MESSAGES.FILE_WRITE.replace(':filePath', filePath),
+                ERROR_MESSAGES.FILE_WRITE.replace(
+                    ':filePath',
+                    filePath,
+                ).replace(':fileError', ': ' + JSON.stringify(error)),
             );
         }
     }
