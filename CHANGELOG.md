@@ -70,3 +70,7 @@
 [1.3.1]
 
 -   removed file path from FixtureFactory constructor
+
+[1.3.2]
+
+-   fixed validateAndNormalizeFilename

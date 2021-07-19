@@ -9,7 +9,10 @@ export function validateAndNormalizeFilename(filePath: string): string {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
     const resolvedPath = path.resolve(path.normalize(filePath));
-    if (!fs.existsSync(resolvedPath)) {
+    const basePath = path.extname(resolvedPath)
+        ? path.parse(resolvedPath).dir
+        : resolvedPath;
+    if (!fs.existsSync(basePath)) {
         throw new Error(
             ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
                 ':filePath',
@@ -18,7 +21,7 @@ export function validateAndNormalizeFilename(filePath: string): string {
         );
     }
     try {
-        fs.accessSync(resolvedPath, fs.constants.R_OK | fs.constants.W_OK);
+        fs.accessSync(basePath, fs.constants.R_OK | fs.constants.W_OK);
     } catch {
         throw new Error(
             ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
