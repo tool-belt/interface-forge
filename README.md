@@ -302,7 +302,6 @@ The FixtureFactory's method require a file name or a file path as a (first) para
 import { FixtureFactory } from 'interface-forge';
 import { User } from './types';
 
-// resolves to :${current working directory}/fixtures}
 const UserFactory = new FixtureFactory<User>({
     // ...
 });
