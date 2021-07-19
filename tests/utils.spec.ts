@@ -494,6 +494,11 @@ describe('validateAndNormalizeFilename', () => {
         validateAndNormalizeFilename('/imaginary/path/name.json');
         expect(existsSyncSpy).toHaveBeenCalledWith('/imaginary/path');
     });
+    it('correctly detects a file path without a file name', () => {
+        existsSyncSpy.mockReturnValueOnce(true);
+        validateAndNormalizeFilename('/imaginary/path/name/');
+        expect(existsSyncSpy).toHaveBeenCalledWith('/imaginary/path/name');
+    });
     it('throws an error if path does not exist', () => {
         existsSyncSpy.mockReturnValueOnce(false);
         expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
