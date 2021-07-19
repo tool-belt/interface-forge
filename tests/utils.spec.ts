@@ -489,7 +489,12 @@ describe('validateAndNormalizeFilename', () => {
     existsSyncSpy.mockImplementation(() => true);
     accessSyncSpy.mockImplementation(() => undefined);
 
-    it('throws an error when path does not exist', () => {
+    it('correctly detects a file name at the end of the file path', () => {
+        existsSyncSpy.mockReturnValueOnce(true);
+        validateAndNormalizeFilename('/imaginary/path/name.json');
+        expect(existsSyncSpy).toHaveBeenCalledWith('/imaginary/path');
+    });
+    it('throws an error if path does not exist', () => {
         existsSyncSpy.mockReturnValueOnce(false);
         expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
             ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
@@ -498,7 +503,7 @@ describe('validateAndNormalizeFilename', () => {
             ),
         );
     });
-    it('throws an error when lacking file permissions', () => {
+    it('throws an error if lacking file permissions', () => {
         accessSyncSpy.mockImplementationOnce(() => {
             throw new Error();
         });
@@ -513,7 +518,7 @@ describe('validateAndNormalizeFilename', () => {
         const path = '/dev/filename';
         expect(validateAndNormalizeFilename(path)).toEqual(path + '.json');
     });
-    it('throws an error when an extension other than .json is provided', () => {
+    it('throws an error if an extension other than .json is provided', () => {
         expect(() => validateAndNormalizeFilename('testfile.txt')).toThrow(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
         );
@@ -522,7 +527,7 @@ describe('validateAndNormalizeFilename', () => {
         const path = '/dev/filename.JSON';
         expect(validateAndNormalizeFilename(path)).toEqual(path);
     });
-    it('throws an error when empty filename is provided', () => {
+    it('throws an error if empty filename is provided', () => {
         expect(() => validateAndNormalizeFilename('')).toThrow(
             ERROR_MESSAGES.MISSING_FILENAME,
         );

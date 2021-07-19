@@ -295,7 +295,7 @@ async overrides / factory function to the method, an informative error will be t
 
 To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of your factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing).
 
-The FixtureFactory's method require a file name or a file path as a (first) parameter and their naming corresponds to the respective build method: `.fixture` `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
+The FixtureFactory's methods require a file name or a file path as a (first) parameter and their naming corresponds to the respective build method: `.fixture` `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
 
 ```typescript
 // factories.ts
