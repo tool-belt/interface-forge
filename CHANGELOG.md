@@ -67,6 +67,6 @@
     -   .fixtureBatch
     -   .fixtureBatchSync
 
-[1.3.0]
+[1.3.1]
 
 -   removed file path from FixtureFactory constructor
