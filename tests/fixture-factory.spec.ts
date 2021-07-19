@@ -5,7 +5,6 @@ import { defaults } from './utils';
 import fs from 'fs';
 
 describe('FixtureFactory', () => {
-    const devPath = '/dev/path';
     let existsSyncSpy: jest.SpyInstance;
     let writeFileSyncSpy: jest.SpyInstance;
     let readFileIfExistsSpy: jest.SpyInstance;
@@ -25,48 +24,6 @@ describe('FixtureFactory', () => {
         jest.clearAllMocks();
     });
 
-    describe('constructor', () => {
-        it('uses default path', async () => {
-            existsSyncSpy.mockReturnValueOnce(true);
-            accessSyncSpy.mockReturnValueOnce(undefined);
-            readFileIfExistsSpy.mockReturnValueOnce(null);
-
-            const factory = new FixtureFactory<ComplexObject>(
-                devPath,
-                defaults,
-            );
-            await factory.fixture('testfile');
-            expect(writeFileSyncSpy).toHaveBeenCalledWith(
-                '/dev/path/testfile.json',
-                JSON.stringify(defaults),
-            );
-        });
-        it('throws error if specified path does not exist', () => {
-            existsSyncSpy.mockReturnValue(false);
-            expect(
-                () => new FixtureFactory<ComplexObject>(devPath, defaults),
-            ).toThrow(
-                ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
-                    ':filePath',
-                    devPath,
-                ),
-            );
-        });
-        it('throws error if no file read/write permissions for specified path', () => {
-            existsSyncSpy.mockReturnValue(true);
-            accessSyncSpy.mockImplementation(() => {
-                throw new Error();
-            });
-            expect(
-                () => new FixtureFactory<ComplexObject>(devPath, defaults),
-            ).toThrow(
-                ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
-                    ':filePath',
-                    devPath,
-                ),
-            );
-        });
-    });
     describe('getOrCreateFixture', () => {
         it('throws an error on file write error', () => {
             existsSyncSpy.mockReturnValueOnce(true);
@@ -75,12 +32,9 @@ describe('FixtureFactory', () => {
             writeFileSyncSpy.mockImplementationOnce(() => {
                 throw new Error('');
             });
-            const factory = new FixtureFactory<ComplexObject>(
-                __dirname,
-                defaults,
-            );
+            const factory = new FixtureFactory<ComplexObject>(defaults);
             expect(() => factory.fixtureSync('testfile')).toThrow(
-                ERROR_MESSAGES.FILE_WRITE.replace(':filePath', __dirname),
+                ERROR_MESSAGES.FILE_WRITE.replace(':filePath', 'testfile.json'),
             );
         });
     });
@@ -89,7 +43,7 @@ describe('FixtureFactory', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             accessSyncSpy.mockReturnValueOnce(undefined);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 name: 'differentString',
             });
@@ -102,7 +56,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValueOnce(null);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 value: 99,
             });
@@ -117,7 +71,7 @@ describe('FixtureFactory', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             accessSyncSpy.mockReturnValueOnce(undefined);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 name: 'differentString',
             });
@@ -130,7 +84,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValueOnce(null);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 value: 99,
             });
@@ -146,7 +100,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValue([defaults]);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 name: 'differentString',
             });
@@ -159,7 +113,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValueOnce(null);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 value: 99,
             });
@@ -175,7 +129,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValueOnce([defaults]);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 name: 'differentString',
             });
@@ -188,7 +142,7 @@ describe('FixtureFactory', () => {
             accessSyncSpy.mockReturnValueOnce(undefined);
             readFileIfExistsSpy.mockReturnValueOnce(null);
 
-            const factory = new FixtureFactory<ComplexObject>(__dirname, {
+            const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 value: 99,
             });
