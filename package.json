@@ -5,6 +5,10 @@
         {
             "name": "Na'aman Hirschfeld",
             "email": "nhirschfeld@gmail.com"
+        },
+        {
+            "name": "Damian Kress",
+            "email": "mail@damiankress.de"
         }
     ],
     "version": "1.3.0",
