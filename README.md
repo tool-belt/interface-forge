@@ -3,29 +3,29 @@
 [![codecov](https://codecov.io/gh/Goldziher/interfaceForge/branch/main/graph/badge.svg?token=1QdttZtggc)](https://codecov.io/gh/Goldziher/interfaceForge)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1fe90a85d374b3d38d9c/maintainability)](https://codeclimate.com/github/Goldziher/interfaceForge/maintainability)
 
-Interface-Forge allows you to gracefully generate mock data using TypeScript.
+Interface-Forge allows you to gracefully generate dynamic mock data and static fixtures in TypeScript.
 
 # Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Basic Example](#basic-example)
-  - [Passing default values](#passing-default-values)
-    - [Note regarding iteration](#note-regarding-iteration)
-  - [Passing a Factory Function](#passing-a-factory-function)
-  - [Building Objects](#building-objects)
-  - [Batch building](#batch-building)
-    - [Note regarding async](#note-regarding-async)
-  - [Saving Objects](#saving-objects)
-- [Factory Schema](#factory-schema)
-  - [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
-  - [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
-  - [Using .use with custom functions](#using-use-with-custom-functions)
-  - [Designating a required build-time argument](#designating-a-required-build-time-argument)
-  - [Using Generators](#using-generators)
-    - [The .iterate method](#the-iterate-method)
-    - [The .sample method](#the-sample-method)
-- [Contributing](#contributing)
+-   [Installation](#installation)
+-   [Usage](#usage)
+    -   [Basic Example](#basic-example)
+    -   [Passing default values](#passing-default-values)
+        -   [Note regarding iteration](#note-regarding-iteration)
+    -   [Passing a Factory Function](#passing-a-factory-function)
+    -   [Building Objects](#building-objects)
+    -   [Batch building](#batch-building)
+        -   [Note regarding async](#note-regarding-async)
+    -   [Creating and Using Fixtures](#creating-and-using-fixtures)
+-   [Factory Schema](#factory-schema)
+    -   [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
+    -   [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
+    -   [Using .use with custom functions](#using-use-with-custom-functions)
+    -   [Designating a required build-time argument](#designating-a-required-build-time-argument)
+    -   [Using Generators](#using-generators)
+        -   [The .iterate method](#the-iterate-method)
+        -   [The .sample method](#the-sample-method)
+-   [Contributing](#contributing)
 
 ## Installation
 
@@ -181,11 +181,11 @@ is that `.build` is async while `.buildSync` is not. You can pass options to the
 object containing key-value pairs that (partially) override the defaults with which the factory was initialized, a
 function or async function returning such overrides, or an object with two optional keys:
 
-- `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
+-   `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
     literal. The values of the object are merged with the defaults using `Object.assign` - hence newer values passed in
     the overrides literally "override" the values stored in the defaults passed through the constructor.
 
-- `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
+-   `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
     constructor, and a factory function is passed as a parameter to `.build`, the function passed as a parameter is used.
 
 ```typescript
@@ -263,8 +263,8 @@ resolving to an array of objects of the given type, and `.batchSync` returns the
 
 Both methods accept two parameters:
 
-- `size`: the number of objects to create - this is a _required parameter_.
-- `options`: the same as for [the regular build methods](#building-objects).
+-   `size`: the number of objects to create - this is a _required parameter_.
+-   `options`: the same as for [the regular build methods](#building-objects).
 
 ```typescript
 describe('User', () => {
@@ -291,7 +291,7 @@ describe('User', () => {
 If you call `.buildSync` or `.batchSync` on a factory that has been initialized with async defaults, or while passing
 async overrides / factory function to the method, an informative error will be thrown.
 
-### Saving Objects
+### Creating and Using Fixtures
 
 To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of your factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing).
 

@@ -2,67 +2,67 @@
 
 ## 1.0.0
 
-- initial release
+-   initial release
 
 [1.0.1]
 
-- updated readme
+-   updated readme
 
 [1.0.2]
 
-- updated iteration logic
-- updated readme
+-   updated iteration logic
+-   updated readme
 
 [1.0.3]
 
-- updated typings
+-   updated typings
 
 ## 1.1.0
 
-- added required build args
+-   added required build args
 
 [1.1.1]
 
-- fixed issue with handling of null values in isOfType helper
+-   fixed issue with handling of null values in isOfType helper
 
 [1.1.2]
 
-- fixed issue with resolving nest schema values
+-   fixed issue with resolving nested schema values
 
 [1.1.3]
 
-- fixed issue with iterating Dates
+-   fixed issue with iterating Dates
 
 [1.1.4]
 
-- fixed issue with iterating Dates
+-   fixed issue with iterating Dates
 
 [1.1.5]
 
-- updated build options
+-   updated build options
 
 [1.1.6]
 
-- fix iteration error
+-   fix iteration error
 
 ## 1.2.0
 
-- added buildSync and batchSync
-- removed .bind and compressed functionality into .use
-- added .sample method
+-   added buildSync and batchSync
+-   removed .bind and compressed functionality into .use
+-   added .sample method
 
 [1.2.1]
 
-- removed counter reset from batch methods
+-   removed counter reset from batch methods
 
 [1.2.2]
 
-- fixed counter issue with async defaults
+-   fixed counter issue with async defaults
 
 ## 1.3.0
 
-- added FixtureFactory
-  - .fixture
-  - .fixtureSync
-  - .fixtureBatch
-  - .fixtureBatchsync
+-   added FixtureFactory
+    -   .fixture
+    -   .fixtureSync
+    -   .fixtureBatch
+    -   .fixtureBatchSync

@@ -15,11 +15,16 @@
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
     "keywords": [
-        "typescript",
         "factory",
-        "mock",
+        "fixture",
         "interface",
-        "testing"
+        "jest",
+        "mocha",
+        "mock data",
+        "mock",
+        "test data",
+        "testing",
+        "typescript"
     ],
     "repository": "https://github.com/Goldziher/interfaceForge",
     "bugs": "https://github.com/Goldziher/interfaceForge/issues",
