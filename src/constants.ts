@@ -4,7 +4,6 @@ export enum ERROR_MESSAGES {
     INSUFFICIENT_PERMISSIONS = '[interface-forge] insufficient user permissions for given path :filePath',
     INVALID_EXTENSION = '[interface-forge] file extension is not supported :fileExtension',
     MISSING_BUILD_ARGS = '[interface-forge] missing required build arguments: :missingArgs',
-    MISSING_DEFAULT_PATH = '[interface-forge] missing default path',
     MISSING_FILENAME = '[interface-forge] missing filename',
     PATH_DOES_NOT_EXIST = '[interface-forge] path does not exist :filePath',
     PROMISE_DEFAULTS = '[interface-forge] buildSync does not support Promise defaults',

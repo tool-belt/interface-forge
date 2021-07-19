@@ -295,7 +295,7 @@ async overrides / factory function to the method, an informative error will be t
 
 To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of your factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing).
 
-The FixtureFactory's constructor requires the path to a directory where the builds should be saved, as a first parameter. Its methods require a file name as a (first) parameter and their naming corresponds to the respective build method: `.fixture` `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
+The FixtureFactory's method require a file name or a file path as a (first) parameter and their naming corresponds to the respective build method: `.fixture` `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
 
 ```typescript
 // factories.ts
@@ -303,14 +303,14 @@ import { FixtureFactory } from 'interface-forge';
 import { User } from './types';
 
 // resolves to :${current working directory}/fixtures}
-const UserFactory = new FixtureFactory<User>(path.join(__dirname, 'fixtures'), {
+const UserFactory = new FixtureFactory<User>({
     // ...
 });
 
 describe('User', () => {
     it('matches snapshot', async () => {
         // compares stored data to a new build
-        // will be saved to: ${cwd}/fixtures/users.json
+        // will be saved to: ${cwd}/users.json
         const users = await UserFactory.fixtureBatch('users', 3);
         // if the comparison fails, a new fixture will have been saved
         // so the snapshot should (and will) also fail

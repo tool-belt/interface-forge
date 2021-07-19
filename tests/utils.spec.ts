@@ -6,7 +6,6 @@ import {
     mapKeyPaths,
     readFileIfExists,
     validateAndNormalizeFilename,
-    validateFilePath,
 } from '../src/utils/file';
 import { isPromise, isRecord } from '../src/utils/guards';
 import {
@@ -411,27 +410,6 @@ describe('parseOptions', () => {
     });
 });
 
-describe('normalizeFilename', () => {
-    it('appends missing .json extension, if none provided', () => {
-        const path = '/dev/filename';
-        expect(validateAndNormalizeFilename(path)).toEqual(path + '.json');
-    });
-    it('does not append .json extension, if provided', () => {
-        const path = '/dev/filename.JSON';
-        expect(validateAndNormalizeFilename(path)).toEqual(path);
-    });
-    it('throws an error when empty filename is provided', () => {
-        expect(() => validateAndNormalizeFilename('')).toThrow(
-            ERROR_MESSAGES.MISSING_FILENAME,
-        );
-    });
-    it('throws an error when an extension other than .json is provided', () => {
-        expect(() => validateAndNormalizeFilename('x.txt')).toThrow(
-            ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
-        );
-    });
-});
-
 describe('readFileIfExists', () => {
     let existsSyncSpy: jest.SpyInstance;
     let readFileSyncSpy: jest.SpyInstance;
@@ -505,14 +483,15 @@ describe('deepCompareKeys', () => {
     });
 });
 
-describe('validatePath', () => {
-    it('throws an error when path is an empty string', () => {
-        expect(() => validateFilePath('')).toThrow(
-            ERROR_MESSAGES.MISSING_DEFAULT_PATH,
-        );
-    });
+describe('validateAndNormalizeFilename', () => {
+    const existsSyncSpy = jest.spyOn(fs, 'existsSync');
+    const accessSyncSpy = jest.spyOn(fs, 'accessSync');
+    existsSyncSpy.mockImplementation(() => true);
+    accessSyncSpy.mockImplementation(() => undefined);
+
     it('throws an error when path does not exist', () => {
-        expect(() => validateFilePath('./imaginary/path')).toThrow(
+        existsSyncSpy.mockReturnValueOnce(false);
+        expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
             ERROR_MESSAGES.PATH_DOES_NOT_EXIST.replace(
                 ':filePath',
                 path.resolve(path.normalize('./imaginary/path')),
@@ -520,17 +499,32 @@ describe('validatePath', () => {
         );
     });
     it('throws an error when lacking file permissions', () => {
-        const existsSyncSpy = jest.spyOn(fs, 'existsSync');
-        const accessSyncSpy = jest.spyOn(fs, 'accessSync');
-        existsSyncSpy.mockReturnValueOnce(true);
         accessSyncSpy.mockImplementationOnce(() => {
             throw new Error();
         });
-        expect(() => validateFilePath('./imaginary/path')).toThrow(
+        expect(() => validateAndNormalizeFilename('./imaginary/path')).toThrow(
             ERROR_MESSAGES.INSUFFICIENT_PERMISSIONS.replace(
                 ':filePath',
                 path.resolve(path.normalize('./imaginary/path')),
             ),
+        );
+    });
+    it('appends missing .json extension, if none provided', () => {
+        const path = '/dev/filename';
+        expect(validateAndNormalizeFilename(path)).toEqual(path + '.json');
+    });
+    it('throws an error when an extension other than .json is provided', () => {
+        expect(() => validateAndNormalizeFilename('testfile.txt')).toThrow(
+            ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
+        );
+    });
+    it('does not append .json extension, if provided', () => {
+        const path = '/dev/filename.JSON';
+        expect(validateAndNormalizeFilename(path)).toEqual(path);
+    });
+    it('throws an error when empty filename is provided', () => {
+        expect(() => validateAndNormalizeFilename('')).toThrow(
+            ERROR_MESSAGES.MISSING_FILENAME,
         );
     });
 });

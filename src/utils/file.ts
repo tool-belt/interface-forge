@@ -4,9 +4,9 @@ import { isRecord } from './guards';
 import fs from 'fs';
 import path from 'path';
 
-export function validateFilePath(filePath: string): string {
+export function validateAndNormalizeFilename(filePath: string): string {
     if (!filePath) {
-        throw new Error(ERROR_MESSAGES.MISSING_DEFAULT_PATH);
+        throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
     const resolvedPath = path.resolve(path.normalize(filePath));
     if (!fs.existsSync(resolvedPath)) {
@@ -27,16 +27,9 @@ export function validateFilePath(filePath: string): string {
             ),
         );
     }
-    return resolvedPath;
-}
-
-export function validateAndNormalizeFilename(fileName: string): string {
-    if (!fileName) {
-        throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
-    }
-    const extension = path.extname(fileName);
+    const extension = path.extname(filePath);
     if (!extension) {
-        fileName = fileName + '.json';
+        filePath = filePath + '.json';
     } else if (extension.toLowerCase() !== '.json') {
         throw new Error(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(
@@ -45,7 +38,7 @@ export function validateAndNormalizeFilename(fileName: string): string {
             ),
         );
     }
-    return fileName;
+    return filePath;
 }
 
 export function readFileIfExists<T>(filePath: string): T | null {
