@@ -483,12 +483,23 @@ describe('deepCompareKeys', () => {
 });
 
 describe('validateAndNormalizeFilename', () => {
-    const existsSyncSpy = jest.spyOn(fs, 'existsSync');
-    const accessSyncSpy = jest.spyOn(fs, 'accessSync');
-    const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
-    existsSyncSpy.mockImplementation(() => true);
-    accessSyncSpy.mockImplementation(() => undefined);
-    mkdirSyncSpy.mockImplementation(() => undefined);
+    let existsSyncSpy: jest.SpyInstance;
+    let accessSyncSpy: jest.SpyInstance;
+    let mkdirSyncSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        existsSyncSpy = jest.spyOn(fs, 'existsSync');
+        accessSyncSpy = jest.spyOn(fs, 'accessSync');
+        mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
+
+        existsSyncSpy.mockImplementation(() => true);
+        accessSyncSpy.mockImplementation(() => undefined);
+        mkdirSyncSpy.mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     it('correctly detects a file name at the end of the file path', () => {
         existsSyncSpy.mockReturnValueOnce(true);
@@ -502,7 +513,7 @@ describe('validateAndNormalizeFilename', () => {
             '/imaginary/path/__fixtures__/name.json',
         );
     });
-    it('appends missing .json extension, if none provided', () => {
+    it('appends .json extension if not provided', () => {
         expect(validateAndNormalizeFilename('/dev/filename')).toEqual(
             '/dev/__fixtures__/filename.json',
         );

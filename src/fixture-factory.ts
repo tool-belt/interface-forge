@@ -24,18 +24,6 @@ export class FixtureFactory<T> extends TypeFactory<T> {
     }
 
     private getOrCreateFixture(filePath: string, build: T | T[]): T | T[] {
-        /**
-         * defaultPath =
-         *  | '/absolute/path/__fixtures__/'
-         *  | '/absolute/path'
-         *  | null
-         * filePath =
-         *  | '/absolute/path/name'
-         *  | 'fileName.json'
-         *  | 'fileName.spec'
-         *  | 'fileName.test'
-         *  | 'fileName'
-         * */
         filePath = this.defaultPath
             ? path.join(this.defaultPath, filePath)
             : filePath;

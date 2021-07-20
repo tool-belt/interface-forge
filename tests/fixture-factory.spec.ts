@@ -71,6 +71,7 @@ describe('FixtureFactory', () => {
     });
     describe('.save', () => {
         it('returns old contents if file exists', async () => {
+            existsSyncSpy.mockReturnValueOnce(true);
             const factory = new FixtureFactory<ComplexObject>({
                 ...defaults,
                 name: 'differentString',
