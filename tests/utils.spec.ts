@@ -485,37 +485,59 @@ describe('deepCompareKeys', () => {
 describe('validateAndNormalizeFilename', () => {
     const existsSyncSpy = jest.spyOn(fs, 'existsSync');
     const accessSyncSpy = jest.spyOn(fs, 'accessSync');
+    const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
     existsSyncSpy.mockImplementation(() => true);
     accessSyncSpy.mockImplementation(() => undefined);
+    mkdirSyncSpy.mockImplementation(() => undefined);
 
     it('correctly detects a file name at the end of the file path', () => {
         existsSyncSpy.mockReturnValueOnce(true);
         expect(
             validateAndNormalizeFilename('/imaginary/path/name.json'),
-        ).toEqual('/imaginary/path/name.json');
+        ).toEqual('/imaginary/path/__fixtures__/name.json');
     });
     it('correctly detects a file path without a file name', () => {
         existsSyncSpy.mockReturnValueOnce(true);
         expect(validateAndNormalizeFilename('/imaginary/path/name')).toEqual(
-            '/imaginary/path/name.json',
+            '/imaginary/path/__fixtures__/name.json',
         );
     });
     it('appends missing .json extension, if none provided', () => {
-        const path = '/dev/filename';
-        expect(validateAndNormalizeFilename(path)).toEqual(path + '.json');
+        expect(validateAndNormalizeFilename('/dev/filename')).toEqual(
+            '/dev/__fixtures__/filename.json',
+        );
     });
     it('throws an error if an extension other than .json is provided', () => {
-        expect(() => validateAndNormalizeFilename('testfile.txt')).toThrow(
+        expect(() => validateAndNormalizeFilename('/testfile.txt')).toThrow(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
         );
     });
     it('does not append .json extension, if provided', () => {
-        const path = '/dev/filename.JSON';
-        expect(validateAndNormalizeFilename(path)).toEqual(path);
+        expect(validateAndNormalizeFilename('/dev/filename.JSON')).toEqual(
+            '/dev/__fixtures__/filename.json',
+        );
     });
     it('throws an error if empty filename is provided', () => {
         expect(() => validateAndNormalizeFilename('')).toThrow(
             ERROR_MESSAGES.MISSING_FILENAME,
+        );
+    });
+    it('throws an error if file path is not absolute', () => {
+        expect(() => validateAndNormalizeFilename('relative/path')).toThrow(
+            ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
+        );
+    });
+    it('throws an error fixture dir cannot be created', () => {
+        mkdirSyncSpy.mockImplementationOnce(() => {
+            throw new Error('');
+        });
+        expect(() =>
+            validateAndNormalizeFilename('/imaginary/path/name'),
+        ).toThrow(
+            ERROR_MESSAGES.DIR_WRITE.replace(
+                ':filePath',
+                '/imaginary/path/__fixtures__/',
+            ).replace(':fileError', ': {}'),
         );
     });
 });

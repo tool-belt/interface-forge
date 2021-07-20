@@ -7,6 +7,7 @@ import fs from 'fs';
 describe('FixtureFactory', () => {
     let existsSyncSpy: jest.SpyInstance;
     let writeFileSyncSpy: jest.SpyInstance;
+    let mkdirSyncSpy: jest.SpyInstance;
     let readFileIfExistsSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -14,7 +15,9 @@ describe('FixtureFactory', () => {
         readFileIfExistsSpy.mockImplementation(() => defaults);
 
         existsSyncSpy = jest.spyOn(fs, 'existsSync');
+        mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
         writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+        mkdirSyncSpy.mockImplementation(() => undefined);
         writeFileSyncSpy.mockImplementation(() => undefined);
     });
 
@@ -30,10 +33,25 @@ describe('FixtureFactory', () => {
                 throw new Error('');
             });
             const factory = new FixtureFactory<ComplexObject>(defaults);
-            expect(() => factory.fixtureSync('testfile')).toThrow(
+            expect(() => factory.fixtureSync('/testfile')).toThrow(
                 ERROR_MESSAGES.FILE_WRITE.replace(
                     ':filePath',
-                    'testfile.json',
+                    '/__fixtures__/testfile.json',
+                ).replace(':fileError', ': {}'),
+            );
+        });
+        it('throws an error if file path is not absolute', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
+            const factory = new FixtureFactory<ComplexObject>(
+                defaults,
+                undefined,
+                'realtive/path/name.json',
+            );
+            expect(() => factory.fixtureSync('/testfile')).toThrow(
+                ERROR_MESSAGES.FILE_WRITE.replace(
+                    ':filePath',
+                    '/__fixtures__/testfile.json',
                 ).replace(':fileError', ': {}'),
             );
         });
@@ -44,9 +62,9 @@ describe('FixtureFactory', () => {
                 undefined,
                 '/default/path',
             );
-            factory.fixtureSync('testfile');
+            factory.fixtureSync('/testfile');
             expect(writeFileSyncSpy).toHaveBeenCalledWith(
-                '/default/path/testfile.json',
+                '/default/path/__fixtures__/testfile.json',
                 expect.any(String),
             );
         });
@@ -57,7 +75,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = await factory.fixture('testfile');
+            const result = await factory.fixture('/testfile');
             expect(result).toEqual(defaults);
         });
         it('returns new contents if file did not exist', async () => {
@@ -68,7 +86,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = await factory.fixture('testfile');
+            const result = await factory.fixture('/testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result.value).toEqual(99);
         });
@@ -80,7 +98,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = factory.fixtureSync('testfile');
+            const result = factory.fixtureSync('/testfile');
             expect(result).toEqual(defaults);
         });
         it('returns new contents if file did not exist', () => {
@@ -91,7 +109,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = factory.fixtureSync('testfile');
+            const result = factory.fixtureSync('/testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result.value).toEqual(99);
         });
@@ -105,7 +123,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = await factory.fixtureBatch('testfile', 1);
+            const result = await factory.fixtureBatch('/testfile', 1);
             expect(result).toEqual([defaults]);
         });
         it('returns new contents if file did not exist', async () => {
@@ -116,7 +134,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = await factory.fixtureBatch('testfile', 1);
+            const result = await factory.fixtureBatch('/testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result[0].value).toEqual(99);
         });
@@ -130,7 +148,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 name: 'differentString',
             });
-            const result = factory.fixtureBatchSync('testfile', 1);
+            const result = factory.fixtureBatchSync('/testfile', 1);
             expect(result).toEqual([defaults]);
         });
         it('returns new contents if file did not exist', () => {
@@ -141,7 +159,7 @@ describe('FixtureFactory', () => {
                 ...defaults,
                 value: 99,
             });
-            const result = factory.fixtureBatchSync('testfile', 1);
+            const result = factory.fixtureBatchSync('/testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
             expect(result[0].value).toEqual(99);
         });
