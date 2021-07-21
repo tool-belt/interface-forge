@@ -7,25 +7,25 @@ Interface-Forge allows you to gracefully generate dynamic mock data and static f
 
 # Table of Contents
 
--   [Installation](#installation)
--   [Usage](#usage)
-    -   [Basic Example](#basic-example)
-    -   [Passing default values](#passing-default-values)
-        -   [Note regarding iteration](#note-regarding-iteration)
-    -   [Passing a Factory Function](#passing-a-factory-function)
-    -   [Building Objects](#building-objects)
-    -   [Batch building](#batch-building)
-        -   [Note regarding async](#note-regarding-async)
-    -   [Creating and Using Fixtures](#creating-and-using-fixtures)
--   [Factory Schema](#factory-schema)
-    -   [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
-    -   [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
-    -   [Using .use with custom functions](#using-use-with-custom-functions)
-    -   [Designating a required build-time argument](#designating-a-required-build-time-argument)
-    -   [Using Generators](#using-generators)
-        -   [The .iterate method](#the-iterate-method)
-        -   [The .sample method](#the-sample-method)
--   [Contributing](#contributing)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Example](#basic-example)
+  - [Passing default values](#passing-default-values)
+    - [Note regarding iteration](#note-regarding-iteration)
+  - [Passing a Factory Function](#passing-a-factory-function)
+  - [Building Objects](#building-objects)
+  - [Batch building](#batch-building)
+    - [Note regarding async](#note-regarding-async)
+  - [Creating and Using Fixtures](#creating-and-using-fixtures)
+- [Factory Schema](#factory-schema)
+  - [Using TypeFactory instances in factory schemas](#using-typefactory-instances-in-factory-schemas)
+  - [Using the .use static method with nested factories](#using-the-use-static-method-with-nested-factories)
+  - [Using .use with custom functions](#using-use-with-custom-functions)
+  - [Designating a required build-time argument](#designating-a-required-build-time-argument)
+  - [Using Generators](#using-generators)
+    - [The .iterate method](#the-iterate-method)
+    - [The .sample method](#the-sample-method)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -181,11 +181,11 @@ is that `.build` is async while `.buildSync` is not. You can pass options to the
 object containing key-value pairs that (partially) override the defaults with which the factory was initialized, a
 function or async function returning such overrides, or an object with two optional keys:
 
--   `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
+- `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
     literal. The values of the object are merged with the defaults using `Object.assign` - hence newer values passed in
     the overrides literally "override" the values stored in the defaults passed through the constructor.
 
--   `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
+- `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
     constructor, and a factory function is passed as a parameter to `.build`, the function passed as a parameter is used.
 
 ```typescript
@@ -263,8 +263,8 @@ resolving to an array of objects of the given type, and `.batchSync` returns the
 
 Both methods accept two parameters:
 
--   `size`: the number of objects to create - this is a _required parameter_.
--   `options`: the same as for [the regular build methods](#building-objects).
+- `size`: the number of objects to create - this is a _required parameter_.
+- `options`: the same as for [the regular build methods](#building-objects).
 
 ```typescript
 describe('User', () => {
@@ -295,40 +295,56 @@ async overrides / factory function to the method, an informative error will be t
 
 To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of a factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing). The methods' naming corresponds to the respective build method: `.fixture`, `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
 
-The FixtureFactory's methods require a file name (or file path) as the first parameter. Per default this file name will be appended to the path from where the method is executed, i.e. if you are running `npm run test` from the project root directory, the file name will be appended to the project root directory. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead.
+The FixtureFactory's methods require a file name (or file path) as the first parameter. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead. Either way the **file path must be absolute** or else interface-forge will throw an error.
 
 ```typescript
-// factories.ts
+// ${projectRoot}/tests/factories.ts
 import { FixtureFactory } from 'interface-forge';
-import { User } from './types';
+import { User, Profile } from './types';
 
+// without default file path
 const UserFactory = new FixtureFactory<User>(
     {
         // ...
     },
 );
 
+describe('User', () => {
+    it('matches snapshot', async () => {
+        // compares stored data to a new build
+        // will be saved to: ${projectRoot}/__fixtures__/users.json
+        const users = await UserFactory.fixtureBatch(
+            // path.join() or path.resolve() are recommended
+            path.join(__dirname, '../users'),
+            3,
+        );
+
+        // if the comparison fails, a new fixture will have been saved
+        // so the snapshot should (and will) also fail
+        expect(users).toMatchSnapshot();
+    });
+    // ...
+});
+
+// with default file path
 const ProfileFactory = new FixtureFactory<Profile>(
     {
         // ...
     },
     undefined,
-    // path.join() and/or path.resolve() are recommended
-    path.join(__dirname, '__fixtures__')
+    // path.join() or path.resolve() are recommended
+    path.resolve(__dirname),
 );
 
-describe('User', () => {
+describe('Profile', () => {
     it('matches snapshot', async () => {
         // compares stored data to a new build
-        // will be saved to: ${projectRoot}/users.json
-        const users = await UserFactory.fixtureBatch('users', 3);
+        // will be saved to: ${projectRoot}/tests/__fixtures__/profile.json
+        const profile = ProfileFactory.fixtureSync('profile');
 
         // if the comparison fails, a new fixture will have been saved
         // so the snapshot should (and will) also fail
-        expect(users).toMatchSnapshot();
-
-        // will be saved to: ${cwd}/__fixtures__/profile.json
-        const profile = ProfileFactory.fixtureSync('profile');
+        expect(profile).toMatchSnapshot();
     });
     // ...
 });
