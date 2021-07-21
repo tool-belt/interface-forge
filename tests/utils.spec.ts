@@ -521,6 +521,7 @@ describe('validateAndNormalizeFilename', () => {
             );
         });
         it('an error fixture dir cannot be created', () => {
+            existsSyncSpy.mockImplementationOnce(() => false);
             mkdirSyncSpy.mockImplementationOnce(() => {
                 throw new Error('');
             });
@@ -536,6 +537,18 @@ describe('validateAndNormalizeFilename', () => {
     });
 
     describe('correctly', () => {
+        it('creates __fixtures__ dir if it does not exist', () => {
+            existsSyncSpy.mockReturnValueOnce(false);
+            validateAndNormalizeFilename('/imaginary/path/name');
+            expect(mkdirSyncSpy).toHaveBeenCalled();
+            existsSyncSpy.mockReset();
+        });
+        it('does not throw if __fixtures__ dir already exists', () => {
+            expect(() =>
+                validateAndNormalizeFilename('/imaginary/path/name'),
+            ).not.toThrow();
+            expect(mkdirSyncSpy).not.toHaveBeenCalled();
+        });
         it('detects a file name at the end of the file path', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             expect(
