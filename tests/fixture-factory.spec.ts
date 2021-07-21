@@ -30,7 +30,7 @@ describe('FixtureFactory', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             readFileIfExistsSpy.mockReturnValueOnce(null);
             writeFileSyncSpy.mockImplementationOnce(() => {
-                throw new Error('');
+                throw Error('');
             });
             const factory = new FixtureFactory<ComplexObject>(defaults);
             expect(() => factory.fixtureSync('/testfile')).toThrow(
@@ -40,19 +40,20 @@ describe('FixtureFactory', () => {
                 ).replace(':fileError', ': {}'),
             );
         });
+        it('throws an error if default file path is not absolute', () => {
+            expect(
+                () =>
+                    new FixtureFactory<ComplexObject>(
+                        defaults,
+                        undefined,
+                        'realtive/path',
+                    ),
+            ).toThrow(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
+        });
         it('throws an error if file path is not absolute', () => {
-            existsSyncSpy.mockReturnValueOnce(true);
-            readFileIfExistsSpy.mockReturnValueOnce(null);
-            const factory = new FixtureFactory<ComplexObject>(
-                defaults,
-                undefined,
-                'realtive/path/name.json',
-            );
-            expect(() => factory.fixtureSync('/testfile')).toThrow(
-                ERROR_MESSAGES.FILE_WRITE.replace(
-                    ':filePath',
-                    '/__fixtures__/testfile.json',
-                ).replace(':fileError', ': {}'),
+            const factory = new FixtureFactory<ComplexObject>(defaults);
+            expect(() => factory.fixtureSync('testfile')).toThrow(
+                ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
             );
         });
         it('joins file name with factory default path, if provided', () => {
