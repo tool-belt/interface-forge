@@ -501,54 +501,79 @@ describe('validateAndNormalizeFilename', () => {
         jest.clearAllMocks();
     });
 
-    it('correctly detects a file name at the end of the file path', () => {
-        existsSyncSpy.mockReturnValueOnce(true);
-        expect(
-            validateAndNormalizeFilename('/imaginary/path/name.json'),
-        ).toEqual('/imaginary/path/__fixtures__/name.json');
-    });
-    it('correctly detects a file path without a file name', () => {
-        existsSyncSpy.mockReturnValueOnce(true);
-        expect(validateAndNormalizeFilename('/imaginary/path/name')).toEqual(
-            '/imaginary/path/__fixtures__/name.json',
-        );
-    });
-    it('appends .json extension if not provided', () => {
-        expect(validateAndNormalizeFilename('/dev/filename')).toEqual(
-            '/dev/__fixtures__/filename.json',
-        );
-    });
-    it('throws an error if an extension other than .json is provided', () => {
-        expect(() => validateAndNormalizeFilename('/testfile.txt')).toThrow(
-            ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
-        );
-    });
-    it('does not append .json extension, if provided', () => {
-        expect(validateAndNormalizeFilename('/dev/filename.JSON')).toEqual(
-            '/dev/__fixtures__/filename.json',
-        );
-    });
-    it('throws an error if empty filename is provided', () => {
-        expect(() => validateAndNormalizeFilename('')).toThrow(
-            ERROR_MESSAGES.MISSING_FILENAME,
-        );
-    });
-    it('throws an error if file path is not absolute', () => {
-        expect(() => validateAndNormalizeFilename('relative/path')).toThrow(
-            ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
-        );
-    });
-    it('throws an error fixture dir cannot be created', () => {
-        mkdirSyncSpy.mockImplementationOnce(() => {
-            throw new Error('');
+    describe('throws', () => {
+        it('an error if file path is not absolute', () => {
+            expect(() => validateAndNormalizeFilename('relative/path')).toThrow(
+                ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
+            );
         });
-        expect(() =>
-            validateAndNormalizeFilename('/imaginary/path/name'),
-        ).toThrow(
-            ERROR_MESSAGES.DIR_WRITE.replace(
-                ':filePath',
-                '/imaginary/path/__fixtures__/',
-            ).replace(':fileError', ': {}'),
-        );
+        it('throws an error if an extension other than the allowed is provided', () => {
+            expect(() => validateAndNormalizeFilename('/testfile.txt')).toThrow(
+                ERROR_MESSAGES.INVALID_EXTENSION.replace(
+                    ':fileExtension',
+                    '.txt',
+                ),
+            );
+        });
+        it('an error if empty filename is provided', () => {
+            expect(() => validateAndNormalizeFilename('')).toThrow(
+                ERROR_MESSAGES.MISSING_FILENAME,
+            );
+        });
+        it('an error fixture dir cannot be created', () => {
+            mkdirSyncSpy.mockImplementationOnce(() => {
+                throw new Error('');
+            });
+            expect(() =>
+                validateAndNormalizeFilename('/imaginary/path/name'),
+            ).toThrow(
+                ERROR_MESSAGES.DIR_WRITE.replace(
+                    ':filePath',
+                    '/imaginary/path/__fixtures__/',
+                ).replace(':fileError', ': {}'),
+            );
+        });
+    });
+
+    describe('correctly', () => {
+        it('detects a file name at the end of the file path', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            expect(
+                validateAndNormalizeFilename('/imaginary/path/name.json'),
+            ).toEqual('/imaginary/path/__fixtures__/name.json');
+        });
+        it('detects a file path without a file name', () => {
+            existsSyncSpy.mockReturnValueOnce(true);
+            expect(
+                validateAndNormalizeFilename('/imaginary/path/name'),
+            ).toEqual('/imaginary/path/__fixtures__/name.json');
+        });
+        it('does not append .json extension, if provided', () => {
+            expect(validateAndNormalizeFilename('/dev/filename.JSON')).toEqual(
+                '/dev/__fixtures__/filename.json',
+            );
+        });
+        it('appends .json extension if not provided', () => {
+            expect(validateAndNormalizeFilename('/dev/filename')).toEqual(
+                '/dev/__fixtures__/filename.json',
+            );
+        });
+        it('appends .json extension if .spec provided', () => {
+            expect(validateAndNormalizeFilename('/dev/filename.spec')).toEqual(
+                '/dev/__fixtures__/filename.spec.json',
+            );
+        });
+        it('appends .json extension if .test provided', () => {
+            expect(validateAndNormalizeFilename('/dev/filename.test')).toEqual(
+                '/dev/__fixtures__/filename.test.json',
+            );
+        });
+        it('supports .json extension with sub-dot-notation', () => {
+            expect(
+                validateAndNormalizeFilename(
+                    '/dev/filename.some.other.info.json',
+                ),
+            ).toEqual('/dev/__fixtures__/filename.some.other.info.json');
+        });
     });
 });
