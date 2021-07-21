@@ -18,6 +18,8 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         defaultPath?: string,
     ) {
         super(defaults, factory);
+        if (defaultPath && !path.isAbsolute(defaultPath))
+            throw new Error(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
         this.defaultPath = defaultPath;
     }
 

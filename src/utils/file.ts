@@ -8,10 +8,13 @@ export function validateAndNormalizeFilename(filePath: string): string {
     if (!filePath) {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
+    if (!path.isAbsolute(filePath)) {
+        throw new Error(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
+    }
     const extension = path.extname(filePath);
-    if (!extension) {
+    if (!extension || ['.spec', '.test'].includes(extension.toLowerCase())) {
         filePath = filePath + '.json';
-    } else if (extension.toLowerCase() !== '.json') {
+    } else if (!['.json', '.spec', '.test'].includes(extension.toLowerCase())) {
         throw new Error(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(
                 ':fileExtension',
@@ -19,7 +22,20 @@ export function validateAndNormalizeFilename(filePath: string): string {
             ),
         );
     }
-    return filePath;
+    filePath = filePath.replace(path.extname(filePath), '.json');
+    const fileName = path.basename(filePath);
+    const basePath = filePath.replace(fileName, '') + '__fixtures__/';
+    try {
+        fs.mkdirSync(basePath);
+    } catch (error) {
+        throw new Error(
+            ERROR_MESSAGES.DIR_WRITE.replace(':filePath', basePath).replace(
+                ':fileError',
+                ': ' + JSON.stringify(error),
+            ),
+        );
+    }
+    return basePath + fileName;
 }
 
 export function readFileIfExists<T>(filePath: string): T | null {
