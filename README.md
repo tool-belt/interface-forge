@@ -298,9 +298,9 @@ To use the package to generate fixtures you can simply import `FixtureFactory` i
 The FixtureFactory's methods require a file name (or file path) as the first parameter. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead. Either way the **file path must be absolute** or else interface-forge will throw an error.
 
 ```typescript
-// ${projectRoot}/tests/factories.ts
+// ${projectRoot}/tests/User.spec.ts
 import { FixtureFactory } from 'interface-forge';
-import { User, Profile } from './types';
+import { User, Profile } from '../types';
 
 // without default file path
 const UserFactory = new FixtureFactory<User>(
@@ -333,7 +333,7 @@ const ProfileFactory = new FixtureFactory<Profile>(
     },
     undefined,
     // path.join() or path.resolve() are recommended
-    path.resolve(__dirname),
+    path.resolve(__dirname), // ${projectRoot}/tests/
 );
 
 describe('Profile', () => {
