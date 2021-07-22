@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
     title: 'Interface-Forge',
-    tagline: 'Dinosaurs are cool',
+    tagline: 'Gracefully generate dynamic mock data.',
     url: 'https://your-docusaurus-test-site.com',
     baseUrl: '/',
     onBrokenLinks: 'throw',
@@ -14,20 +14,44 @@ module.exports = {
     projectName: 'interfaceForge',
     themeConfig: {
         navbar: {
-            title: 'My Site',
-            logo: {
-                alt: 'My Site Logo',
+            title: 'interfaceForge Docu',
+            /* logo: {
+                alt: 'interfaceForge',
                 src: 'img/logo.svg',
-            },
+            }, */
             items: [
                 {
                     type: 'doc',
-                    docId: 'intro',
+                    docId: 'interface-forge/table-of-contents',
                     position: 'left',
-                    label: 'Tutorial',
+                    label: 'Contents',
                 },
                 {
-                    href: 'https://github.com/facebook/docusaurus',
+                    type: 'doc',
+                    docId: 'interface-forge/installation',
+                    position: 'left',
+                    label: 'Install',
+                },
+                {
+                    type: 'doc',
+                    docId: 'interface-forge/usage',
+                    position: 'left',
+                    label: 'Usage',
+                },
+                {
+                    type: 'doc',
+                    docId: 'interface-forge/factory-schema',
+                    position: 'left',
+                    label: 'Schema',
+                },
+                {
+                    type: 'doc',
+                    docId: 'interface-forge/contributing',
+                    position: 'left',
+                    label: 'Contributing',
+                },
+                {
+                    href: 'https://github.com/Goldziher/interfaceForge',
                     label: 'GitHub',
                     position: 'right',
                 },
@@ -40,34 +64,21 @@ module.exports = {
                     title: 'Docs',
                     items: [
                         {
-                            label: 'Tutorial',
-                            to: '/docs/intro',
+                            label: 'Contents',
+                            to: '/docs/table-of-contents',
                         },
                     ],
                 },
                 {
                     title: 'Community',
-                    items: [
-                        {
-                            label: 'Stack Overflow',
-                            href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-                        },
-                        {
-                            label: 'Discord',
-                            href: 'https://discordapp.com/invite/docusaurus',
-                        },
-                        {
-                            label: 'Twitter',
-                            href: 'https://twitter.com/docusaurus',
-                        },
-                    ],
+                    items: [],
                 },
                 {
                     title: 'More',
                     items: [
                         {
-                            label: 'Blog',
-                            to: '/blog',
+                            label: 'Tweet',
+                            to: 'https://www.twitter.com/share?url=https://github.com/Goldziher/interfaceForge',
                         },
                         {
                             label: 'GitHub',

@@ -4,34 +4,35 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
     {
-        title: 'Easy to Use',
+        title: 'What you\'d expect',
         Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
         description: (
             <>
-                Docusaurus was designed from the ground up to be easily
-                installed and used to get your website up and running quickly.
+                A dictum euismod molestie placerat ut consequat vestibulum hac ad
+                cum consectetur quam suspendisse vivamus mauris eros feugiat
+                scelerisque.
             </>
         ),
     },
     {
-        title: 'Focus on What Matters',
+        title: 'And then some',
         Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
         description: (
             <>
-                Docusaurus lets you focus on your docs, and we&apos;ll do the
-                chores. Go ahead and move your docs into the <code>docs</code>{' '}
-                directory.
+                A suspendisse accumsan adipiscing tristique habitasse consequat
+                porta condimentum conubia sodales in a porta ut elementum convallis
+                a turpis nostra nulla consectetur suspendisse.
             </>
         ),
     },
     {
-        title: 'Powered by React',
+        title: 'Powered by TypeScript',
         Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
         description: (
             <>
-                Extend or customize your website layout by reusing React.
-                Docusaurus can be extended while reusing the same header and
-                footer.
+                Sodales duis ad nostra augue lectus ultrices sed velit nibh a et
+                metus quam magnis pretium et metus a cras potenti adipiscing arcu a
+                pulvinar habitant mauris vestibulum adipiscing.
             </>
         ),
     },
