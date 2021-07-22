@@ -26,7 +26,9 @@ export function validateAndNormalizeFilename(filePath: string): string {
     const fileName = path.basename(filePath);
     const basePath = filePath.replace(fileName, '') + '__fixtures__/';
     try {
-        if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
+        if (!fs.existsSync(basePath)) {
+            fs.mkdirSync(basePath);
+        }
     } catch (error) {
         throw new Error(
             ERROR_MESSAGES.DIR_WRITE.replace(':filePath', basePath).replace(
