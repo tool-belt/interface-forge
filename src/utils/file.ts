@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,eslint-comments/disable-enable-pair */
 import { ERROR_MESSAGES } from '../constants';
 import { getValueFromNestedArray } from './general';
 import { isRecord } from './guards';
@@ -64,10 +65,7 @@ export function mapKeyPaths<T>(input: T, chain = ''): string[] {
         let subChain = chain ? `${chain}.${key}` : key;
         if (Array.isArray(value)) {
             // eslint-disable-next-line prefer-const
-            let [nestedValue, levels] = getValueFromNestedArray<unknown>(
-                value,
-                1,
-            );
+            let [nestedValue, levels] = getValueFromNestedArray(value, 1);
             value = nestedValue;
             while (levels > 0) {
                 levels--;

@@ -43,7 +43,7 @@
         "test:watch": "jest --watch"
     },
     "devDependencies": {
-        "@sprylab/eslint-config": "^1.5.2",
+        "@sprylab/eslint-config": "^1.5.3",
         "@types/jest": "^26.0.24",
         "@types/node": "^16.4.0",
         "eslint": "^7.31.0",

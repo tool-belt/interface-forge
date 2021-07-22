@@ -1,4 +1,9 @@
-import { BuildArgProxy, Ref, TypeFactory } from '../type-factory';
+import {
+    BuildArgProxy,
+    DerivedValueProxy,
+    Ref,
+    TypeFactory,
+} from '../type-factory';
 import { ERROR_MESSAGES } from '../constants';
 import { FactorySchema } from '../types';
 import { isOfType, isRecord } from './guards';
@@ -25,7 +30,7 @@ export function parseFactorySchemaSync<T>(
             }
         } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
             output[key] = throwIfPromise(value.next().value, key);
-        } else if (isRecord(value)) {
+        } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
             output[key] = parseFactorySchemaSync(value, iteration);
         } else {
             output[key] = value;
@@ -56,7 +61,7 @@ export async function parseFactorySchemaAsync<T>(
             }
         } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
             output[key] = await value.next().value;
-        } else if (typeof value === 'object' && value !== null) {
+        } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
             output[key] = await parseFactorySchemaAsync(value, iteration);
         } else {
             output[key] = value;
@@ -84,4 +89,22 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
         );
     }
     return schema;
+}
+
+export function validateFactoryResult<T>(factoryResult: T): T {
+    const missingValues: string[] = [];
+    Object.entries(factoryResult).forEach(([key, value]) => {
+        if (value instanceof DerivedValueProxy) {
+            missingValues.push(key);
+        }
+    });
+    if (missingValues.length) {
+        throw new Error(
+            ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(
+                ':missingValues',
+                missingValues.join(', '),
+            ),
+        );
+    }
+    return factoryResult;
 }

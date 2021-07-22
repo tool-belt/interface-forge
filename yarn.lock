@@ -827,10 +827,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sprylab/eslint-config@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@sprylab/eslint-config/-/eslint-config-1.5.2.tgz#b0ed5ec77a835a3b7b5cf76aa76d702d23642ebc"
-  integrity sha512-SH2stZHsnRzEIBS0t2hmPlPxlA/z64AoitDToySw6S//NsGhHlCUYBS/9WX4VpYMZLAabULkvJQ4mKmYfOr+Kw==
+"@sprylab/eslint-config@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@sprylab/eslint-config/-/eslint-config-1.5.3.tgz#765398b6c1372dc6cebc1294f0411b1b96bb3a27"
+  integrity sha512-AXsGJk0wG8HnKJlfRY45Ab0btjFAIN/Vv2yNmDLOjD7z9O/okFzrXa3I6/+d2AZ2ffej3Jw6M4vEujri4dG/iA==
   dependencies:
     "@babel/eslint-parser" "^7.14.7"
     "@babel/eslint-plugin" "^7.14.5"
