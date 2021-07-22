@@ -84,3 +84,7 @@
 
 - added "`__fixtures__`" sub-directory
 - stabilised write path validation
+
+[1.3.5]
+
+- fixed issue with fs.mkdirSync
