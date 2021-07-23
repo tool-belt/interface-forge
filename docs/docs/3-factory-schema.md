@@ -11,12 +11,11 @@ Although the above examples of default values use a simple object literal with s
 expects what is called a `FactorySchema` in the code. This is an object that can handle different types of values -
 including other instances of TypeFactory, functions and generators.
 
-### Using TypeFactory instances in factory schemas
+## Using TypeFactory instances in factory schemas
 
 You can place instances of TypeFactory as values:
 
-```typescript
-// factories.ts
+```typescript title="factories.ts"
 import { TypeFactory } from 'interface-forge';
 import { User, UserProfile } from './types';
 
@@ -40,12 +39,12 @@ the async or sync build methods depends on what method was called on the contain
 UserFactory.build()
 is called, then then async UserProfileFactory.build() will be called in the nested factory etc.
 
-### Using the .use static method with nested factories
+## Using the .use static method with nested factories
 
 The caveat of placing an instance of TypeFactory as a `FactorySchema` value is that you cannot pass values to the
 sub-factory at build-time. To solve this you can use the `.use` static method, which allows you to pass args:
 
-```typescript
+```typescript title="factories.ts"
 const UserProfileFactory = new TypeFactory<UserProfile>({
     profession: 'cook',
     gender: 'male',
@@ -72,7 +71,7 @@ You can pass the same kind of options as for [the regular build methods](#buildi
 If you want to build multiple objects, i.e. to call `.batch` or `.batchSync` for a nested factory, simple pass as part
 of the options a `{ batch: number }` key-value pair:
 
-```typescript
+```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
     // ...
     profile: TypeFactory.use<UserProfile>(UserProfileFactory, {
@@ -95,12 +94,12 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-### Using .use with custom functions
+## Using .use with custom functions
 
 The `.use` method also allows you to pass any `sync` or `async` function for a schema value. The function will be called
 at build time with the current iteration of the factory:
 
-```typescript
+```typescript title="factories.ts"
 import { TypeFactory } from './type-factory';
 import faker from 'faker';
 
@@ -119,12 +118,12 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-### Designating a required build-time argument
+## Designating a required build-time argument
 
 Sometimes its desirable to designate a property as an argument that must be supplied at build-time. To do this simply
 call the `.required` static method for each required property:
 
-```typescript
+```typescript title="User.spec.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.required(),
     lastName: TypeFactory.required(),
@@ -144,7 +143,7 @@ describe('User', () => {
 });
 ```
 
-### Using Generators
+## Using Generators
 
 You can place
 a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) as a
@@ -157,13 +156,13 @@ value, e.g. an Array, Set, Map etc.
 
 **NOTE** do not pass an infinite iterator to these builtin methods: It will create an infinite loop.
 
-#### The .iterate method
+### The .iterate method
 
 Use the `iterate` static method to create an infinite iterator that yields the values passed to it serially. Each
 time `.next` is called, the next value in the iterator is returned. When reaching the iterator's end, iteration will
 begin from position 0 again:
 
-```typescript
+```typescript title="User.spec.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.iterate(['John', 'Bob']),
     // ...
@@ -194,12 +193,12 @@ describe('User', () => {
 });
 ```
 
-#### The .sample method
+### The .sample method
 
 Use the `sample` static method to create an infinite iterator that returns a random value each time its called. If the
 iterator contains more than one item, the current and previous values are guaranteed to be different.
 
-```typescript
+```typescript title="User.spec.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.sample([
         'John',

@@ -7,12 +7,12 @@ sidebar_label: 'Installation'
 sidebar_position: 1
 ---
 
-```shell
+```shell title="YARN"
 yarn add --dev interface-forge
 ```
 
-Or
+<span class="highlight">Or</span>
 
-```shell
+```shell title="NPM"
 npm install --save-dev interface-forge
 ```

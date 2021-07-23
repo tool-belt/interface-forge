@@ -15,8 +15,14 @@ function HomepageHeader() {
                 <p className="hero__subtitle">{siteConfig.tagline}</p>
                 <div className={styles.buttons}>
                     <Link
-                        className="button button--secondary button--lg"
-                        to="/docs/usage"
+                        className="button button--secondary button--lg margin-horiz--md"
+                        to="/docs/table-of-contents"
+                    >
+                        Table of Contents
+                    </Link>
+                    <Link
+                        className="button button--secondary button--lg margin-horiz--md"
+                        to="/docs/usage/basic-example"
                     >
                         &rarr; Usage Examples
                     </Link>
@@ -27,11 +33,11 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-    const { siteConfig } = useDocusaurusContext();
+    // const { siteConfig } = useDocusaurusContext();
     return (
         <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />"
+            title="Documentation"
+            description="Interface-Forge allows you to gracefully generate dynamic mock data and static fixtures in TypeScript."
         >
             <HomepageHeader />
             <main>

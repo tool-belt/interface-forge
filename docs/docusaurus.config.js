@@ -14,7 +14,7 @@ module.exports = {
     projectName: 'interfaceForge',
     themeConfig: {
         navbar: {
-            title: 'interfaceForge Docu',
+            title: 'interfaceForge',
             /* logo: {
                 alt: 'interfaceForge',
                 src: 'img/logo.svg',
@@ -22,31 +22,67 @@ module.exports = {
             items: [
                 {
                     type: 'doc',
-                    docId: 'interface-forge/table-of-contents',
+                    docId: 'table-of-contents',
                     position: 'left',
                     label: 'Contents',
                 },
                 {
                     type: 'doc',
-                    docId: 'interface-forge/installation',
+                    docId: 'installation',
                     position: 'left',
                     label: 'Install',
                 },
                 {
-                    type: 'doc',
-                    docId: 'interface-forge/usage',
                     position: 'left',
                     label: 'Usage',
+                    items: [
+                        {
+                            type: 'doc',
+                            docId: 'Usage/basic-example',
+                            position: 'left',
+                            label: 'Basic Example',
+                        },
+                        {
+                            type: 'doc',
+                            docId: 'Usage/passing-default-values',
+                            position: 'left',
+                            label: 'Passing Default Values',
+                        },
+                        {
+                            type: 'doc',
+                            docId: 'Usage/passing-a-factory-function',
+                            position: 'left',
+                            label: 'Passing a Factory Function',
+                        },
+                        {
+                            type: 'doc',
+                            docId: 'Usage/building-objects',
+                            position: 'left',
+                            label: 'Building Objects',
+                        },
+                        {
+                            type: 'doc',
+                            docId: 'Usage/batch-building',
+                            position: 'left',
+                            label: 'Batch Building',
+                        },
+                        {
+                            type: 'doc',
+                            docId: 'Usage/creating-and-using-fixtures',
+                            position: 'left',
+                            label: 'Creating and using Fixtures',
+                        },
+                    ],
                 },
                 {
                     type: 'doc',
-                    docId: 'interface-forge/factory-schema',
+                    docId: 'factory-schema',
                     position: 'left',
                     label: 'Schema',
                 },
                 {
                     type: 'doc',
-                    docId: 'interface-forge/contributing',
+                    docId: 'contributing',
                     position: 'left',
                     label: 'Contributing',
                 },
