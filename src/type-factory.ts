@@ -11,11 +11,16 @@ import { iterate, sample } from './helpers';
 import {
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
-    validateFactorySchema,
 } from './utils/schema';
 import { parseOptions } from './utils/options';
+import {
+    validateFactoryResult,
+    validateFactorySchema,
+} from './utils/validators';
 
 export class BuildArgProxy {}
+
+export class DerivedValueProxy {}
 
 export class Ref<T> {
     readonly value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>;
@@ -65,7 +70,9 @@ export class TypeFactory<T> {
             Object.assign({}, defaults, await overrides),
         );
         const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
-        return factory ? factory(value, iteration) : value;
+        return validateFactoryResult(
+            factory ? factory(value, iteration) : value,
+        );
     }
 
     buildSync(options?: FactoryBuildOptions<T>): T {
@@ -90,7 +97,7 @@ export class TypeFactory<T> {
         if (isPromise(result)) {
             throw new Error(ERROR_MESSAGES.PROMISE_FACTORY);
         }
-        return result;
+        return validateFactoryResult(result);
     }
 
     async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
@@ -105,6 +112,10 @@ export class TypeFactory<T> {
 
     static required(): BuildArgProxy {
         return new BuildArgProxy();
+    }
+
+    static derived(): DerivedValueProxy {
+        return new DerivedValueProxy();
     }
 
     static use<P>(

@@ -7,9 +7,9 @@ sidebar_label: 'Schema'
 sidebar_position: 3
 ---
 
-Although the above examples of default values use a simple object literal with static values, TypeFactory in fact
-expects what is called a `FactorySchema` in the code. This is an object that can handle different types of values -
-including other instances of TypeFactory, functions and generators.
+Although the above examples of default values use a simple object literal with static values, TypeFactory /
+FixtureFactory in fact expect what is called a `FactorySchema` in the code. This is an object that can handle different
+types of values - including other factories, functions and generators!
 
 ## Using TypeFactory instances in factory schemas
 
@@ -34,8 +34,8 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-When building an instance of UserFactory, the nested UserProfileFactory's will be built. The decision whether to use
-the async or sync build methods depends on what method was called on the containing factory. Thus if the async
+When building an instance of UserFactory, the nested UserProfileFactorys will be built. The decision whether to use the
+async or sync build methods depends on what method was called on the containing factory. Thus if the async
 UserFactory.build()
 is called, then then async UserProfileFactory.build() will be called in the nested factory etc.
 
@@ -76,7 +76,7 @@ const UserFactory = new TypeFactory<User>({
     // ...
     profile: TypeFactory.use<UserProfile>(UserProfileFactory, {
         batch: 3,
-        overrides: (iteration) => ({}),
+        overrides: (iteration) => ({...}),
         factory: (values, iteration) => {
             // ...
         },
@@ -123,7 +123,7 @@ const UserFactory = new TypeFactory<User>({
 Sometimes its desirable to designate a property as an argument that must be supplied at build-time. To do this simply
 call the `.required` static method for each required property:
 
-```typescript title="User.spec.ts"
+```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.required(),
     lastName: TypeFactory.required(),
@@ -143,12 +143,56 @@ describe('User', () => {
 });
 ```
 
+## Designating a property as derived
+
+Sometimes its desirable to derive a given property's value from the build result itself rather than from defaults or
+build time arguments. In such cases you can designate a property as derived by calling the eponymous method `.derived`:
+
+```typescript title="factories.ts"
+const UserFactory = new TypeFactory<User>(
+    {
+        profession: TypeFactory.iterate(['linguist', 'engineer', 'judge']),
+        salutation: TypeFactory.derived(),
+        // ...
+    },
+    (value) => ({
+        ...value,
+        salutation:
+            value.profession === 'linguist'
+                ? 'Dr.'
+                : value.profession === 'engineer'
+                ? 'Eng.'
+                : 'Hon.',
+    }),
+);
+```
+
+When using derived properties you _must_ provide a factory function that will set the value for all derived properties.
+When a derived property is not set, an informative error will be thrown:
+
+````typescript title="factories.ts"
+const UserFactory = new TypeFactory<User>({
+    profession: TypeFactory.iterate(["linguist", "engineer", "judge"]),
+    salutation: TypeFactory.derived(),
+    // ...
+});
+
+describe('User', () => {
+    let user: User;
+
+    beforeEach(async () => {
+        user = await UserFactory.build();
+        // Error: [interface-forge] missing derived parameters: salutation
+    });
+    // ...
+});
+
 ## Using Generators
 
 You can place
 a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) as a
-factory schema value. At build-time, the generator's `.next` method will be called. You should be careful. though,
-when doing this: The generator function does not return or yield `{done: true}` during build-time.
+factory schema value. At build-time, the generator's `.next` method will be called. You should be careful. though, when
+doing this: The generator function does not return or yield `{done: true}` during build-time.
 
 There are two built-in convenience static methods that create _infinite_ generators: `.iterate` and `.sample`. Both
 methods accept an [iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) as a
@@ -162,7 +206,7 @@ Use the `iterate` static method to create an infinite iterator that yields the v
 time `.next` is called, the next value in the iterator is returned. When reaching the iterator's end, iteration will
 begin from position 0 again:
 
-```typescript title="User.spec.ts"
+```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.iterate(['John', 'Bob']),
     // ...
@@ -191,14 +235,14 @@ describe('User', () => {
     });
     // ...
 });
-```
+````
 
 ### The .sample method
 
 Use the `sample` static method to create an infinite iterator that returns a random value each time its called. If the
 iterator contains more than one item, the current and previous values are guaranteed to be different.
 
-```typescript title="User.spec.ts"
+```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
     firstName: TypeFactory.sample([
         'John',

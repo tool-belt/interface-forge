@@ -1,8 +1,12 @@
 import * as fileUtils from '../src/utils/file';
 import { ComplexObject } from './test-types';
 import { ERROR_MESSAGES, FixtureFactory } from '../src';
-import { defaults } from './utils';
 import fs from 'fs';
+
+const defaults: ComplexObject = {
+    name: 'testObject',
+    value: null,
+};
 
 describe('FixtureFactory', () => {
     let existsSyncSpy: jest.SpyInstance;

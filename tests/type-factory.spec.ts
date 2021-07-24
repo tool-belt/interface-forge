@@ -1,8 +1,12 @@
 import { ComplexObject } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
-import { defaults } from './utils';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
+
+const defaults: ComplexObject = {
+    name: 'testObject',
+    value: null,
+};
 
 describe('.build', () => {
     it('builds correctly with defaults object literal', async () => {
