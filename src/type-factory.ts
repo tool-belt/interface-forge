@@ -11,10 +11,12 @@ import { iterate, sample } from './helpers';
 import {
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
-    validateFactoryResult,
-    validateFactorySchema,
 } from './utils/schema';
 import { parseOptions } from './utils/options';
+import {
+    validateFactoryResult,
+    validateFactorySchema,
+} from './utils/validators';
 
 export class BuildArgProxy {}
 
