@@ -9,12 +9,12 @@ module.exports = {
     tagline: 'Graceful mock data and fixtures generation using TypeScript.',
     url: 'https://goldziher.github.io',
     baseUrl: '/interfaceForge/',
-    trailingSlash: true,
+    projectName: 'goldziher.github.io',
+    organizationName: 'Goldziher',
+    trailingSlash: false,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     /* favicon: 'img/favicon.ico', */
-    organizationName: 'Goldziher',
-    projectName: 'interfaceForge',
     themeConfig: {
         navbar: {
             title,
