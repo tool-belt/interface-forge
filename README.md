@@ -97,7 +97,7 @@ describe('User', () => {
 });
 ```
 
-Take a look at our [documentation](docs) for more examples.
+Take a look at our [documentation](docs).
 
 ## Contributing
 
