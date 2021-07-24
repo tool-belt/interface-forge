@@ -14,7 +14,7 @@ module.exports = {
     onBrokenMarkdownLinks: 'warn',
     /* favicon: 'img/favicon.ico', */
     organizationName: 'Goldziher',
-    projectName: title,
+    projectName: 'interfaceForge',
     themeConfig: {
         navbar: {
             title,
