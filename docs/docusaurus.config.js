@@ -9,6 +9,7 @@ module.exports = {
     tagline: 'Graceful mock data and fixtures generation using TypeScript.',
     url: 'https://goldziher.github.io',
     baseUrl: '/interfaceForge/',
+    trailingSlash: true,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     /* favicon: 'img/favicon.ico', */
