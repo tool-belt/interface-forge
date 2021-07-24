@@ -3,18 +3,18 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-    title: 'interfaceForge',
-    tagline: 'Gracefully generate dynamic mock data.',
+    title: 'Interface Forge',
+    tagline: 'Graceful mock data and fixtures generation using TypeScript.',
     url: 'https://your-docusaurus-test-site.com',
     baseUrl: '/',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',
     organizationName: 'Goldziher',
-    projectName: 'interfaceForge',
+    projectName: 'Interface Forge',
     themeConfig: {
         navbar: {
-            title: 'interfaceForge',
+            title: 'Interface Forge',
             style: 'dark',
             items: [
                 {
@@ -30,10 +30,8 @@ module.exports = {
                     label: 'Install',
                 },
                 {
-                    //type: 'doc',
                     position: 'left',
                     label: 'Usage',
-                    //docId: 'Usage/basic-example',
                     items: [
                         {
                             to: '/docs/usage/basic-example',
@@ -73,48 +71,10 @@ module.exports = {
                     position: 'left',
                     label: 'Contributing',
                 },
-                // { type: 'search', position: 'right' }, // @docusaurus/theme-search-algolia
                 {
                     href: 'https://github.com/Goldziher/interfaceForge',
                     label: 'GitHub',
                     position: 'right',
-                },
-            ],
-        },
-        footer: {
-            style: 'light',
-            /* logo: {
-                alt: 'interfaceForge Open Source Logo',
-                src: 'img/logo.svg',
-                href: 'https://github.com/Goldziher/interfaceForge',
-            }, */
-            copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-            links: [
-                {
-                    title: 'Docs',
-                    items: [
-                        {
-                            label: 'Contents',
-                            to: '/docs/table-of-contents',
-                        },
-                    ],
-                },
-                {
-                    title: 'Community',
-                    items: [],
-                },
-                {
-                    title: 'More',
-                    items: [
-                        {
-                            label: 'Tweet',
-                            href: 'https://www.twitter.com/share?url=https://github.com/Goldziher/interfaceForge',
-                        },
-                        {
-                            label: 'GitHub',
-                            href: 'https://github.com/facebook/docusaurus',
-                        },
-                    ],
                 },
             ],
         },

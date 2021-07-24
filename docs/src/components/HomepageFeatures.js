@@ -4,23 +4,24 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
     {
-        title: 'What you\'d expect',
+        title: 'Generate Mock Data',
         Svg: require('../../static/img/bg-shape-1.svg').default,
         description: (
             <>
-                interfaceForge brings you highly extensible factories with
-                support for defaults, overrides, iterators, as well as for batches
-                and static fixtures.
+                Interface Forge offers flexible mock data generation including:
+                sync and async data generation, built-in iterators, batch
+                creation methods and function based factories.
             </>
         ),
     },
     {
-        title: 'And then some',
+        title: 'Create Fixtures',
         Svg: require('../../static/img/bg-shape-2.svg').default,
         description: (
             <>
-                Allows function-based factories, ships with generators and performs
-                well if you need to generate complex data for databases.
+                Interface Forge allows you to save the data created as
+                file-system based fixtures, and auto-updates the fixtures when
+                the factory's schema or parameters are changed.
             </>
         ),
     },
@@ -29,8 +30,9 @@ const FeatureList = [
         Svg: require('../../static/img/bg-shape-3.svg').default,
         description: (
             <>
-                Open-source-driven, carefully typed, low-dependency source code.
-                Made real by and optimised for jest unit testing.
+                Interface Forge is written with and for TypeScript, allowing you
+                to generate objects matching you strongly typed classes,
+                interfaces and types.
             </>
         ),
     },
