@@ -10,7 +10,7 @@ module.exports = {
     baseUrl: '/interfaceForge/',
     projectName: 'interfaceForge',
     organizationName: 'Goldziher',
-    trailingSlash: false,
+    trailingSlash: true,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     themeConfig: {
