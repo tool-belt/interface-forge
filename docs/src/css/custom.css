@@ -4,20 +4,26 @@
  * bundles Infima by default. Infima is a CSS framework designed to
  * work well for content-centric websites.
  */
+ @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #6593a6;
-  --ifm-color-primary-dark: #588598;
-  --ifm-color-primary-darker: #537e90;
-  --ifm-color-primary-darkest: #446876;
-  --ifm-color-primary-light: #769fb0;
-  --ifm-color-primary-lighter: #7ea5b5;
-  --ifm-color-primary-lightest: #98b7c3;
+  --ifm-color-primary: #6f9cb0;
+  --ifm-color-primary-dark: #5c8fa6;
+  --ifm-color-primary-darker: #56889e;
+  --ifm-color-primary-darkest: #477082;
+  --ifm-color-primary-light: #82a9ba;
+  --ifm-color-primary-lighter: #8bafbf;
+  --ifm-color-primary-lightest: #a7c2cf;
   --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Rubik', sans-serif;
 
-  --color-accent: #FF665A;
+  --color-accent: #FF776E;
   --ifm-link-hover-color: var(--color-accent);
+}
+.navbar--dark {
+  --ifm-navbar-background-color: #4E6C80;
+  --ifm-navbar-background-color: #324C61;
 }
 
 .docusaurus-highlight-code-line {
@@ -31,9 +37,6 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.navbar__item.dropdown > a {
-  color: var(--ifm-navbar-link-hover-color);
-}
 .navbar__link--active:active,
 .navbar__link--active:focus,
 .navbar__link--active:hover {
@@ -43,7 +46,7 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 .highlight {
   color: #fff;
   padding: .25em .5em;
-  border-radius: .5em;
+  border-radius: var(--ifm-global-radius);
   background-color: var(--ifm-color-primary);
 }
 

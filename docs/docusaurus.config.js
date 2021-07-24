@@ -15,10 +15,7 @@ module.exports = {
     themeConfig: {
         navbar: {
             title: 'interfaceForge',
-            /* logo: {
-                alt: 'interfaceForge',
-                src: 'img/logo.svg',
-            }, */
+            style: 'dark',
             items: [
                 {
                     type: 'doc',
@@ -33,43 +30,33 @@ module.exports = {
                     label: 'Install',
                 },
                 {
+                    //type: 'doc',
                     position: 'left',
                     label: 'Usage',
+                    //docId: 'Usage/basic-example',
                     items: [
                         {
-                            type: 'doc',
-                            docId: 'Usage/basic-example',
-                            position: 'left',
+                            to: '/docs/usage/basic-example',
                             label: 'Basic Example',
                         },
                         {
-                            type: 'doc',
-                            docId: 'Usage/passing-default-values',
-                            position: 'left',
+                            to: '/docs/usage/passing-default-values',
                             label: 'Passing Default Values',
                         },
                         {
-                            type: 'doc',
-                            docId: 'Usage/passing-a-factory-function',
-                            position: 'left',
+                            to: '/docs/usage/passing-a-factory-function',
                             label: 'Passing a Factory Function',
                         },
                         {
-                            type: 'doc',
-                            docId: 'Usage/building-objects',
-                            position: 'left',
+                            to: '/docs/usage/building-objects',
                             label: 'Building Objects',
                         },
                         {
-                            type: 'doc',
-                            docId: 'Usage/batch-building',
-                            position: 'left',
+                            to: '/docs/usage/batch-building',
                             label: 'Batch Building',
                         },
                         {
-                            type: 'doc',
-                            docId: 'Usage/creating-and-using-fixtures',
-                            position: 'left',
+                            to: '/docs/usage/creating-and-using-fixtures',
                             label: 'Creating and using Fixtures',
                         },
                     ],
@@ -86,6 +73,7 @@ module.exports = {
                     position: 'left',
                     label: 'Contributing',
                 },
+                // { type: 'search', position: 'right' }, // @docusaurus/theme-search-algolia
                 {
                     href: 'https://github.com/Goldziher/interfaceForge',
                     label: 'GitHub',
@@ -94,7 +82,13 @@ module.exports = {
             ],
         },
         footer: {
-            style: 'dark',
+            style: 'light',
+            /* logo: {
+                alt: 'interfaceForge Open Source Logo',
+                src: 'img/logo.svg',
+                href: 'https://github.com/Goldziher/interfaceForge',
+            }, */
+            copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
             links: [
                 {
                     title: 'Docs',
@@ -114,7 +108,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Tweet',
-                            to: 'https://www.twitter.com/share?url=https://github.com/Goldziher/interfaceForge',
+                            href: 'https://www.twitter.com/share?url=https://github.com/Goldziher/interfaceForge',
                         },
                         {
                             label: 'GitHub',
