@@ -5,7 +5,7 @@ import styles from './HomepageFeatures.module.css';
 const FeatureList = [
     {
         title: 'What you\'d expect',
-        Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+        Svg: require('../../static/img/bg-shape-1.svg').default,
         description: (
             <>
                 interfaceForge brings you highly extensible factories with
@@ -16,7 +16,7 @@ const FeatureList = [
     },
     {
         title: 'And then some',
-        Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+        Svg: require('../../static/img/bg-shape-2.svg').default,
         description: (
             <>
                 Allows function-based factories, ships with generators and performs
@@ -26,7 +26,7 @@ const FeatureList = [
     },
     {
         title: 'Powered by TypeScript',
-        Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+        Svg: require('../../static/img/bg-shape-3.svg').default,
         description: (
             <>
                 Open-source-driven, carefully typed, low-dependency source code.
@@ -39,9 +39,7 @@ const FeatureList = [
 function Feature({ Svg, title, description }) {
     return (
         <div className={clsx('col col--4')}>
-            <div className="text--center">
-                <Svg className={styles.featureSvg} alt={title} />
-            </div>
+            <Svg className={styles.featureSvg} alt={title} />
             <div className="text--center padding-horiz--md">
                 <h3>{title}</h3>
                 <p>{description}</p>
