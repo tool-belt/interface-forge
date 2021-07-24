@@ -106,11 +106,9 @@ describe('User', () => {
 
 Take a look at our [documentation](docs).
 
-## Contributing
+## Contributing & Contributors ✨
 
-Contributions are welcome. Please see the [contributing guide](CONTRIBUTING.md)
-
-## Contributors ✨
+Contributions are welcome! Please see the [contributing guide](CONTRIBUTING.md).
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 

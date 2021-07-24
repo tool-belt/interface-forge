@@ -35,6 +35,8 @@
     ],
     "scripts": {
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
+        "contributors:add": "all-contributors add",
+        "contributors:generate": "all-contributors generate",
         "format": "prettier --write '**/*.{js,md,json,yaml,yml}'",
         "lint": "eslint --fix '**/*.ts'",
         "prepare": "husky install",
@@ -46,6 +48,7 @@
         "@sprylab/eslint-config": "^1.5.3",
         "@types/jest": "^26.0.24",
         "@types/node": "^16.4.0",
+        "all-contributors-cli": "^6.20.0",
         "eslint": "^7.31.0",
         "husky": ">=7",
         "jest": "^27.0.6",
