@@ -10,14 +10,15 @@ To use the package to generate fixtures you can simply import `FixtureFactory` i
 The FixtureFactory's methods require a file name (or file path) as the first parameter. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead.
 
 :::note file path
-Whether using a default fixture path or not, the **file path must be absolute** or else interface-forge will throw an error.
+Whether using a default fixture path, or not: The **file path must be absolute**, or else interface-forge will throw an error.
 :::
+
+## Without default File Path
 
 ```typescript title="${projectRoot}/tests/User.spec.ts"
 import { FixtureFactory } from 'interface-forge';
-import { User, Profile } from '../types';
+import { User } from '../types';
 
-// without default file path
 const UserFactory = new FixtureFactory<User>(
     {
         // ...
@@ -40,8 +41,14 @@ describe('User', () => {
     });
     // ...
 });
+```
 
-// with default file path
+## With default File Path
+
+```typescript title="${projectRoot}/tests/Profile.spec.ts"
+import { FixtureFactory } from 'interface-forge';
+import { Profile } from '../types';
+
 const ProfileFactory = new FixtureFactory<Profile>(
     {
         // ...

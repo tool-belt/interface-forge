@@ -3,7 +3,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-    title: 'Interface-Forge',
+    title: 'interfaceForge',
     tagline: 'Gracefully generate dynamic mock data.',
     url: 'https://your-docusaurus-test-site.com',
     baseUrl: '/',

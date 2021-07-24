@@ -5,8 +5,8 @@ description: How to pass default factory values to the interfaceForge
 slug: /usage/passing-default-values
 ---
 
-When creating an instance you must pass default values as the first parameter to the constructor. Defaults can be
-either an object, a sync function returning an object, or an async function returning a promise resolving to an object:
+When creating an instance you **must pass default values** as the first parameter to the constructor. Defaults can be
+either an <span class="highlight">object</span>, a <span class="highlight">sync function</span> returning an object, or an <span class="highlight">async function</span> returning a promise resolving to an object:
 
 ```typescript title="factories.ts"
 import { TypeFactory } from 'interface-forge';

@@ -50,6 +50,13 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: var(--ifm-color-primary);
 }
 
+.highlight.more {
+  color: #000;
+  padding: .25em .5em;
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--color-accent);
+}
+
 span.highlight {
   display: inline-block;
   margin-bottom: 1em;

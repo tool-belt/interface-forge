@@ -8,9 +8,9 @@ const FeatureList = [
         Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
         description: (
             <>
-                A dictum euismod molestie placerat ut consequat vestibulum hac ad
-                cum consectetur quam suspendisse vivamus mauris eros feugiat
-                scelerisque.
+                interfaceForge brings you highly extensible factories with
+                support for defaults, overrides, iterators, as well as for batches
+                and static fixtures.
             </>
         ),
     },
@@ -19,9 +19,8 @@ const FeatureList = [
         Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
         description: (
             <>
-                A suspendisse accumsan adipiscing tristique habitasse consequat
-                porta condimentum conubia sodales in a porta ut elementum convallis
-                a turpis nostra nulla consectetur suspendisse.
+                Allows function-based factories, ships with generators and performs
+                well if you need to generate complex data for databases.
             </>
         ),
     },
@@ -30,9 +29,8 @@ const FeatureList = [
         Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
         description: (
             <>
-                Sodales duis ad nostra augue lectus ultrices sed velit nibh a et
-                metus quam magnis pretium et metus a cras potenti adipiscing arcu a
-                pulvinar habitant mauris vestibulum adipiscing.
+                Open-source-driven, carefully typed, low-dependency source code.
+                Made real by and optimised for jest unit testing.
             </>
         ),
     },
