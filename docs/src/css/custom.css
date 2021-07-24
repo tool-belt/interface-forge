@@ -18,12 +18,29 @@
   --ifm-code-font-size: 95%;
   --ifm-font-family-base: 'Rubik', sans-serif;
 
-  --color-accent: #FF776E;
-  --ifm-link-hover-color: var(--color-accent);
+  /* https://color.adobe.com/de/interfaceForge-color-theme-18180452 */
+  --ifm-color-info: #6f9cb0;
+  --ifm-color-warning: #FFEEC7;
+  --ifm-color-success: #324C61;
+  --ifm-color-danger: #FF776E;
+
+  --ifm-link-hover-color: var(--ifm-color-danger);
 }
 .navbar--dark {
-  --ifm-navbar-background-color: #4E6C80;
-  --ifm-navbar-background-color: #324C61;
+  --ifm-navbar-background-color: var(--ifm-color-success);
+}
+.alert--warning {
+  color: #000;
+}
+.alert--warning svg path {
+  fill: #000;
+}
+header.hero.heroBanner_src-pages-index-module {
+  background-color: var(--ifm-color-success);
+  padding: 6rem 0 8rem;
+}
+.buttons_src-pages-index-module {
+  flex-wrap: wrap;
 }
 
 .docusaurus-highlight-code-line {
@@ -40,7 +57,7 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 .navbar__link--active:active,
 .navbar__link--active:focus,
 .navbar__link--active:hover {
-  color: var(--color-accent);
+  color: var(--ifm-color-danger);
 }
 
 .highlight {
@@ -54,7 +71,7 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   color: #000;
   padding: .25em .5em;
   border-radius: var(--ifm-global-radius);
-  background-color: var(--color-accent);
+  background-color: var(--ifm-color-danger);
 }
 
 span.highlight {
