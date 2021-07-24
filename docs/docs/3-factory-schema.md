@@ -34,7 +34,7 @@ const UserFactory = new TypeFactory<User>({
 });
 ```
 
-When building an instance of UserFactory, the nested UserProfileFactory's will be built. The decision whether to use the
+When building an instance of UserFactory, the nested UserProfileFactorys will be built. The decision whether to use the
 async or sync build methods depends on what method was called on the containing factory. Thus if the async
 UserFactory.build()
 is called, then then async UserProfileFactory.build() will be called in the nested factory etc.
