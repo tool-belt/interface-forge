@@ -9,7 +9,7 @@ sidebar_position: 3
 
 Although the above examples of default values use a simple object literal with static values, TypeFactory /
 FixtureFactory in fact expect what is called a `FactorySchema` in the code. This is an object that can handle different
-types of values - including other factories, functions and generators.
+types of values - including other factories, functions and generators!
 
 ## Using TypeFactory instances in factory schemas
 
