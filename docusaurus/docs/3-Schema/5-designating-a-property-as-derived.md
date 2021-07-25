@@ -30,9 +30,9 @@ const UserFactory = new TypeFactory<User>(
 When using derived properties you _must_ provide a factory function that will set the value for all derived properties.
 When a derived property is not set, an informative error will be thrown:
 
-````typescript title="factories.ts"
+```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
-    profession: TypeFactory.iterate(["linguist", "engineer", "judge"]),
+    profession: TypeFactory.iterate(['linguist', 'engineer', 'judge']),
     salutation: TypeFactory.derived(),
     // ...
 });
@@ -46,3 +46,4 @@ describe('User', () => {
     });
     // ...
 });
+```

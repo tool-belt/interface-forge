@@ -10,11 +10,11 @@ is that `.build` is async while `.buildSync` is not. You can pass options to the
 object containing key-value pairs that (partially) override the defaults with which the factory was initialized, a
 function or async function returning such overrides, or an object with two optional keys:
 
-- `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
+-   `overrides`: either an object literal, a function returning an object literal, or a promise resolving to an object
     literal. The values of the object are merged with the defaults using `Object.assign` - hence newer values passed in
     the overrides literally "override" the values stored in the defaults passed through the constructor.
 
-- `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
+-   `factory function`: a [factory function](#passing-a-factory-function). If a factory function was passed to the
     constructor, and a factory function is passed as a parameter to `.build`, the function passed as a parameter is used.
 
 ```typescript title="User.spec.ts"

@@ -19,11 +19,9 @@ Whether using a default fixture path, or not: The **file path must be absolute**
 import { FixtureFactory } from 'interface-forge';
 import { User } from '../types';
 
-const UserFactory = new FixtureFactory<User>(
-    {
-        // ...
-    },
-);
+const UserFactory = new FixtureFactory<User>({
+    // ...
+});
 
 describe('User', () => {
     it('matches snapshot', async () => {

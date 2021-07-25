@@ -97,7 +97,7 @@ describe('User', () => {
 });
 ```
 
-Take a look at our [documentation](docs).
+Take a look at our [documentation](https://goldziher.github.io/interfaceForge/).
 
 ## Contributing & Contributors ✨
 

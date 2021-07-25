@@ -1,6 +1,6 @@
 {
     "include": ["**/*.ts"],
-    "exclude": ["docs"],
+    "exclude": ["docusaurus"],
     "compilerOptions": {
         "alwaysStrict": true,
         "baseUrl": ".",

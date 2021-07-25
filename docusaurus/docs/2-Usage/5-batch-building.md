@@ -11,8 +11,8 @@ resolving to an array of objects of the given type, and `.batchSync` returns the
 
 Both methods accept two parameters:
 
-- `size`: the number of objects to create - this is a _required parameter_.
-- `options`: the same as for [the regular build methods](#building-objects).
+-   `size`: the number of objects to create - this is a _required parameter_.
+-   `options`: the same as for [the regular build methods](#building-objects).
 
 ```typescript title="User.spec.ts"
 describe('User', () => {
