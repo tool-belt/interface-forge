@@ -1,7 +1,9 @@
 # Dependencies
 node_modules/
 .idea/
+.vscode/
 # Generated files
+dist
 .docusaurus
 .cache-loader
 

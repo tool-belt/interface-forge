@@ -1,65 +1,54 @@
 import React from 'react';
-import clsx from 'clsx';
 import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
     {
         title: 'Generate Mock Data',
-        Svg: require('../../static/img/bg-shape-1.svg').default,
         description: (
             <>
                 Interface Forge offers flexible mock data generation including:
-                sync and async data generation, built-in iterators, batch
-                creation methods and function based factories.
+                Sync and async data generation, built-in iterators, batch-
+                creation methods and function-based factories.
             </>
         ),
     },
     {
         title: 'Create Fixtures',
-        Svg: require('../../static/img/bg-shape-2.svg').default,
         description: (
             <>
-                Interface Forge allows you to save the data created as
-                file-system based fixtures, and auto-updates the fixtures when
-                the factory's schema or parameters are changed.
+                Interface Forge allows you to save generated data as
+                file-system based fixtures – it also auto-updates them
+                whenever the factory's schema or its parameters have changed.
             </>
         ),
     },
     {
         title: 'Powered by TypeScript',
-        Svg: require('../../static/img/bg-shape-3.svg').default,
         description: (
             <>
                 Interface Forge is written with and for TypeScript, allowing you
-                to generate objects matching you strongly typed classes,
-                interfaces and types.
+                to generate objects matching your own types and strongly typed
+                classes/interfaces.
             </>
         ),
     },
 ];
 
-function Feature({ Svg, title, description }) {
+function Feature({ title, description }) {
     return (
-        <div className={clsx('col col--4')}>
-            <Svg className={styles.featureSvg} alt={title} />
-            <div className="text--center padding-horiz--md">
-                <h3>{title}</h3>
-                <p>{description}</p>
-            </div>
-        </div>
+        <article className={styles.feature}>
+            <h3>{title}</h3>
+            <p>{description}</p>
+        </article>
     );
 }
 
 export default function HomepageFeatures() {
     return (
         <section className={styles.features}>
-            <div className="container">
-                <div className="row">
-                    {FeatureList.map((props, idx) => (
-                        <Feature key={idx} {...props} />
-                    ))}
-                </div>
-            </div>
+            {FeatureList.map((props, idx) => (
+                <Feature key={idx} {...props} />
+            ))}
         </section>
     );
 }

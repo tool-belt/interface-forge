@@ -5,7 +5,7 @@ const title = 'Interface Forge';
 
 module.exports = {
     title,
-    tagline: 'Graceful mock data and fixtures generation using TypeScript.',
+    tagline: 'Gracefully generate TypeScript mock data.',
     url: 'https://goldziher.github.io',
     baseUrl: '/interfaceForge/',
     projectName: 'interfaceForge',

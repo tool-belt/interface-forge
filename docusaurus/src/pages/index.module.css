@@ -6,20 +6,78 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
+  background-color: var(--ifm-color-success);
+  padding: 0;
   overflow: hidden;
 }
 
-@media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.container {
+  z-index: 2;
+  width: max-content;
+  max-width: 100%;
+  padding: 2rem;
 }
 
 .buttons {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.button {
+}
+
+.svgShape {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  width: 33.333%;
+  height: 100%;
+  overflow: visible;
+}
+.svgShape::before {
+  content: ' ';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.svgShape:nth-of-type(1) {
+  left: 0;
+}
+.svgShape:nth-of-type(2) {
+  left: 33.333%;
+  z-index: 1;
+}
+.svgShape:nth-of-type(3) {
+  left: 66.666%;
+}
+.svgShape:nth-of-type(1)::before {
+  background-image: url('../../static/img/bg-shape-2.svg');
+}
+.svgShape:nth-of-type(2)::before {
+  background-image: url('../../static/img/bg-shape-3.svg');
+}
+.svgShape:nth-of-type(3)::before {
+  background-image: url('../../static/img/bg-shape-1.svg');
+}
+
+@media (max-width: 560px) {
+  .container {
+    text-align: center;
+  }
+  .buttons {
+    justify-content: center;
+  }
+}
+@media (max-width: 997px) {
+  .svgShape {
+    opacity: .25;
+  }
+  .svgShape:nth-of-type(2) {
+    display: none;
+  }
 }

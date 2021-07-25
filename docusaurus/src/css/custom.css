@@ -35,13 +35,6 @@
 .alert--warning svg path {
   fill: #000;
 }
-header.hero.hero--primary {
-  background-color: var(--ifm-color-success);
-  padding: 6rem 0 8rem;
-}
-.buttons_src-pages-index-module {
-  flex-wrap: wrap;
-}
 
 .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.1);
@@ -80,38 +73,14 @@ span.highlight {
 }
 
 main {
+  width: 100vw;
+  min-height: calc(100vh - var(--ifm-navbar-height));
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
-main section[class*="features_"] .container {
-  margin: 4rem auto;
-}
-main section[class*="features_"] .col {
+main > * {
   position: relative;
-}
-main section[class*="features_"] .col:last-of-type {
-  color: #fff;
-}
-
-body svg[class*="featureSvg_"] {
-  position: absolute;
-  width: 200%;
-  height: auto;
-  top: 50%;
-  left: -50%;
-  z-index: -1;
-  transform: translateY(-50%);
-  opacity: .9;
-}
-@media (max-width: 996px) {
-  body svg[class*="featureSvg_"] {
-    width: 140%;
-    left: -20%;
-  }
-  body .col:nth-of-type(2) svg[class*="featureSvg_"] {
-    display: none;
-  }
-  main section[class*="features_"] .col:last-of-type {
-    color: #000;
-  }
+  flex: 1;
 }

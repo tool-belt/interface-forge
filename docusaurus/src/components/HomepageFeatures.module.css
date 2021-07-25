@@ -2,12 +2,28 @@
 
 .features {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 2rem 0;
+  justify-content: center;
   width: 100%;
 }
 
+.feature {
+  text-align: center;
+  flex-basis: calc(33% - 4rem);
+  margin: 2rem;
+  width: 480px;
+  min-width: 320px;
+  max-width: 100%;
+}
+
 .featureSvg {
-  height: 200px;
-  width: 200px;
+  position: absolute;
+  width: 200%;
+  height: auto;
+  top: 50%;
+  left: -50%;
+  z-index: -1;
+  transform: translateY(-50%);
+  opacity: .9;
 }
