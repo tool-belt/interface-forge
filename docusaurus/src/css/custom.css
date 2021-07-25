@@ -1,0 +1,117 @@
+/* stylelint-disable docusaurus/copyright-header */
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+ @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #6f9cb0;
+  --ifm-color-primary-dark: #5c8fa6;
+  --ifm-color-primary-darker: #56889e;
+  --ifm-color-primary-darkest: #477082;
+  --ifm-color-primary-light: #82a9ba;
+  --ifm-color-primary-lighter: #8bafbf;
+  --ifm-color-primary-lightest: #a7c2cf;
+  --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Rubik', sans-serif;
+
+  /* https://color.adobe.com/de/interfaceForge-color-theme-18180452 */
+  --ifm-color-info: #6f9cb0;
+  --ifm-color-warning: #FFEEC7;
+  --ifm-color-success: #324C61;
+  --ifm-color-danger: #FF776E;
+
+  --ifm-link-hover-color: var(--ifm-color-danger);
+}
+.navbar--dark {
+  --ifm-navbar-background-color: var(--ifm-color-success);
+}
+.alert--warning {
+  color: #000;
+}
+.alert--warning svg path {
+  fill: #000;
+}
+header.hero.hero--primary {
+  background-color: var(--ifm-color-success);
+  padding: 6rem 0 8rem;
+}
+.buttons_src-pages-index-module {
+  flex-wrap: wrap;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+html[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.navbar__link--active:active,
+.navbar__link--active:focus,
+.navbar__link--active:hover {
+  color: var(--ifm-color-danger);
+}
+
+.highlight {
+  color: #fff;
+  padding: .25em .5em;
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--ifm-color-primary);
+}
+
+.highlight.more {
+  color: #000;
+  padding: .25em .5em;
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--ifm-color-danger);
+}
+
+span.highlight {
+  display: inline-block;
+  margin-bottom: 1em;
+}
+
+main {
+  overflow: hidden;
+}
+
+main section[class*="features_"] .container {
+  margin: 4rem auto;
+}
+main section[class*="features_"] .col {
+  position: relative;
+}
+main section[class*="features_"] .col:last-of-type {
+  color: #fff;
+}
+
+body svg[class*="featureSvg_"] {
+  position: absolute;
+  width: 200%;
+  height: auto;
+  top: 50%;
+  left: -50%;
+  z-index: -1;
+  transform: translateY(-50%);
+  opacity: .9;
+}
+@media (max-width: 996px) {
+  body svg[class*="featureSvg_"] {
+    width: 140%;
+    left: -20%;
+  }
+  body .col:nth-of-type(2) svg[class*="featureSvg_"] {
+    display: none;
+  }
+  main section[class*="features_"] .col:last-of-type {
+    color: #000;
+  }
+}
