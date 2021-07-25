@@ -88,3 +88,7 @@
 [1.3.5]
 
 - fixed issue with fs.mkdirSync
+
+## 1.4.0
+
+- added '.derived' static method
