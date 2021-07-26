@@ -2,22 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1111a0fc-16ba-414b-97da-d0eb1c820c99" name="Default Changelist" comment="removed &quot;deep-merge&quot; and replaced with local implementation">
-      <change afterPath="$PROJECT_DIR$/.idea/azure/azureSettings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docusaurus/docs/4-integration-with-faker-libraries-example.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/assets/js/e270acad.80f3fd11.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/e270acad.80f3fd11.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/assets/js/main.2f00778a.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/main.2f00778a.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/24df6fdd.4634105a.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/30e52a21.27d39eac.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/runtime~main.e59d76fa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/24df6fdd.9183feac.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/30e52a21.dace10c1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/runtime~main.6e2e2a50.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/Schema/factory-schema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/Schema/factory-schema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/contributing/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/contributing/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-property-as-derived/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-property-as-derived/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-required-build-time-argument/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-required-build-time-argument/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-factories-in-factory-schema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-factories-in-factory-schema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-generators/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-generators/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-custom-functions/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-custom-functions/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-nested-factories/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-nested-factories/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/installation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/installation/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/integrating-faker/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/integrating-faker/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/table-of-contents/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/table-of-contents/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/basic-example/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/basic-example/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/batch-building/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/batch-building/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/building-objects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/building-objects/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/creating-and-using-fixtures/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/creating-and-using-fixtures/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/passing-a-factory-function/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/passing-a-factory-function/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/passing-default-values/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/passing-default-values/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docusaurus/docs/0-table-of-contents.md" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/docs/0-table-of-contents.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docusaurus/docs/4-contributing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/docs/5-contributing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interface-forge.iml" beforeDir="false" afterPath="$PROJECT_DIR$/interface-forge.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docusaurus/docs/4-integration-with-faker-libraries-example.md" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/docs/4-integration-with-faker-libraries-example.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -249,7 +261,7 @@
       <workItem from="1627295242672" duration="95000" />
       <workItem from="1627295535829" duration="4949000" />
       <workItem from="1627320537048" duration="39000" />
-      <workItem from="1627320581189" duration="2105000" />
+      <workItem from="1627320581189" duration="2363000" />
     </task>
     <task id="LOCAL-00001" summary="added .idea and cleanup">
       <created>1620916433753</created>

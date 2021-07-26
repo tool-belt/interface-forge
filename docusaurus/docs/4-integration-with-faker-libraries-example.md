@@ -1,13 +1,13 @@
 ---
 id: integrating-faker
-title: Integrating with FakerJS or ChanceJS
+title: FakerJs Integration
 description: Example of FakerJS or ChanceJS factory integration
 slug: /integrating-faker
 sidebar_label: 'FakerJS Integration'
 sidebar_position: 4
 ---
 
-Integrating faker.js, chance.js and any other similar library in a factory is straightforward:
+Integrating fakerJS or any other similar library (e.g. chanceJs) in a factory is very straightforward:
 
 ```typescript
 import * as faker from 'faker';
@@ -24,6 +24,7 @@ interface User {
     isActive: boolean;
     imageUrl: string;
 }
+
 export const UserFactory = new TypeFactory<User>(() => {
     id: faker.datatype.uuid();
     firstName: faker.name.firstName();
@@ -43,3 +44,7 @@ const user = UserFactory.buildSync(() => ({
     address: faker.address.streetAddress + ", " + faker.address.zipCode()
 }))
 ```
+
+:::note
+To ensure that faker is called every time the factory builds an instance, you should use function base defaults and overrides. 
+:::

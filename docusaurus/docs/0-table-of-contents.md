@@ -26,5 +26,5 @@ Interface-Forge allows you to gracefully generate dynamic mock data and static f
     -   [Using Generators](./3-Schema/6-using-generators.md)
         -   [The .iterate method](./3-Schema/6-using-generators.md#the-iterate-method)
         -   [The .sample method](./3-Schema/6-using-generators.md#the-sample-method)
--   [Contributing](./4-integration-with-faker-libraries-example.md)
+-   [FakerJS integration](./4-integration-with-faker-libraries-example.md)
 -   [Contributing](./5-contributing.md)
