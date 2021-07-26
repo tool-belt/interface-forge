@@ -1,9 +1,9 @@
 ---
-id: integrating-faker
-title: FakerJs Integration
-description: Example of FakerJS or ChanceJS factory integration
-slug: /integrating-faker
-sidebar_label: 'FakerJS Integration'
+id: integrating-faker 
+title: FakerJs Integration 
+description: Example of FakerJS or ChanceJS factory integration 
+slug: /integrating-faker 
+sidebar_label: 'FakerJS Integration' 
 sidebar_position: 4
 ---
 
@@ -11,8 +11,8 @@ Integrating fakerJS or any other similar library (e.g. chanceJs) in a factory is
 
 ```typescript
 import * as faker from 'faker';
-import { TypeFactory } from 'interface-forge';
-import { UserProfile, User, Cat } from "./types"
+import {TypeFactory} from 'interface-forge';
+import {UserProfile, User, Cat} from "./types"
 
 interface User {
     id: string;
@@ -37,7 +37,7 @@ export const UserFactory = new TypeFactory<User>(() => {
 })
 ```
 
-Or as part of build args: 
+Or as part of build args:
 
 ```typescript
 const user = UserFactory.buildSync(() => ({
@@ -45,6 +45,6 @@ const user = UserFactory.buildSync(() => ({
 }))
 ```
 
-:::note
-To ensure that faker is called every time the factory builds an instance, you should use function base defaults and overrides. 
+:::note To ensure that faker is called every time the factory builds an instance, you should use function based defaults
+and overrides.
 :::
