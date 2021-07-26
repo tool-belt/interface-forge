@@ -4,7 +4,7 @@ title: Contributing
 description: Contributing to this package
 slug: /contributing
 sidebar_label: 'Contributing'
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 This package is open to contributions. To contribute, please follow these steps:

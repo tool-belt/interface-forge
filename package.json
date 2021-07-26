@@ -2,5 +2,9 @@
   "name": "docs",
   "version": "0.0.0",
   "description": "",
-  "private": true
+  "private": true,
+  "private": "true",
+  "repository": "https://github.com/Goldziher/interfaceForge",
+  "author": "Na'aman Hirschfeld <Naaman.Hirschfeld@sprylab.com>",
+  "license": "MIT"
 }
