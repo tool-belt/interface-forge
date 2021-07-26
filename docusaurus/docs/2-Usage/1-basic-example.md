@@ -27,7 +27,7 @@ export interface User {
 }
 ```
 
-Pass the desired type as a generic argument when instantiating TypeFactory, alongside default values for the factory:
+Pass the desired type as a generic argument when instantiating TypeFactory alongside default values for the factory:
 
 ```typescript title="factories.ts"
 import { TypeFactory } from 'interface-forge';
@@ -47,7 +47,7 @@ const UserFactory = new TypeFactory<User>((i) => ({
 }));
 ```
 
-Then use the factory to create an object of the desired type in a test file:
+Then use the factory to create an object of the desired type:
 
 ```typescript title="User.spec.ts"
 describe('User', () => {

@@ -27,8 +27,8 @@ const UserFactory = new TypeFactory<User>(
 );
 ```
 
-When using derived properties you _must_ provide a factory function that will set the value for all derived properties.
-When a derived property is not set, an informative error will be thrown:
+When using derived properties you **must** provide a factory function that will set the value for all derived properties.
+If, after any user provided factory function has been called, a derived property is still not set, an informative error will be thrown:
 
 ```typescript title="factories.ts"
 const UserFactory = new TypeFactory<User>({
