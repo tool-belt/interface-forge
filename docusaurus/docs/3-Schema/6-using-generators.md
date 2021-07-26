@@ -1,20 +1,21 @@
 ---
 id: using-generators
-title: Using Generators
+title: Using Generator Functions
 description: Using Generators
 slug: /factory-schema/using-generators
 ---
 
-You can place
-a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) as a
-factory schema value. At build-time, the generator's `.next` method will be called. You should be careful. though, when
-doing this: The generator function does not return or yield `{done: true}` during build-time.
+You can place a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) as a
+factory schema value. The generator's `.next` method will be called at build-time. You should be careful though when
+doing this that the generator function does not return or yield `{done: true}`.
 
 There are two built-in convenience static methods that create _infinite_ generators: `.iterate` and `.sample`. Both
 methods accept an [iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) as a
-value, e.g. an Array, Set, Map etc.
+value (e.g., an Array, Set, Map etc.)
 
-**NOTE** do not pass an infinite iterator to these builtin methods: It will create an infinite loop.
+:::danger
+do not pass an infinite iterator to these builtin methods: It will create an infinite loop.
+:::
 
 ## The .iterate method
 

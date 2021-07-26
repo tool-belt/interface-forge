@@ -1,19 +1,19 @@
 ---
-id: creating-and-using-fixtures
-title: Creating and using Fixtures
+id: creating-and-using-fixtures 
+title: Creating and using Fixtures 
 description: How to create static factory builds
 slug: /usage/creating-and-using-fixtures
 ---
 
-To use the package to generate fixtures you can simply import `FixtureFactory` instead of `TypeFactory`. The fixture class extends TypeFactory with four additional methods, which allow you to save static builds of a factory to your disk. This can be helpful where you don't want the result of a build to change everytime it runs (i.e. when snapshot testing). The methods' naming corresponds to the respective build method: `.fixture`, `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`.
+Interface Forge allows you to generate fixtures. This is useful when you do not want the result of a build to change
+with every run, for example when snapshot testing frontend components.
 
-The FixtureFactory's methods require a file name (or file path) as the first parameter. You can also designate a default path for all of a factory's builds, by passing a third parameter to the constructor. The file names will then be appended to this designated default path, instead.
+To generate fixtures you should instantiate your factory using the `FixtureFactory` class instead of `TypeFactory`,
+which extends TypeFactory with four additional methods that allow you to save builds as fixtures: `.fixture`
+, `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`. The methods' naming corresponds with their respective build
+method, and are thus also respectively sync/async.
 
-:::note file path
-Whether using a default fixture path, or not: The **file path must be absolute**, or else interface-forge will throw an error.
-:::
-
-## Without default File Path
+The FixtureFactory's methods require a file name or file path as the first parameter:
 
 ```typescript title="${projectRoot}/tests/User.spec.ts"
 import { FixtureFactory } from 'interface-forge';
@@ -41,7 +41,8 @@ describe('User', () => {
 });
 ```
 
-## With default File Path
+You can also designate a default path for all of a factory's builds by passing a third parameter to the constructor. The
+file names or paths will then be appended to the designated default path:
 
 ```typescript title="${projectRoot}/tests/Profile.spec.ts"
 import { FixtureFactory } from 'interface-forge';
@@ -69,3 +70,7 @@ describe('Profile', () => {
     // ...
 });
 ```
+
+:::note 
+A file path **must be** an absolute path, otherwise an informative error will be thrown.
+:::
