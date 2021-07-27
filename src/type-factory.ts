@@ -1,13 +1,14 @@
 import { ERROR_MESSAGES } from './constants';
 import {
     FactoryBuildOptions,
+    FactoryDefaults,
     FactoryFunction,
-    FactoryOptions,
     FactorySchema,
     UseOptions,
 } from './types';
 import { isPromise } from './utils/guards';
 import { iterate, sample } from './helpers';
+import { merge } from './utils/general';
 import {
     parseFactorySchemaAsync,
     parseFactorySchemaSync,
@@ -17,6 +18,22 @@ import {
     validateFactoryResult,
     validateFactorySchema,
 } from './utils/validators';
+
+type SyncBuildArgs<T> = {
+    defaults: FactorySchema<T>;
+    overrides?: FactoryDefaults<Partial<T>>;
+    factory?: FactoryFunction<T>;
+    iteration: number;
+};
+
+type AsyncBuildArgs<T> = {
+    defaults: Promise<FactorySchema<T>> | FactorySchema<T>;
+    overrides?:
+        | Promise<FactoryDefaults<Partial<T>>>
+        | FactoryDefaults<Partial<T>>;
+    factory?: FactoryFunction<T>;
+    iteration: number;
+};
 
 export class BuildArgProxy {}
 
@@ -36,78 +53,94 @@ export class Ref<T> {
 }
 
 export class TypeFactory<T> {
-    private readonly defaults: FactoryOptions<T>;
+    private readonly defaults: FactoryDefaults<T>;
     public counter: number;
     public factory?: FactoryFunction<T>;
 
-    constructor(defaults: FactoryOptions<T>, factory?: FactoryFunction<T>) {
+    constructor(defaults: FactoryDefaults<T>, factory?: FactoryFunction<T>) {
         this.defaults = defaults;
         this.factory = factory;
         this.counter = 0;
-    }
-
-    getDefaults(
-        iteration: number,
-    ): Promise<FactorySchema<T>> | FactorySchema<T> {
-        return typeof this.defaults === 'function'
-            ? this.defaults(iteration)
-            : this.defaults;
     }
 
     resetCounter(value = 0): void {
         this.counter = value;
     }
 
-    async build(options?: FactoryBuildOptions<T>): Promise<T> {
+    private preBuild = (
+        isSync: boolean,
+        options?: FactoryBuildOptions<T>,
+    ): SyncBuildArgs<T> | AsyncBuildArgs<T> => {
         const iteration = this.counter;
         this.counter++;
-        const defaults = await this.getDefaults(iteration);
+        const defaults =
+            typeof this.defaults === 'function'
+                ? this.defaults(iteration)
+                : this.defaults;
         const [overrides, factory = this.factory] = parseOptions<T>(
             options,
             iteration,
         );
-        const mergedSchema = validateFactorySchema(
-            Object.assign({}, defaults, await overrides),
-        );
-        const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
-        return validateFactoryResult(
-            factory ? factory(value, iteration) : value,
-        );
-    }
+        if (isSync) {
+            if (isPromise(defaults)) {
+                throw new Error(ERROR_MESSAGES.PROMISE_DEFAULTS);
+            }
+            if (isPromise(overrides)) {
+                throw new Error(ERROR_MESSAGES.PROMISE_OVERRIDES);
+            }
+        }
+        return { defaults, overrides, factory, iteration };
+    };
 
-    buildSync(options?: FactoryBuildOptions<T>): T {
-        const iteration = this.counter;
-        this.counter++;
-        const [overrides, factory = this.factory] = parseOptions<T>(
-            options,
-            iteration,
-        );
-        const defaults = this.getDefaults(iteration);
-        if (isPromise(defaults)) {
-            throw new Error(ERROR_MESSAGES.PROMISE_DEFAULTS);
-        }
-        if (isPromise(overrides)) {
-            throw new Error(ERROR_MESSAGES.PROMISE_OVERRIDES);
-        }
-        const mergedSchema = validateFactorySchema(
-            Object.assign({}, defaults, overrides),
-        );
-        const value = parseFactorySchemaSync<T>(mergedSchema, iteration);
-        const result = factory ? factory(value, iteration) : value;
+    private postBuild(isSync: boolean, result: T | Promise<T>): T | Promise<T> {
         if (isPromise(result)) {
-            throw new Error(ERROR_MESSAGES.PROMISE_FACTORY);
+            if (isSync) {
+                throw new Error(ERROR_MESSAGES.PROMISE_FACTORY);
+            }
+            return result.then(validateFactoryResult);
         }
         return validateFactoryResult(result);
     }
 
-    async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
-        return Promise.all(
-            new Array(size).fill(null).map(async () => this.build(options)),
+    build = async (options?: FactoryBuildOptions<T>): Promise<T> => {
+        const { defaults, overrides, factory, iteration } = this.preBuild(
+            false,
+            options,
         );
+        const mergedSchema = validateFactorySchema(
+            merge(
+                ...(await Promise.all([
+                    Promise.resolve(defaults),
+                    Promise.resolve(overrides),
+                ])),
+            ),
+        );
+        const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
+        return this.postBuild(
+            false,
+            factory ? factory(value, iteration) : value,
+        );
+    };
+
+    buildSync = (options?: FactoryBuildOptions<T>): T => {
+        const { defaults, overrides, factory, iteration } = this.preBuild(
+            true,
+            options,
+        ) as SyncBuildArgs<T>;
+        const mergedSchema = validateFactorySchema(merge(defaults, overrides));
+        const value = parseFactorySchemaSync<T>(mergedSchema, iteration);
+        return this.postBuild(
+            true,
+            factory ? factory(value, iteration) : value,
+        ) as T;
+    };
+
+    async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
+        return Promise.all(new Array(size).fill(options).map(this.build));
     }
 
     batchSync(size: number, options?: FactoryBuildOptions<T>): T[] {
-        return new Array(size).fill(null).map(() => this.buildSync(options));
+        return new Array(size).fill(options).map(this.buildSync);
     }
 
     static required(): BuildArgProxy {
@@ -125,12 +158,6 @@ export class TypeFactory<T> {
         return new Ref<P>(value, options);
     }
 
-    static iterate<P>(iterable: Iterable<P>): Generator<P, P, P> {
-        return iterate<P>(iterable);
-    }
-
-    /* istanbul ignore next */
-    static sample<P>(iterable: Iterable<P>): Generator<P, P, P> {
-        return sample<P>(iterable);
-    }
+    static iterate = iterate;
+    static sample = sample;
 }

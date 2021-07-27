@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from '../constants';
-import { isPromise } from './guards';
+import { isPromise, isRecord } from './guards';
 
 export function throwIfPromise<T>(value: T, key: string): T {
     if (isPromise(value)) {
@@ -16,4 +16,19 @@ export function getValueFromNestedArray<T = unknown>(
         return [arr[0], level];
     }
     return getValueFromNestedArray<T>(arr[0], level + 1);
+}
+
+export function merge<T>(target: T, ...sources: any[]): T {
+    const output: Partial<T> = { ...target };
+    for (const source of sources.filter(Boolean) as Partial<T>[]) {
+        for (const [key, value] of Object.entries(source)) {
+            const existingValue: unknown = Reflect.get(output, key);
+            if (isRecord(value) && isRecord(existingValue)) {
+                Reflect.set(output, key, merge(existingValue, value));
+            } else {
+                Reflect.set(output, key, value);
+            }
+        }
+    }
+    return output as T;
 }

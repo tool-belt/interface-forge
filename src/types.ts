@@ -5,7 +5,7 @@ export type FactoryFunction<T> = (
     iteration: number,
 ) => T | Promise<T>;
 
-export type FactoryOptions<T> =
+export type FactoryDefaults<T> =
     | FactorySchema<T>
     | ((iteration: number) => FactorySchema<T> | Promise<FactorySchema<T>>);
 
@@ -22,12 +22,12 @@ export type FactorySchema<T> = {
 };
 
 export interface OverridesAndFactory<T> {
-    overrides?: FactoryOptions<Partial<T>>;
+    overrides?: FactoryDefaults<Partial<T>>;
     factory?: FactoryFunction<T>;
 }
 
 export type FactoryBuildOptions<T> =
     | OverridesAndFactory<T>
-    | FactoryOptions<Partial<T>>;
+    | FactoryDefaults<Partial<T>>;
 
 export type UseOptions<T> = { batch?: number } & FactoryBuildOptions<T>;
