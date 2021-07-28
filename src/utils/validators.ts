@@ -1,16 +1,28 @@
 import { BuildArgProxy, DerivedValueProxy } from '../type-factory';
 import { ERROR_MESSAGES } from '../constants';
 import { FactorySchema } from '../types';
+import { isRecord } from './guards';
+
+function recursiveValidate(
+    obj: Record<string, any>,
+    cls: any,
+    parent = '',
+): string[] {
+    const mappedKeys: string[] = [];
+    for (const [key, value] of Object.entries(obj)) {
+        if (value instanceof cls) {
+            mappedKeys.push(parent ? `${parent}.${key}` : key);
+        } else if (isRecord(value)) {
+            mappedKeys.push(...recursiveValidate(value, cls, key));
+        }
+    }
+    return mappedKeys;
+}
 
 export function validateFactorySchema<T extends FactorySchema<any>>(
     schema: T,
 ): T {
-    const missingValues: string[] = [];
-    Object.entries(schema).forEach(([key, value]) => {
-        if (value instanceof BuildArgProxy) {
-            missingValues.push(key);
-        }
-    });
+    const missingValues = recursiveValidate(schema, BuildArgProxy);
     if (missingValues.length) {
         throw new Error(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
@@ -23,12 +35,7 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
 }
 
 export function validateFactoryResult<T>(factoryResult: T): T {
-    const missingValues: string[] = [];
-    Object.entries(factoryResult).forEach(([key, value]) => {
-        if (value instanceof DerivedValueProxy) {
-            missingValues.push(key);
-        }
-    });
+    const missingValues = recursiveValidate(factoryResult, DerivedValueProxy);
     if (missingValues.length) {
         throw new Error(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(

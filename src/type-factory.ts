@@ -99,21 +99,26 @@ export class TypeFactory<T> {
         return validateFactoryResult(result);
     }
 
+    private performBuild(
+        defaults: FactoryDefaults<T>,
+        overrides: FactoryDefaults<Partial<T>> | undefined,
+        iteration: number,
+        isSync: boolean,
+    ): T | Promise<T> {
+        const mergedSchema = validateFactorySchema(
+            merge(defaults, overrides) as FactorySchema<T>,
+        );
+        return parseFactorySchema<T>(mergedSchema, iteration, isSync);
+    }
+
     build = async (options?: FactoryBuildOptions<T>): Promise<T> => {
         const { defaults, overrides, factory, iteration } = this.preBuild(
             false,
             options,
         );
-        const mergedSchema = validateFactorySchema(
-            merge(
-                ...(await Promise.all([
-                    Promise.resolve(defaults),
-                    Promise.resolve(overrides),
-                ])),
-            ),
-        );
-        const value = await parseFactorySchema<T>(
-            mergedSchema,
+        const value = await this.performBuild(
+            await defaults,
+            await overrides,
             iteration,
             false,
         );
@@ -128,8 +133,12 @@ export class TypeFactory<T> {
             true,
             options,
         ) as SyncBuildArgs<T>;
-        const mergedSchema = validateFactorySchema(merge(defaults, overrides));
-        const value = parseFactorySchema<T>(mergedSchema, iteration, true) as T;
+        const value = this.performBuild(
+            defaults,
+            overrides,
+            iteration,
+            true,
+        ) as T;
         return this.postBuild(
             true,
             factory ? factory(value, iteration) : value,

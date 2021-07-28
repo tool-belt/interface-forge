@@ -48,7 +48,6 @@ export function parseFactorySchema<T>(
     isSync: boolean,
 ): T | Promise<T> {
     const output: Record<string, unknown> = {};
-    // eslint-disable-next-line prefer-const
     for (let [key, value] of Object.entries(schema)) {
         if (value instanceof TypeFactory) {
             value = isSync ? value.buildSync() : value.build();

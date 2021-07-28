@@ -29,6 +29,20 @@ describe('validateFactorySchema', () => {
             defaults,
         );
     });
+    it('validates nested objects', () => {
+        expect(() =>
+            validateFactorySchema<any>({
+                ...defaults,
+                topLevel: TypeFactory.required(),
+                nested: { ...defaults, options: TypeFactory.required() as any },
+            }),
+        ).toThrow(
+            ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
+                ':missingArgs',
+                'topLevel, nested.options',
+            ),
+        );
+    });
 });
 
 describe('validateFactoryResult', () => {
@@ -46,8 +60,22 @@ describe('validateFactoryResult', () => {
         );
     });
     it('doesnt throw for normal values', () => {
-        expect(validateFactorySchema<ComplexObject>(defaults)).toEqual(
+        expect(validateFactoryResult<ComplexObject>(defaults)).toEqual(
             defaults,
+        );
+    });
+    it('validates nested objects', () => {
+        expect(() =>
+            validateFactoryResult<any>({
+                ...defaults,
+                topLevel: TypeFactory.derived(),
+                nested: { ...defaults, options: TypeFactory.derived() as any },
+            }),
+        ).toThrow(
+            ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(
+                ':missingValues',
+                'topLevel, nested.options',
+            ),
         );
     });
 });
