@@ -1,12 +1,4 @@
-import { ERROR_MESSAGES } from '../constants';
-import { isPromise, isRecord } from './guards';
-
-export function throwIfPromise<T>(value: T, key: string): T {
-    if (isPromise(value)) {
-        throw new Error(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', key));
-    }
-    return value;
-}
+import { isRecord } from './guards';
 
 export function getValueFromNestedArray<T = unknown>(
     arr: T[],

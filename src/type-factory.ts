@@ -9,10 +9,7 @@ import {
 import { isPromise } from './utils/guards';
 import { iterate, sample } from './helpers';
 import { merge } from './utils/general';
-import {
-    parseFactorySchemaAsync,
-    parseFactorySchemaSync,
-} from './utils/schema';
+import { parseFactorySchema } from './utils/schema';
 import { parseOptions } from './utils/options';
 import {
     validateFactoryResult,
@@ -115,7 +112,11 @@ export class TypeFactory<T> {
                 ])),
             ),
         );
-        const value = await parseFactorySchemaAsync<T>(mergedSchema, iteration);
+        const value = await parseFactorySchema<T>(
+            mergedSchema,
+            iteration,
+            false,
+        );
         return this.postBuild(
             false,
             factory ? factory(value, iteration) : value,
@@ -128,7 +129,7 @@ export class TypeFactory<T> {
             options,
         ) as SyncBuildArgs<T>;
         const mergedSchema = validateFactorySchema(merge(defaults, overrides));
-        const value = parseFactorySchemaSync<T>(mergedSchema, iteration);
+        const value = parseFactorySchema<T>(mergedSchema, iteration, true) as T;
         return this.postBuild(
             true,
             factory ? factory(value, iteration) : value,

@@ -1,66 +1,69 @@
 import { DerivedValueProxy, Ref, TypeFactory } from '../type-factory';
+import { ERROR_MESSAGES } from '../constants';
 import { FactorySchema } from '../types';
-import { isOfType, isRecord } from './guards';
-import { throwIfPromise } from './general';
+import { isOfType, isPromise, isRecord } from './guards';
 
-export function parseFactorySchemaSync<T>(
-    schema: FactorySchema<T>,
+function parseRef(
+    { value, options: { batch, ...options } = {} }: Ref<any>,
+    isSync: boolean,
     iteration: number,
-): T {
-    const output: Record<string, unknown> = {};
-    for (const [key, rawValue] of Object.entries(schema)) {
-        const value = throwIfPromise(rawValue, key);
-        if (value instanceof TypeFactory) {
-            output[key] = value.buildSync();
-        } else if (value instanceof Ref) {
-            if (value.value instanceof TypeFactory) {
-                const { value: factory } = value;
-                const { batch, ...options } = value.options ?? {};
-                output[key] = batch
-                    ? factory.batchSync(batch, options)
-                    : factory.buildSync(options);
-            } else {
-                output[key] = value.value(iteration);
+): unknown {
+    if (value instanceof TypeFactory) {
+        if (batch) {
+            if (isSync) {
+                return value.batchSync(batch, options) as unknown;
             }
-        } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
-            output[key] = throwIfPromise(value.next().value, key);
-        } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
-            output[key] = parseFactorySchemaSync(value, iteration);
+            return value.batch(batch, options);
+        }
+        if (isSync) {
+            return value.buildSync(options);
+        }
+        return value.build(options);
+    } else {
+        return value(iteration);
+    }
+}
+
+async function recursiveResolve<T>(
+    parsedSchema: Record<string, any>,
+): Promise<T> {
+    const output = {};
+    for (const [key, value] of Object.entries(parsedSchema)) {
+        if (isRecord(value)) {
+            Reflect.set(output, key, recursiveResolve(value));
         } else {
-            output[key] = value;
+            Reflect.set(
+                output,
+                key,
+                isPromise(value) ? await Promise.resolve(value) : value,
+            );
         }
     }
-
     return output as T;
 }
 
-export async function parseFactorySchemaAsync<T>(
+export function parseFactorySchema<T>(
     schema: FactorySchema<T>,
     iteration: number,
-): Promise<T> {
+    isSync: boolean,
+): T | Promise<T> {
     const output: Record<string, unknown> = {};
-    for (const [key, rawValue] of Object.entries(schema)) {
-        const value = await Promise.resolve(rawValue);
+    // eslint-disable-next-line prefer-const
+    for (let [key, value] of Object.entries(schema)) {
         if (value instanceof TypeFactory) {
-            output[key] = await value.build();
+            value = isSync ? value.buildSync() : value.build();
         } else if (value instanceof Ref) {
-            if (value.value instanceof TypeFactory) {
-                const { value: factory } = value;
-                const { batch, ...options } = value.options ?? {};
-                output[key] = batch
-                    ? await factory.batch(batch, options)
-                    : await factory.build(options);
-            } else {
-                output[key] = await value.value(iteration);
-            }
+            value = parseRef(value, isSync, iteration);
         } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
-            output[key] = await value.next().value;
+            value = value.next().value;
         } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
-            output[key] = await parseFactorySchemaAsync(value, iteration);
-        } else {
-            output[key] = value;
+            value = parseFactorySchema(value, iteration, isSync);
         }
+        if (isPromise(value) && isSync) {
+            throw new Error(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', key));
+        }
+        output[key] = value;
     }
 
-    return output as T;
+    return (isSync ? output : recursiveResolve(output)) as T;
 }
