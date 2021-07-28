@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from './constants';
-import { FactoryBuildOptions, FactoryFunction, FactoryOptions } from './types';
+import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';
 import { TypeFactory } from './type-factory';
 import {
     haveSameKeyPaths,
@@ -13,7 +13,7 @@ export class FixtureFactory<T> extends TypeFactory<T> {
     private defaultPath: string | undefined;
 
     constructor(
-        defaults: FactoryOptions<T>,
+        defaults: FactoryDefaults<T>,
         factory?: FactoryFunction<T>,
         defaultPath?: string,
     ) {

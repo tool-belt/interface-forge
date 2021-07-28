@@ -59,12 +59,10 @@ export function readFileIfExists<T>(filePath: string): T | null {
 
 export function mapKeyPaths<T>(input: T, chain = ''): string[] {
     const keys = [];
-    // eslint-disable-next-line prefer-const
     for (let [key, value] of Object.entries(input)) {
         keys.push(key);
         let subChain = chain ? `${chain}.${key}` : key;
         if (Array.isArray(value)) {
-            // eslint-disable-next-line prefer-const
             let [nestedValue, levels] = getValueFromNestedArray(value, 1);
             value = nestedValue;
             while (levels > 0) {

@@ -26,11 +26,12 @@ describe('.build', () => {
     it('builds correctly with builder function', async () => {
         const factory = new TypeFactory<ComplexObject>(
             defaults,
-            (defaults, iteration) => ({
-                ...defaults,
-                name: 'newObject',
-                value: iteration + 1,
-            }),
+            async (defaults, iteration) =>
+                Promise.resolve({
+                    ...defaults,
+                    name: 'newObject',
+                    value: iteration + 1,
+                }),
         );
         expect(await factory.build()).toStrictEqual<ComplexObject>({
             ...defaults,

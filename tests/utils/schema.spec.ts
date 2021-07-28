@@ -1,19 +1,16 @@
 import { ComplexObject, Options } from '../test-types';
-import { TypeFactory } from '../../src';
-import {
-    parseFactorySchemaAsync,
-    parseFactorySchemaSync,
-} from '../../src/utils/schema';
+import { ERROR_MESSAGES, TypeFactory } from '../../src';
+import { parseFactorySchema } from '../../src/utils/schema';
 
 const defaults: ComplexObject = {
     name: 'testObject',
     value: null,
 };
 
-describe('parseFactorySchemaAsync', () => {
+describe('parseFactorySchema Async', () => {
     it('parses schema correctly for embedded instance', async () => {
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     options: new TypeFactory<any>({
@@ -21,6 +18,7 @@ describe('parseFactorySchemaAsync', () => {
                     }),
                 },
                 0,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -31,12 +29,13 @@ describe('parseFactorySchemaAsync', () => {
     });
     it('parses schema correctly using .use with function', async () => {
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: TypeFactory.use(async () => Promise.resolve(99)),
                 },
                 0,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -45,7 +44,7 @@ describe('parseFactorySchemaAsync', () => {
     });
     it('parses schema correctly using .use with TypeFactory + options', async () => {
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     options: TypeFactory.use<Options>(
@@ -56,6 +55,7 @@ describe('parseFactorySchemaAsync', () => {
                     ),
                 },
                 0,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -65,7 +65,7 @@ describe('parseFactorySchemaAsync', () => {
         });
     });
     it('parses schema correctly using .use with batch=5', async () => {
-        const result = await parseFactorySchemaAsync<ComplexObject>(
+        const result = await parseFactorySchema<ComplexObject>(
             {
                 ...defaults,
                 options: TypeFactory.use<Options>(
@@ -86,6 +86,7 @@ describe('parseFactorySchemaAsync', () => {
                 ),
             },
             0,
+            false,
         );
         expect(result).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -108,60 +109,92 @@ describe('parseFactorySchemaAsync', () => {
             3,
         ]);
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 0,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 1,
         });
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 1,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 2,
         });
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 2,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 3,
         });
         expect(
-            await parseFactorySchemaAsync<ComplexObject>(
+            await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 4,
+                false,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 1,
         });
     });
+    it('resolves all nested promises', async () => {
+        expect(
+            await parseFactorySchema<any>(
+                {
+                    topLevel: Promise.resolve(1),
+                    nested: {
+                        value: Promise.resolve(2),
+                        deep: {
+                            value: Promise.resolve({
+                                nested: 3,
+                                deep: Promise.resolve(4),
+                            }),
+                        },
+                    },
+                },
+                1,
+                false,
+            ),
+        ).toEqual({
+            topLevel: 1,
+            nested: {
+                value: 2,
+                deep: {
+                    value: { nested: 3, deep: 4 },
+                },
+            },
+        });
+    });
 });
 
-describe('parseFactorySchemaSync', () => {
+describe('parseFactorySchema Sync', () => {
     it('parses schema correctly for embedded instance', () => {
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     options: new TypeFactory<any>({
@@ -169,6 +202,7 @@ describe('parseFactorySchemaSync', () => {
                     }),
                 },
                 0,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -179,12 +213,13 @@ describe('parseFactorySchemaSync', () => {
     });
     it('parses schema correctly using .use with function', () => {
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: TypeFactory.use(() => 99),
                 },
                 0,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -193,7 +228,7 @@ describe('parseFactorySchemaSync', () => {
     });
     it('parses schema correctly using .use with factory', () => {
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     options: TypeFactory.use<Options>(
@@ -204,6 +239,7 @@ describe('parseFactorySchemaSync', () => {
                     ),
                 },
                 0,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -213,7 +249,7 @@ describe('parseFactorySchemaSync', () => {
         });
     });
     it('parses schema correctly using .use with batch=5', () => {
-        const result = parseFactorySchemaSync<ComplexObject>(
+        const result = parseFactorySchema<ComplexObject>(
             {
                 ...defaults,
                 options: TypeFactory.use<Options>(
@@ -234,6 +270,7 @@ describe('parseFactorySchemaSync', () => {
                 ),
             },
             0,
+            true,
         );
         expect(result).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -247,57 +284,80 @@ describe('parseFactorySchemaSync', () => {
                 ]),
             },
         });
+        // @ts-ignore
         expect(result.options?.children?.length).toEqual(5);
     });
     it('parses schema correctly using generator fn', () => {
         const generator = TypeFactory.iterate([1, 2, 3]);
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 0,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 1,
         });
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 1,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 2,
         });
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 2,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 3,
         });
         expect(
-            parseFactorySchemaSync<ComplexObject>(
+            parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
                     value: generator,
                 },
                 4,
+                true,
             ),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 1,
         });
+    });
+    it('throws error when encountering a Promise', () => {
+        expect(() =>
+            parseFactorySchema<any>(
+                { ...defaults, promise: Promise.resolve(null) },
+                1,
+                true,
+            ),
+        ).toThrow(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', 'promise'));
+        expect(() =>
+            parseFactorySchema<any>(
+                { ...defaults, nested: { promise: Promise.resolve(null) } },
+                1,
+                true,
+            ),
+        ).toThrow(
+            ERROR_MESSAGES.PROMISE_VALUE.replace(':key', 'nested.promise'),
+        );
     });
 });
