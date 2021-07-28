@@ -1,5 +1,5 @@
 import { ComplexObject, Options } from '../test-types';
-import { TypeFactory } from '../../src';
+import { ERROR_MESSAGES, TypeFactory } from '../../src';
 import { parseFactorySchema } from '../../src/utils/schema';
 
 const defaults: ComplexObject = {
@@ -161,6 +161,34 @@ describe('parseFactorySchema Async', () => {
             value: 1,
         });
     });
+    it('resolves all nested promises', async () => {
+        expect(
+            await parseFactorySchema<any>(
+                {
+                    topLevel: Promise.resolve(1),
+                    nested: {
+                        value: Promise.resolve(2),
+                        deep: {
+                            value: Promise.resolve({
+                                nested: 3,
+                                deep: Promise.resolve(4),
+                            }),
+                        },
+                    },
+                },
+                1,
+                false,
+            ),
+        ).toEqual({
+            topLevel: 1,
+            nested: {
+                value: 2,
+                deep: {
+                    value: { nested: 3, deep: 4 },
+                },
+            },
+        });
+    });
 });
 
 describe('parseFactorySchema Sync', () => {
@@ -313,5 +341,23 @@ describe('parseFactorySchema Sync', () => {
             ...defaults,
             value: 1,
         });
+    });
+    it('throws error when encountering a Promise', () => {
+        expect(() =>
+            parseFactorySchema<any>(
+                { ...defaults, promise: Promise.resolve(null) },
+                1,
+                true,
+            ),
+        ).toThrow(ERROR_MESSAGES.PROMISE_VALUE.replace(':key', 'promise'));
+        expect(() =>
+            parseFactorySchema<any>(
+                { ...defaults, nested: { promise: Promise.resolve(null) } },
+                1,
+                true,
+            ),
+        ).toThrow(
+            ERROR_MESSAGES.PROMISE_VALUE.replace(':key', 'nested.promise'),
+        );
     });
 });
