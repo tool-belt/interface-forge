@@ -1,13 +1,13 @@
 import { isRecord } from './guards';
 
-export function getValueFromNestedArray<T = unknown>(
-    arr: T[],
+export function getValueFromNestedArray(
+    arr: unknown[],
     level: number,
-): [value: T, level: number] {
+): [value: unknown, level: number] {
     if (!Array.isArray(arr[0])) {
         return [arr[0], level];
     }
-    return getValueFromNestedArray<T>(arr[0], level + 1);
+    return getValueFromNestedArray(arr[0], level + 1);
 }
 
 export function merge<T>(target: T, ...sources: any[]): T {
