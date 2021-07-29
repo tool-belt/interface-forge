@@ -35,8 +35,3 @@ describe('User', () => {
     // ...
 });
 ```
-
-:::note
-If you call `.buildSync` or `.batchSync` on a factory that has been initialized with async defaults, or while passing
-async overrides / factory function to the method, an informative error will be thrown.
-:::

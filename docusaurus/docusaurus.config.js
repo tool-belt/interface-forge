@@ -43,7 +43,7 @@ module.exports = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/Goldziher/interfaceForge/edit/main/docs/',
+                        'https://github.com/Goldziher/interfaceForge/edit/gh-pages/docusaurus/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),

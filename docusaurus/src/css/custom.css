@@ -52,6 +52,16 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 .navbar__link--active:hover {
   color: var(--ifm-color-danger);
 }
+.pagination-nav__link:active,
+.pagination-nav__link:focus,
+.pagination-nav__link:hover {
+  border-color: var(--ifm-link-hover-color);
+}
+.navbar__brand:active,
+.navbar__brand:focus,
+.navbar__brand:hover {
+  color: currentColor;
+}
 
 .highlight {
   color: #fff;

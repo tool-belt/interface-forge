@@ -45,6 +45,7 @@ const user = UserFactory.buildSync(() => ({
 }))
 ```
 
-:::note To ensure that faker is called every time the factory builds an instance, you should use function based defaults
+:::note Reiteration
+To ensure that faker is called every time the factory builds an instance, you should use function based defaults
 and overrides.
 :::

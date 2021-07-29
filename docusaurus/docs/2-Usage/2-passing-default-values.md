@@ -38,7 +38,7 @@ const UserFactoryWithAsyncFunction = new TypeFactory<User>(
 
 For further details about what can be inside the defaults object see [Factory Schema](#factory-schema).
 
-:::note
+:::note Counter
 Iteration begins at 0 by default. You can reset the internal counter by calling the `.resetCounter` method. If you wish
 to begin iteration at a value other than 0, you can pass this value as a parameter to `.resetCounter`.
 :::

@@ -8,14 +8,18 @@ slug: /usage/creating-and-using-fixtures
 Interface Forge allows you to generate fixtures. This is useful when you do not want the result of a build to change
 with every run, for example when snapshot testing frontend components.
 
-To generate fixtures you should instantiate your factory using the `FixtureFactory` class instead of `TypeFactory`,
+To generate fixtures you should instantiate your factory using the `FixtureFactory` class, instead of `TypeFactory`
 which extends TypeFactory with four additional methods that allow you to save builds as fixtures: `.fixture`
-, `.fixtureSync`, `.fixtureBatch`, `.fixtureBatchSync`. The methods' naming corresponds with their respective build
-method, and are thus also respectively sync/async.
+, `.fixtureSync`, `.fixtureBatch` and `.fixtureBatchSync`. The methods' naming corresponds to their respective build
+method, thus the methods also are respectively sync/async.
+
+:::danger File Name
+Always make sure to choose a **unique file name** for each of your fixtures. Fixtures with the same file path and file naming will override each other and cause problems or unexpected behaviour.
+:::
 
 The FixtureFactory's methods require a file name or file path as the first parameter:
 
-```typescript title="${projectRoot}/tests/User.spec.ts"
+```typescript title=${projectRoot}/tests/User.spec.ts
 import { FixtureFactory } from 'interface-forge';
 import { User } from '../types';
 
@@ -44,7 +48,7 @@ describe('User', () => {
 You can also designate a default path for all of a factory's builds by passing a third parameter to the constructor. The
 file names or paths will then be appended to the designated default path:
 
-```typescript title="${projectRoot}/tests/Profile.spec.ts"
+```typescript title=${projectRoot}/tests/Profile.spec.ts
 import { FixtureFactory } from 'interface-forge';
 import { Profile } from '../types';
 
@@ -71,6 +75,6 @@ describe('Profile', () => {
 });
 ```
 
-:::note 
+:::note File Path
 A file path **must be** an absolute path, otherwise an informative error will be thrown.
 :::

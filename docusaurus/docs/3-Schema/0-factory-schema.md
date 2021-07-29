@@ -9,7 +9,7 @@ When passing default values and overrides, TypeFactory and its subclasses expect
 object in the code. A FactorySchema is an object that can include different types of values, including other factories,
 generator functions, factory functions and some builtin helpers:
 
-```typescript title="types.ts
+```typescript title="types.ts"
 type FactorySchema<T> = {
     [K in keyof T]: T[K] extends CallableFunction
         ? T[K]
