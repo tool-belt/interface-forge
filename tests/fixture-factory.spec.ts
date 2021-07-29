@@ -50,7 +50,7 @@ describe('FixtureFactory', () => {
                     new FixtureFactory<ComplexObject>(
                         defaults,
                         undefined,
-                        'realtive/path',
+                        'relative/path',
                     ),
             ).toThrow(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
         });
@@ -60,7 +60,19 @@ describe('FixtureFactory', () => {
                 ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
             );
         });
-        it('joins file name with factory default path, if provided', () => {
+        it('creates __fixtures__ dir if it does not exist', () => {
+            existsSyncSpy.mockReturnValueOnce(false);
+            readFileIfExistsSpy.mockReturnValueOnce(null);
+            const factory = new FixtureFactory<ComplexObject>(
+                defaults,
+                undefined,
+                '/default/path',
+            );
+            factory.fixtureSync('/testfile');
+            expect(mkdirSyncSpy).toHaveBeenCalled();
+            existsSyncSpy.mockReset();
+        });
+        it('joins file name with factory default path', () => {
             readFileIfExistsSpy.mockReturnValueOnce(null);
             const factory = new FixtureFactory<ComplexObject>(
                 defaults,

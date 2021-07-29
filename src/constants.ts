@@ -1,7 +1,6 @@
 export enum ERROR_MESSAGES {
-    DIR_WRITE = '[interface-forge] error writing dir :filePath:fileError',
-    FILE_READ = '[interface-forge] error reading file :filePath',
-    FILE_WRITE = '[interface-forge] error writing file :filePath:fileError',
+    FILE_READ = '[interface-forge] error reading file :filePath\n\n:fileError',
+    FILE_WRITE = '[interface-forge] error writing file :filePath\n\n:fileError',
     INVALID_EXTENSION = '[interface-forge] file extension is not supported :fileExtension',
     MISSING_BUILD_ARGS = '[interface-forge] missing required build arguments: :missingArgs',
     MISSING_DERIVED_PARAMETERS = '[interface-forge] missing derived parameters: :missingValues',

@@ -1,44 +1,44 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,eslint-comments/disable-enable-pair */
 import { ERROR_MESSAGES } from '../constants';
 import { getValueFromNestedArray } from './general';
 import { isRecord } from './guards';
 import fs from 'fs';
 import path from 'path';
 
-export function validateAndNormalizeFilename(filePath: string): string {
-    if (!filePath) {
+interface ParsedFilePath {
+    fixturesDir: string;
+    fullPath: string;
+}
+
+export function validateAbsolutePath(filePath?: string): void {
+    if (!filePath?.trim()) {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
     }
     if (!path.isAbsolute(filePath)) {
         throw new Error(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
     }
-    const extension = path.extname(filePath);
-    if (!extension || ['.spec', '.test'].includes(extension.toLowerCase())) {
-        filePath = filePath + '.json';
-    } else if (!['.json', '.spec', '.test'].includes(extension.toLowerCase())) {
+}
+
+export function parseFilePath(filePath: string): ParsedFilePath {
+    validateAbsolutePath(filePath);
+    let fileName = path.basename(filePath);
+    const fixturesDir = filePath.replace(fileName, '') + '__fixtures__/';
+    const extension = path.extname(fileName);
+    if (!extension) {
+        fileName = fileName + '.json';
+    } else if (extension.toLowerCase() !== '.json') {
         throw new Error(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(
                 ':fileExtension',
                 extension,
             ),
         );
+    } else if (extension !== '.json') {
+        fileName = fileName.replace(extension, '.json');
     }
-    filePath = filePath.replace(path.extname(filePath), '.json');
-    const fileName = path.basename(filePath);
-    const basePath = filePath.replace(fileName, '') + '__fixtures__/';
-    try {
-        if (!fs.existsSync(basePath)) {
-            fs.mkdirSync(basePath);
-        }
-    } catch (error) {
-        throw new Error(
-            ERROR_MESSAGES.DIR_WRITE.replace(':filePath', basePath).replace(
-                ':fileError',
-                ': ' + JSON.stringify(error),
-            ),
-        );
-    }
-    return basePath + fileName;
+    return {
+        fixturesDir,
+        fullPath: path.join(fixturesDir, fileName),
+    };
 }
 
 export function readFileIfExists<T>(filePath: string): T | null {
@@ -48,20 +48,43 @@ export function readFileIfExists<T>(filePath: string): T | null {
                 encoding: 'utf-8',
             });
             return JSON.parse(data) as T;
-        } catch {
+        } catch (error) {
             throw new Error(
-                ERROR_MESSAGES.FILE_READ.replace(':filePath', filePath),
+                ERROR_MESSAGES.FILE_READ.replace(':filePath', filePath).replace(
+                    ':fileError',
+                    error,
+                ),
             );
         }
     }
     return null;
 }
 
-export function mapKeyPaths<T>(input: T, chain = ''): string[] {
+export function writeFixtureFile<T>(
+    build: T,
+    { fixturesDir, fullPath }: ParsedFilePath,
+): T {
+    try {
+        if (!fs.existsSync(fixturesDir)) {
+            fs.mkdirSync(fixturesDir);
+        }
+        fs.writeFileSync(fullPath, JSON.stringify(build));
+        return build;
+    } catch (error) {
+        throw new Error(
+            ERROR_MESSAGES.FILE_WRITE.replace(':filePath', fullPath).replace(
+                ':fileError',
+                ': ' + JSON.stringify(error),
+            ),
+        );
+    }
+}
+
+export function mapKeyPaths<T>(input: T, parent = ''): string[] {
     const keys = [];
     for (let [key, value] of Object.entries(input)) {
         keys.push(key);
-        let subChain = chain ? `${chain}.${key}` : key;
+        let subChain = parent ? `${parent}.${key}` : key;
         if (Array.isArray(value)) {
             let [nestedValue, levels] = getValueFromNestedArray(value, 1);
             value = nestedValue;
@@ -79,7 +102,7 @@ export function mapKeyPaths<T>(input: T, chain = ''): string[] {
     return [...new Set(keys)];
 }
 
-export function haveSameKeyPaths<T>(
+export function isSameStructure<T>(
     obj1: T,
     obj2: Record<string, any>,
 ): obj2 is T {

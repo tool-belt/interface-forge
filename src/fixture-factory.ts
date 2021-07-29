@@ -1,16 +1,16 @@
-import { ERROR_MESSAGES } from './constants';
 import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';
 import { TypeFactory } from './type-factory';
 import {
-    haveSameKeyPaths,
+    isSameStructure,
+    parseFilePath,
     readFileIfExists,
-    validateAndNormalizeFilename,
+    validateAbsolutePath,
+    writeFixtureFile,
 } from './utils/file';
-import fs from 'fs';
 import path from 'path';
 
 export class FixtureFactory<T> extends TypeFactory<T> {
-    private defaultPath: string | undefined;
+    private readonly defaultPath: string | undefined;
 
     constructor(
         defaults: FactoryDefaults<T>,
@@ -18,32 +18,21 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         defaultPath?: string,
     ) {
         super(defaults, factory);
-        if (defaultPath && !path.isAbsolute(defaultPath)) {
-            throw new Error(ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE);
+        if (defaultPath?.trim()) {
+            validateAbsolutePath(defaultPath);
+            this.defaultPath = defaultPath;
         }
-        this.defaultPath = defaultPath;
     }
 
-    private getOrCreateFixture(filePath: string, build: T | T[]): T | T[] {
-        filePath = this.defaultPath
-            ? path.join(this.defaultPath, filePath)
-            : filePath;
-        filePath = validateAndNormalizeFilename(path.join(filePath));
-        const data = readFileIfExists<T>(filePath);
-        try {
-            if (data && haveSameKeyPaths(build, data)) {
-                return data;
-            }
-            fs.writeFileSync(filePath, JSON.stringify(build));
-            return build;
-        } catch (error) {
-            throw new Error(
-                ERROR_MESSAGES.FILE_WRITE.replace(
-                    ':filePath',
-                    filePath,
-                ).replace(':fileError', ': ' + JSON.stringify(error)),
-            );
+    protected getOrCreateFixture<R>(filePath: string, build: R): R {
+        const parsedPath = parseFilePath(
+            this.defaultPath ? path.join(this.defaultPath, filePath) : filePath,
+        );
+        const data = readFileIfExists<T>(parsedPath.fullPath);
+        if (data && isSameStructure(build, data)) {
+            return data;
         }
+        return writeFixtureFile<R>(build, parsedPath);
     }
 
     async fixture(
@@ -51,12 +40,12 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         options?: FactoryBuildOptions<T>,
     ): Promise<T> {
         const instance = await this.build(options);
-        return this.getOrCreateFixture(filePath, instance) as T;
+        return this.getOrCreateFixture(filePath, instance);
     }
 
     fixtureSync(filePath: string, options?: FactoryBuildOptions<T>): T {
         const instance = this.buildSync(options);
-        return this.getOrCreateFixture(filePath, instance) as T;
+        return this.getOrCreateFixture(filePath, instance);
     }
 
     async fixtureBatch(
@@ -65,7 +54,7 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         options?: FactoryBuildOptions<T>,
     ): Promise<T[]> {
         const batch = await this.batch(size, options);
-        return this.getOrCreateFixture(filePath, batch) as T[];
+        return this.getOrCreateFixture(filePath, batch);
     }
 
     fixtureBatchSync(
@@ -74,6 +63,6 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         options?: FactoryBuildOptions<T>,
     ): T[] {
         const batch = this.batchSync(size, options);
-        return this.getOrCreateFixture(filePath, batch) as T[];
+        return this.getOrCreateFixture(filePath, batch);
     }
 }

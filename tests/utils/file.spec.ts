@@ -1,10 +1,10 @@
 import { ComplexObject } from '../test-types';
 import { ERROR_MESSAGES } from '../../src';
 import {
-    haveSameKeyPaths,
+    isSameStructure,
     mapKeyPaths,
+    parseFilePath,
     readFileIfExists,
-    validateAndNormalizeFilename,
 } from '../../src/utils/file';
 import fs from 'fs';
 
@@ -84,9 +84,14 @@ describe('readFileIfExists', () => {
     });
     it('throws custom error if file content cannot be parsed', () => {
         existsSyncSpy.mockReturnValueOnce(true);
-        readFileSyncSpy.mockReturnValueOnce(undefined);
+        readFileSyncSpy.mockImplementation(() => {
+            throw new Error('test');
+        });
         expect(() => readFileIfExists('filename')).toThrow(
-            ERROR_MESSAGES.FILE_READ.replace(':filePath', 'filename'),
+            ERROR_MESSAGES.FILE_READ.replace(':filePath', 'filename').replace(
+                ':fileError',
+                'Error: test',
+            ),
         );
     });
 });
@@ -116,13 +121,13 @@ describe('mapKeyPaths', () => {
     });
 });
 
-describe('deepCompareKeys', () => {
+describe('isSameStructure', () => {
     it('returns true if structure matches', () => {
-        expect(haveSameKeyPaths(defaults, defaults)).toEqual(true);
+        expect(isSameStructure(defaults, defaults)).toEqual(true);
     });
     it('returns false if structure does not match', () => {
         expect(
-            haveSameKeyPaths(defaults, {
+            isSameStructure(defaults, {
                 ...defaults,
                 children: undefined,
             }),
@@ -130,7 +135,7 @@ describe('deepCompareKeys', () => {
     });
 });
 
-describe('validateAndNormalizeFilename', () => {
+describe('parseFilePath', () => {
     let existsSyncSpy: jest.SpyInstance;
     let accessSyncSpy: jest.SpyInstance;
     let mkdirSyncSpy: jest.SpyInstance;
@@ -139,7 +144,6 @@ describe('validateAndNormalizeFilename', () => {
         existsSyncSpy = jest.spyOn(fs, 'existsSync');
         accessSyncSpy = jest.spyOn(fs, 'accessSync');
         mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
-
         existsSyncSpy.mockImplementation(() => true);
         accessSyncSpy.mockImplementation(() => undefined);
         mkdirSyncSpy.mockImplementation(() => undefined);
@@ -149,92 +153,51 @@ describe('validateAndNormalizeFilename', () => {
         jest.clearAllMocks();
     });
 
-    describe('throws', () => {
-        it('an error if file path is not absolute', () => {
-            expect(() => validateAndNormalizeFilename('relative/path')).toThrow(
-                ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
-            );
-        });
-        it('throws an error if an extension other than the allowed is provided', () => {
-            expect(() => validateAndNormalizeFilename('/testfile.txt')).toThrow(
-                ERROR_MESSAGES.INVALID_EXTENSION.replace(
-                    ':fileExtension',
-                    '.txt',
-                ),
-            );
-        });
-        it('an error if empty filename is provided', () => {
-            expect(() => validateAndNormalizeFilename('')).toThrow(
-                ERROR_MESSAGES.MISSING_FILENAME,
-            );
-        });
-        it('an error fixture dir cannot be created', () => {
-            existsSyncSpy.mockImplementationOnce(() => false);
-            mkdirSyncSpy.mockImplementationOnce(() => {
-                throw new Error('');
-            });
-            expect(() =>
-                validateAndNormalizeFilename('/imaginary/path/name'),
-            ).toThrow(
-                ERROR_MESSAGES.DIR_WRITE.replace(
-                    ':filePath',
-                    '/imaginary/path/__fixtures__/',
-                ).replace(':fileError', ': {}'),
-            );
-        });
+    it('throws an error if path is not absolute', () => {
+        expect(() => parseFilePath('relative/path')).toThrow(
+            ERROR_MESSAGES.PATH_IS_NOT_ABSOLUTE,
+        );
     });
-
-    describe('correctly', () => {
-        it('creates __fixtures__ dir if it does not exist', () => {
-            existsSyncSpy.mockReturnValueOnce(false);
-            validateAndNormalizeFilename('/imaginary/path/name');
-            expect(mkdirSyncSpy).toHaveBeenCalled();
-            existsSyncSpy.mockReset();
-        });
-        it('does not throw if __fixtures__ dir already exists', () => {
-            expect(() =>
-                validateAndNormalizeFilename('/imaginary/path/name'),
-            ).not.toThrow();
-            expect(mkdirSyncSpy).not.toHaveBeenCalled();
-        });
-        it('detects a file name at the end of the file path', () => {
-            existsSyncSpy.mockReturnValueOnce(true);
-            expect(
-                validateAndNormalizeFilename('/imaginary/path/name.json'),
-            ).toEqual('/imaginary/path/__fixtures__/name.json');
-        });
-        it('detects a file path without a file name', () => {
-            existsSyncSpy.mockReturnValueOnce(true);
-            expect(
-                validateAndNormalizeFilename('/imaginary/path/name'),
-            ).toEqual('/imaginary/path/__fixtures__/name.json');
-        });
-        it('does not append .json extension, if provided', () => {
-            expect(validateAndNormalizeFilename('/dev/filename.JSON')).toEqual(
-                '/dev/__fixtures__/filename.json',
-            );
-        });
-        it('appends .json extension if not provided', () => {
-            expect(validateAndNormalizeFilename('/dev/filename')).toEqual(
-                '/dev/__fixtures__/filename.json',
-            );
-        });
-        it('appends .json extension if .spec provided', () => {
-            expect(validateAndNormalizeFilename('/dev/filename.spec')).toEqual(
-                '/dev/__fixtures__/filename.spec.json',
-            );
-        });
-        it('appends .json extension if .test provided', () => {
-            expect(validateAndNormalizeFilename('/dev/filename.test')).toEqual(
-                '/dev/__fixtures__/filename.test.json',
-            );
-        });
-        it('supports .json extension with sub-dot-notation', () => {
-            expect(
-                validateAndNormalizeFilename(
-                    '/dev/filename.some.other.info.json',
-                ),
-            ).toEqual('/dev/__fixtures__/filename.some.other.info.json');
-        });
+    it('throws an error if wrong extension', () => {
+        expect(() => parseFilePath('/testfile.txt')).toThrow(
+            ERROR_MESSAGES.INVALID_EXTENSION.replace(':fileExtension', '.txt'),
+        );
+    });
+    it('throws an error if no filePath is provided', () => {
+        // @ts-ignore
+        expect(() => parseFilePath(undefined)).toThrow(
+            ERROR_MESSAGES.MISSING_FILENAME,
+        );
+        expect(() => parseFilePath('')).toThrow(
+            ERROR_MESSAGES.MISSING_FILENAME,
+        );
+        expect(() => parseFilePath(' ')).toThrow(
+            ERROR_MESSAGES.MISSING_FILENAME,
+        );
+    });
+    it('detects a file path without an extension file name', () => {
+        existsSyncSpy.mockReturnValueOnce(true);
+        const parsedPath = parseFilePath('/imaginary/path/name');
+        expect(parsedPath.fullPath).toEqual(
+            '/imaginary/path/__fixtures__/name.json',
+        );
+    });
+    it('does not append .json extension, if provided', () => {
+        const parsedPath = parseFilePath('/imaginary/path/name.json');
+        expect(parsedPath.fullPath).toEqual(
+            '/imaginary/path/__fixtures__/name.json',
+        );
+    });
+    it('replaces non lower case JSON with json', () => {
+        const parsedPath = parseFilePath('/imaginary/path/name.JSON');
+        expect(parsedPath.fullPath).toEqual(
+            '/imaginary/path/__fixtures__/name.json',
+        );
+    });
+    it('supports .json extension with sub-dot-notation', () => {
+        const parsedPath = parseFilePath('/dev/filename.some.other.info.json');
+        expect(parsedPath.fullPath).toEqual(
+            '/dev/__fixtures__/filename.some.other.info.json',
+        );
     });
 });
