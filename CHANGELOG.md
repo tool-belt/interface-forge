@@ -92,3 +92,9 @@
 ## 1.4.0
 
 - added '.derived' static method
+
+[1.4.1]
+
+- update validators to work recursively
+- update schema merging to use recursive logic
+- update schema parsing

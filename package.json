@@ -11,7 +11,7 @@
             "email": "mail@damiankress.de"
         }
     ],
-    "version": "1.4.0",
+    "version": "1.4.1",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
     "keywords": [
@@ -47,7 +47,7 @@
     "devDependencies": {
         "@sprylab/eslint-config": "^1.5.4",
         "@types/jest": "^26.0.24",
-        "@types/node": "^16.4.5",
+        "@types/node": "^16.4.7",
         "all-contributors-cli": "^6.20.0",
         "eslint": "^7.31.0",
         "husky": ">=7",
