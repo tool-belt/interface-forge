@@ -4,7 +4,17 @@ import {
     FactorySchema,
     OverridesAndFactory,
 } from '../types';
-import { isOfType } from './guards';
+import { createTypeGuard, isObject } from '@tool-belt/type-predicates';
+
+function isOverridesAndFactory<T>(
+    input: unknown,
+): input is OverridesAndFactory<T> {
+    return createTypeGuard<OverridesAndFactory<T>>(
+        (value) =>
+            isObject(value) &&
+            (Reflect.has(value, 'overrides') || Reflect.has(value, 'factory')),
+    )(input);
+}
 
 export function parseOptions<T>(
     options: FactoryBuildOptions<T> | undefined,
@@ -16,10 +26,7 @@ export function parseOptions<T>(
     if (!options) {
         return [undefined, undefined];
     }
-    if (
-        isOfType<OverridesAndFactory<T>>(options, 'overrides') ||
-        isOfType<OverridesAndFactory<T>>(options, 'factory')
-    ) {
+    if (isOverridesAndFactory<T>(options)) {
         const { overrides, factory } = options;
         return [
             typeof overrides === 'function' ? overrides(iteration) : overrides,

@@ -11,7 +11,7 @@
             "email": "mail@damiankress.de"
         }
     ],
-    "version": "1.4.1",
+    "version": "1.4.2",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
     "keywords": [
@@ -47,9 +47,9 @@
     "devDependencies": {
         "@sprylab/eslint-config": "^1.5.4",
         "@types/jest": "^26.0.24",
-        "@types/node": "^16.4.7",
+        "@types/node": "^16.4.13",
         "all-contributors-cli": "^6.20.0",
-        "eslint": "^7.31.0",
+        "eslint": "^7.32.0",
         "husky": ">=7",
         "jest": "^27.0.6",
         "lint-staged": ">=11",
@@ -62,5 +62,8 @@
     "lint-staged": {
         "*.ts": "eslint --fix",
         "*.{js,md,json,yaml,yml}": "prettier --write"
+    },
+    "dependencies": {
+        "@tool-belt/type-predicates": "^1.0.0"
     }
 }

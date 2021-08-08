@@ -98,3 +98,7 @@
 - update validators to work recursively
 - update schema merging to use recursive logic
 - update schema parsing
+
+[1.4.2]
+
+- update type guards

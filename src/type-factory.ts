@@ -6,7 +6,7 @@ import {
     FactorySchema,
     UseOptions,
 } from './types';
-import { isPromise } from './utils/guards';
+import { isPromise } from '@tool-belt/type-predicates';
 import { iterate, sample } from './helpers';
 import { merge } from './utils/general';
 import { parseFactorySchema } from './utils/schema';

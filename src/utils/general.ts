@@ -1,4 +1,4 @@
-import { isRecord } from './guards';
+import { isRecord } from '@tool-belt/type-predicates';
 
 export function getValueFromNestedArray(
     arr: unknown[],

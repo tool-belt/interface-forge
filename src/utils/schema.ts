@@ -1,7 +1,7 @@
 import { DerivedValueProxy, Ref, TypeFactory } from '../type-factory';
 import { ERROR_MESSAGES } from '../constants';
 import { FactorySchema } from '../types';
-import { isOfType, isPromise, isRecord } from './guards';
+import { isIterator, isPromise, isRecord } from '@tool-belt/type-predicates';
 
 function parseRef(
     { value, options: { batch, ...options } = {} }: Ref<any>,
@@ -51,7 +51,7 @@ export function parseFactorySchema<T>(
             value = isSync ? value.buildSync() : value.build();
         } else if (value instanceof Ref) {
             value = parseRef(value, isSync, iteration);
-        } else if (isOfType<Generator<any, any, any>>(value, 'next')) {
+        } else if (isIterator(value)) {
             value = value.next().value;
         } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
             value = parseFactorySchema(value, iteration, isSync, key);

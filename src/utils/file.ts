@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from '../constants';
 import { getValueFromNestedArray } from './general';
-import { isRecord } from './guards';
+import { isRecord } from '@tool-belt/type-predicates';
 import fs from 'fs';
 import path from 'path';
 
