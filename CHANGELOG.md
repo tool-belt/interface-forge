@@ -102,3 +102,7 @@
 [1.4.2]
 
 - update type guards
+
+[1.4.3]
+
+- update type guards
