@@ -82,6 +82,20 @@ describe('.build', () => {
             name: 'newObject',
         });
     });
+    it('handles generator iteration correctly', async () => {
+        const factory = new TypeFactory<ComplexObject>({
+            ...defaults,
+            options: {
+                type: TypeFactory.iterate(typeOptions),
+            },
+        });
+        const result = await Promise.all(
+            Array(5)
+                .fill(null)
+                .map(async () => factory.build()),
+        );
+        expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
+    });
 });
 
 describe('.buildSync', () => {
@@ -168,6 +182,18 @@ describe('.buildSync', () => {
             }),
         ).toThrow(ERROR_MESSAGES.PROMISE_FACTORY);
     });
+    it('handles generator iteration correctly', () => {
+        const factory = new TypeFactory<ComplexObject>({
+            ...defaults,
+            options: {
+                type: TypeFactory.iterate(typeOptions),
+            },
+        });
+        const result = Array(5)
+            .fill(null)
+            .map(() => factory.buildSync());
+        expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
+    });
 });
 
 describe('resetCounter', () => {
@@ -205,7 +231,7 @@ describe('.batch', () => {
         const result = await factory.batch(5);
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
-        expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
+        expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
     });
     it('increments counter correctly', () => {
         const factory = new TypeFactory<{
@@ -239,6 +265,6 @@ describe('.batchSync', () => {
         const result = factory.batchSync(5);
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
-        expect(result.map(({ options }) => options?.type)).toEqual(typeOptions);
+        expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
     });
 });
