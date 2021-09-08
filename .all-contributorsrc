@@ -31,6 +31,15 @@
         "doc",
         "maintenance"
       ]
+    },
+    {
+      "login": "stuikomma",
+      "name": "Yannis Kommana",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2040603?v=4",
+      "profile": "https://github.com/stuikomma",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
