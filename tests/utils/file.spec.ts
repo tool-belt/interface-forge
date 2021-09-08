@@ -125,11 +125,19 @@ describe('isSameStructure', () => {
     it('returns true if structure matches', () => {
         expect(isSameStructure(defaults, defaults)).toEqual(true);
     });
-    it('returns false if structure does not match', () => {
+    it('ignores undefined values in comparison', () => {
         expect(
             isSameStructure(defaults, {
                 ...defaults,
                 children: undefined,
+            }),
+        ).toEqual(true);
+    });
+    it('returns false if structure does not match', () => {
+        expect(
+            isSameStructure(defaults, {
+                ...defaults,
+                children: [1, 2, 3],
             }),
         ).toEqual(false);
     });
