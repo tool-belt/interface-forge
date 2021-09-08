@@ -81,9 +81,11 @@ export function writeFixtureFile<T>(
 }
 
 export function mapKeyPaths<T>(input: T, parent = ''): string[] {
-    const keys = [];
+    const keys: string[] = [];
     for (let [key, value] of Object.entries(input)) {
-        keys.push(key);
+        if (value !== undefined) {
+            keys.push(key);
+        }
         let subChain = parent ? `${parent}.${key}` : key;
         if (Array.isArray(value)) {
             let [nestedValue, levels] = getValueFromNestedArray(value, 1);
@@ -95,7 +97,7 @@ export function mapKeyPaths<T>(input: T, parent = ''): string[] {
         }
         if (isRecord(value)) {
             keys.push(...mapKeyPaths(value, subChain));
-        } else {
+        } else if (value !== undefined) {
             keys.push(subChain);
         }
     }
