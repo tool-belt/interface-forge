@@ -106,3 +106,7 @@
 [1.4.3]
 
 - update type guards
+
+[1.4.4]
+
+- resolve issue with undefined values in fixture factory

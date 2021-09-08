@@ -52,7 +52,7 @@ export function readFileIfExists<T>(filePath: string): T | null {
             throw new Error(
                 ERROR_MESSAGES.FILE_READ.replace(':filePath', filePath).replace(
                     ':fileError',
-                    error,
+                    (error as Error).message,
                 ),
             );
         }
