@@ -90,7 +90,7 @@ describe('readFileIfExists', () => {
         expect(() => readFileIfExists('filename')).toThrow(
             ERROR_MESSAGES.FILE_READ.replace(':filePath', 'filename').replace(
                 ':fileError',
-                'Error: test',
+                'test',
             ),
         );
     });
