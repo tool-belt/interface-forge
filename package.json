@@ -9,6 +9,10 @@
         {
             "name": "Damian Kress",
             "email": "mail@damiankress.de"
+        },
+        {
+            "name": "Yannis Kommana",
+            "email": "yannis@kommana.de"
         }
     ],
     "version": "1.4.4",
