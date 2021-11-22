@@ -123,7 +123,7 @@ describe('mapKeyPaths', () => {
 
 describe('isSameStructure', () => {
     it('returns true if structure matches', () => {
-        expect(isSameStructure(defaults, defaults)).toEqual(true);
+        expect(isSameStructure(defaults, defaults)).toBe(true);
     });
     it('ignores undefined values in comparison', () => {
         expect(
@@ -131,7 +131,7 @@ describe('isSameStructure', () => {
                 ...defaults,
                 children: undefined,
             }),
-        ).toEqual(true);
+        ).toBe(true);
     });
     it('returns false if structure does not match', () => {
         expect(
@@ -139,7 +139,7 @@ describe('isSameStructure', () => {
                 ...defaults,
                 children: [1, 2, 3],
             }),
-        ).toEqual(false);
+        ).toBe(false);
     });
 });
 
@@ -186,25 +186,25 @@ describe('parseFilePath', () => {
     it('detects a file path without an extension file name', () => {
         existsSyncSpy.mockReturnValueOnce(true);
         const parsedPath = parseFilePath('/imaginary/path/name');
-        expect(parsedPath.fullPath).toEqual(
+        expect(parsedPath.fullPath).toBe(
             '/imaginary/path/__fixtures__/name.json',
         );
     });
     it('does not append .json extension, if provided', () => {
         const parsedPath = parseFilePath('/imaginary/path/name.json');
-        expect(parsedPath.fullPath).toEqual(
+        expect(parsedPath.fullPath).toBe(
             '/imaginary/path/__fixtures__/name.json',
         );
     });
     it('replaces non lower case JSON with json', () => {
         const parsedPath = parseFilePath('/imaginary/path/name.JSON');
-        expect(parsedPath.fullPath).toEqual(
+        expect(parsedPath.fullPath).toBe(
             '/imaginary/path/__fixtures__/name.json',
         );
     });
     it('supports .json extension with sub-dot-notation', () => {
         const parsedPath = parseFilePath('/dev/filename.some.other.info.json');
-        expect(parsedPath.fullPath).toEqual(
+        expect(parsedPath.fullPath).toBe(
             '/dev/__fixtures__/filename.some.other.info.json',
         );
     });

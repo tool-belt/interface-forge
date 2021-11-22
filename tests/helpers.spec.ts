@@ -5,22 +5,22 @@ describe('iterate', () => {
     it('cycles through values correctly with Array and Set', () => {
         for (const arrayLike of [arr, new Set(arr)]) {
             const generator = iterate(arrayLike);
-            expect(generator.next().value).toEqual(1);
-            expect(generator.next().value).toEqual(2);
-            expect(generator.next().value).toEqual(3);
-            expect(generator.next().value).toEqual(1);
-            expect(generator.next().value).toEqual(2);
-            expect(generator.next().value).toEqual(3);
+            expect(generator.next().value).toBe(1);
+            expect(generator.next().value).toBe(2);
+            expect(generator.next().value).toBe(3);
+            expect(generator.next().value).toBe(1);
+            expect(generator.next().value).toBe(2);
+            expect(generator.next().value).toBe(3);
         }
     });
     it('cycles through values correctly with String', () => {
         const generator = iterate('abc');
-        expect(generator.next().value).toEqual('a');
-        expect(generator.next().value).toEqual('b');
-        expect(generator.next().value).toEqual('c');
-        expect(generator.next().value).toEqual('a');
-        expect(generator.next().value).toEqual('b');
-        expect(generator.next().value).toEqual('c');
+        expect(generator.next().value).toBe('a');
+        expect(generator.next().value).toBe('b');
+        expect(generator.next().value).toBe('c');
+        expect(generator.next().value).toBe('a');
+        expect(generator.next().value).toBe('b');
+        expect(generator.next().value).toBe('c');
     });
     it('cycles through values correctly with Map', () => {
         const generator = iterate(

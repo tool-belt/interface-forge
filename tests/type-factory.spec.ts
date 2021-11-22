@@ -199,18 +199,18 @@ describe('.buildSync', () => {
 describe('resetCounter', () => {
     const factory = new TypeFactory<ComplexObject>(defaults);
     it('resets to zero by default', () => {
-        expect(factory.counter).toEqual(0);
+        expect(factory.counter).toBe(0);
         factory.buildSync();
-        expect(factory.counter).toEqual(1);
+        expect(factory.counter).toBe(1);
         factory.resetCounter();
-        expect(factory.counter).toEqual(0);
+        expect(factory.counter).toBe(0);
     });
     it('resets to passed value', () => {
-        expect(factory.counter).toEqual(0);
+        expect(factory.counter).toBe(0);
         factory.buildSync();
-        expect(factory.counter).toEqual(1);
+        expect(factory.counter).toBe(1);
         factory.resetCounter(5);
-        expect(factory.counter).toEqual(5);
+        expect(factory.counter).toBe(5);
     });
 });
 
@@ -243,8 +243,8 @@ describe('.batch', () => {
             .flat()
             .map(({ id }) => id);
         expect([...new Set(results)]).toHaveLength(100);
-        expect(results[0]).toEqual(0);
-        expect(results[results.length - 1]).toEqual(99);
+        expect(results[0]).toBe(0);
+        expect(results[results.length - 1]).toBe(99);
     });
 });
 

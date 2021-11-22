@@ -107,7 +107,7 @@ describe('FixtureFactory', () => {
             });
             const result = await factory.fixture('/testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
-            expect(result.value).toEqual(99);
+            expect(result.value).toBe(99);
         });
     });
 
@@ -129,7 +129,7 @@ describe('FixtureFactory', () => {
             });
             const result = factory.fixtureSync('/testfile');
             expect(writeFileSyncSpy).toHaveBeenCalled();
-            expect(result.value).toEqual(99);
+            expect(result.value).toBe(99);
         });
     });
 
@@ -153,7 +153,7 @@ describe('FixtureFactory', () => {
             });
             const result = await factory.fixtureBatch('/testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
-            expect(result[0].value).toEqual(99);
+            expect(result[0].value).toBe(99);
         });
     });
 
@@ -177,7 +177,7 @@ describe('FixtureFactory', () => {
             });
             const result = factory.fixtureBatchSync('/testfile', 1);
             expect(writeFileSyncSpy).toHaveBeenCalled();
-            expect(result[0].value).toEqual(99);
+            expect(result[0].value).toBe(99);
         });
     });
 

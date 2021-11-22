@@ -100,7 +100,7 @@ describe('parseFactorySchema Async', () => {
                 ]),
             },
         });
-        expect(result.options?.children?.length).toEqual(5);
+        expect(result.options?.children?.length).toBe(5);
     });
     it('parses schema correctly using generator fn', async () => {
         const generator = TypeFactory.iterate([
@@ -285,7 +285,7 @@ describe('parseFactorySchema Sync', () => {
             },
         });
         // @ts-ignore
-        expect(result.options?.children?.length).toEqual(5);
+        expect(result.options?.children?.length).toBe(5);
     });
     it('parses schema correctly using generator fn', () => {
         const generator = TypeFactory.iterate([1, 2, 3]);
