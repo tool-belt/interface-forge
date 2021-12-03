@@ -1,7 +1,8 @@
-import { DerivedValueProxy, Ref, TypeFactory } from '../type-factory';
-import { ERROR_MESSAGES } from '../constants';
-import { FactorySchema } from '../types';
 import { isIterator, isPromise, isRecord } from '@tool-belt/type-predicates';
+
+import { ERROR_MESSAGES } from '../constants';
+import { DerivedValueProxy, Ref, TypeFactory } from '../type-factory';
+import { FactorySchema } from '../types';
 
 function parseRef(
     { value, options: { batch, ...options } = {} }: Ref<any>,

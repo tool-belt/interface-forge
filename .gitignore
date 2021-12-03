@@ -6,8 +6,4 @@ docs/
 *.log
 
 .husky/
-.idea/sonarlint/
-.idea/azure/
-.idea/workspace.xml
-.idea/watcherTasks.xml
-.vscode/
+.idea/

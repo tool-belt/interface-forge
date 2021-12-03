@@ -1,6 +1,6 @@
-import { ComplexObject, Options } from '../test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../../src';
 import { parseFactorySchema } from '../../src/utils/schema';
+import { ComplexObject, Options } from '../test-types';
 
 const defaults: ComplexObject = {
     name: 'testObject',

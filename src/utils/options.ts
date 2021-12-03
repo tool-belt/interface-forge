@@ -1,10 +1,11 @@
+import { createTypeGuard, isObject } from '@tool-belt/type-predicates';
+
 import {
     FactoryBuildOptions,
     FactoryFunction,
     FactorySchema,
     OverridesAndFactory,
 } from '../types';
-import { createTypeGuard, isObject } from '@tool-belt/type-predicates';
 
 function isOverridesAndFactory<T>(
     input: unknown,

@@ -1,5 +1,7 @@
-import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';
+import path from 'path';
+
 import { TypeFactory } from './type-factory';
+import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';
 import {
     isSameStructure,
     parseFilePath,
@@ -7,7 +9,6 @@ import {
     validateAbsolutePath,
     writeFixtureFile,
 } from './utils/file';
-import path from 'path';
 
 export class FixtureFactory<T> extends TypeFactory<T> {
     private readonly defaultPath: string | undefined;

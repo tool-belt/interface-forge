@@ -1,9 +1,9 @@
-import { ComplexObject } from '../test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../../src';
 import {
     validateFactoryResult,
     validateFactorySchema,
 } from '../../src/utils/validators';
+import { ComplexObject } from '../test-types';
 
 const defaults: ComplexObject = {
     name: 'testObject',

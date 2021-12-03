@@ -1,4 +1,5 @@
-import { ComplexObject } from '../test-types';
+import fs from 'fs';
+
 import { ERROR_MESSAGES } from '../../src';
 import {
     isSameStructure,
@@ -6,7 +7,7 @@ import {
     parseFilePath,
     readFileIfExists,
 } from '../../src/utils/file';
-import fs from 'fs';
+import { ComplexObject } from '../test-types';
 
 const defaults: ComplexObject = {
     name: 'testObject',

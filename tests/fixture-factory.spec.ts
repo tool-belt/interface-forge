@@ -1,7 +1,8 @@
+import fs from 'fs';
+
+import { ERROR_MESSAGES, FixtureFactory } from '../src';
 import * as fileUtils from '../src/utils/file';
 import { ComplexObject } from './test-types';
-import { ERROR_MESSAGES, FixtureFactory } from '../src';
-import fs from 'fs';
 
 const defaults: ComplexObject = {
     name: 'testObject',

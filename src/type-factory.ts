@@ -1,4 +1,7 @@
+import { isPromise } from '@tool-belt/type-predicates';
+
 import { ERROR_MESSAGES } from './constants';
+import { iterate, sample } from './helpers';
 import {
     FactoryBuildOptions,
     FactoryDefaults,
@@ -6,11 +9,9 @@ import {
     FactorySchema,
     UseOptions,
 } from './types';
-import { isPromise } from '@tool-belt/type-predicates';
-import { iterate, sample } from './helpers';
 import { merge } from './utils/general';
-import { parseFactorySchema } from './utils/schema';
 import { parseOptions } from './utils/options';
+import { parseFactorySchema } from './utils/schema';
 import {
     validateFactoryResult,
     validateFactorySchema,

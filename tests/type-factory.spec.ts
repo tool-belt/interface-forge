@@ -1,5 +1,5 @@
-import { ComplexObject } from './test-types';
 import { ERROR_MESSAGES, TypeFactory } from '../src';
+import { ComplexObject } from './test-types';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
 
