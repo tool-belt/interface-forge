@@ -1,7 +1,7 @@
 ---
 id: integrating-faker 
 title: FakerJs Integration 
-description: Example of FakerJS or ChanceJS factory integration 
+description: Example usage with fakerJS
 slug: /integrating-faker 
 sidebar_label: 'FakerJS Integration' 
 sidebar_position: 4

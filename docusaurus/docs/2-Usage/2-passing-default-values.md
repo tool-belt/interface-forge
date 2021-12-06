@@ -1,7 +1,7 @@
 ---
 id: passing-default-values
 title: Passing Default Values
-description: How to pass default factory values to the interfaceForge
+description: How to pass default values to a factory
 slug: /usage/passing-default-values
 ---
 

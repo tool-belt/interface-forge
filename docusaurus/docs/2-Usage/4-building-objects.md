@@ -1,7 +1,7 @@
 ---
 id: building-objects 
 title: Building Objects 
-description: How to build objects using interfaceForge factories 
+description: How to build objects using factories 
 slug: /usage/building-objects
 ---
 

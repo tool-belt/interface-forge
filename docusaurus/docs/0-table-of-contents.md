@@ -1,13 +1,13 @@
 ---
 id: table-of-contents
 title: Table of Contents
-description: Contents of the interfaceForge documentation
+description: Table of Contents
 slug: /table-of-contents
 sidebar_label: 'Contents'
 sidebar_position: 0
 ---
 
-Interface-Forge allows you to gracefully generate dynamic mock data and static fixtures in TypeScript.
+Interface Forge is a library for mock data and static fixture generation using TypeScript. 
 
 -   [Installation](./1-installation.md)
 -   Usage
