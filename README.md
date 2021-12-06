@@ -102,7 +102,9 @@ describe('User', () => {
 });
 ```
 
-Take a look at our [documentation](https://goldziher.github.io/interfaceForge/).
+Take a look at our [documentation](https://goldziher.github.io/interfaceForge/) or read
+the [introduction article](https://javascript.plainenglish.io/generating-test-data-and-fixtures-with-interface-forge-5a5548233aa5)
+.
 
 ## Contributing & Contributors ✨
 
