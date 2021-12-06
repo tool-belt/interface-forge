@@ -1,10 +1,12 @@
 [![GitHub license](https://img.shields.io/github/license/Goldziher/interfaceForge)](https://github.com/Goldziher/interfaceForge/blob/main/LICENSE)
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 
 Interface-Forge allows you to gracefully generate dynamic mock data and static fixtures in TypeScript.
 
