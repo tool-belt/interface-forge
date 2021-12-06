@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1111a0fc-16ba-414b-97da-d0eb1c820c99" name="Default Changelist" comment="removed &quot;deep-merge&quot; and replaced with local implementation">
+      <change afterPath="$PROJECT_DIR$/docs/assets/css/styles.ba632798.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/044f20b4.5c114cc4.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/12955bfe.1fdc265d.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/17896441.6ce626ba.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/1be78505.c94fde9c.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/24df6fdd.98ef8791.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/30e52a21.85ab515c.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/536e166e.402af495.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/5590bd6e.823a2dce.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/63348c4b.92f94bdc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/667.67a2c6d6.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/6bb49da2.effec34e.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/75.76044281.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/7903a6d1.6ff6fbfc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/7fd051fa.cccd371a.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/814.7514de74.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/82915b42.df77a990.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/935f2afb.090e8e9c.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/9e4087bc.d9afc3d6.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/b04a412e.f87679d4.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/b9bed28a.a8e3bb14.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/e595aab7.c772461a.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/f2246da6.0ae7b382.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/fdea247f.5e59fced.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/main.c753e429.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/runtime~main.dbdc3052.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/blog/archive/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docusaurus/docs/4-integration-with-faker-libraries-example.md" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/docs/4-integration-with-faker-libraries-example.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/css/styles.a5df18e1.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/12955bfe.b1b1895b.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/16.b4fccb1b.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/17896441.1e30b2af.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/1be78505.0b75fa4f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/24df6fdd.c7388fdc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/30e52a21.b2911e16.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/486.0a979401.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/486.0a979401.js.LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/667.67a2c6d6.js.LICENSE.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/536e166e.36fd3634.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/5590bd6e.9ba3b5b7.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/608.15f3dd35.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/63348c4b.8f3f959d.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/6bb49da2.861b1919.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/7903a6d1.45a13e4a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/7fd051fa.075a3d2a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/82915b42.146e1c2f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/935f2afb.01a0d399.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/94731665.103cc196.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/94731665.18988ba0.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/b04a412e.fa7e726b.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/b9bed28a.92a9b965.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/c4f5d8e4.022792a5.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/c4f5d8e4.f41bd095.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/e595aab7.51a81b2c.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/f2246da6.aee497df.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/fdea247f.640ebfdc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/feac932b.dbb782b1.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/feac932b.0f72be9e.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/main.e7fe58ff.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/main.e7fe58ff.js.LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/js/main.c753e429.js.LICENSE.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/runtime~main.a6b96762.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/Schema/factory-schema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/Schema/factory-schema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/contributing/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/contributing/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-property-as-derived/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-property-as-derived/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-required-build-time-argument/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/designating-a-required-build-time-argument/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-factories-in-factory-schema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-factories-in-factory-schema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-generators/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-generators/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-custom-functions/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-custom-functions/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-nested-factories/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/factory-schema/using-the-use-static-method-with-nested-factories/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/installation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/installation/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/integrating-faker/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/integrating-faker/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/table-of-contents/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/table-of-contents/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/basic-example/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/basic-example/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/batch-building/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/batch-building/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/building-objects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/building-objects/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/creating-and-using-fixtures/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/creating-and-using-fixtures/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/passing-a-factory-function/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/passing-a-factory-function/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs/usage/passing-default-values/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/usage/passing-default-values/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sitemap.xml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sitemap.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docusaurus/docusaurus.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/docusaurus.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docusaurus/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docusaurus/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +168,45 @@
     </key>
   </component>
   <component name="RunManager" selected="Jest.All Tests">
+    <configuration default="true" type="DjangoTestsConfigurationType">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="interface-forge" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="interface-forge" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <configuration name="All Tests (watch)" type="JavaScriptTestRunnerJest">
       <node-interpreter value="project" />
       <node-options value="" />
@@ -164,6 +286,113 @@
       <envs />
       <scope-kind value="TEST_FILE" />
       <test-file value="$PROJECT_DIR$/tests/utils.spec.ts" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="interface-forge" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="interface-forge" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Autodetect">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="interface-forge" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
       <method v="2" />
     </configuration>
     <list>
@@ -286,7 +515,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

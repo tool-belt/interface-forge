@@ -7,8 +7,8 @@ module.exports = {
     title,
     tagline: 'Gracefully generate TypeScript mock data.',
     url: 'https://goldziher.github.io',
-    baseUrl: '/interfaceForge/',
-    projectName: 'interfaceForge',
+    baseUrl: '/interface-forge/',
+    projectName: 'Interface Forge',
     organizationName: 'Goldziher',
     trailingSlash: true,
     onBrokenLinks: 'throw',
@@ -25,7 +25,7 @@ module.exports = {
                     label: 'Docs',
                 },
                 {
-                    href: 'https://github.com/Goldziher/interfaceForge',
+                    href: 'https://github.com/Goldziher/interface-forge',
                     label: 'GitHub',
                     position: 'right',
                 },
@@ -43,7 +43,7 @@ module.exports = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/Goldziher/interfaceForge/edit/gh-pages/docusaurus/',
+                        'https://github.com/Goldziher/interface-forge/edit/gh-pages/docusaurus/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
