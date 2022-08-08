@@ -68,6 +68,6 @@
         "*.{js,md,json,yaml,yml}": "prettier --write"
     },
     "dependencies": {
-        "@tool-belt/type-predicates": "^1.2.1"
+        "@tool-belt/type-predicates": "^1.2.2"
     }
 }
