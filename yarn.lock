@@ -639,10 +639,10 @@
     eslint-plugin-simple-import-sort "^7.0.0"
     eslint-plugin-sonarjs "^0.13.0"
 
-"@tool-belt/type-predicates@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@tool-belt/type-predicates/-/type-predicates-1.2.1.tgz#de8259f8299807c417bfc001e7b0d7b13b10debe"
-  integrity sha512-I9/jNXAxKp7CjW6lqoS8A2TanbVDlYTWYcE6p8nuD9/uxLxgKM5OFgfjtJSqKG3rPcFHBqu0RSEWOZNmDGwKqw==
+"@tool-belt/type-predicates@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@tool-belt/type-predicates/-/type-predicates-1.2.2.tgz#88a6cd744162d983854a4e85ee816b0a104ad111"
+  integrity sha512-IuUa3c0fOEJ6YnzMvfPA5BZ2gLafPgSU9YJmXV3hozlxbQGNPMVHrTiMoAERklhssxVQ5AtfEUI6r+6kS4npKw==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
