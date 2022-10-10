@@ -4,6 +4,5 @@ coverage/
 docusaurus/
 docs/
 *.log
-
-.husky/
+_/
 .idea/

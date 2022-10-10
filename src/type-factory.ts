@@ -95,9 +95,11 @@ export class TypeFactory<T> {
             if (isSync) {
                 throw new Error(ERROR_MESSAGES.PROMISE_FACTORY);
             }
-            return result.then(validateFactoryResult);
+            return result.then(
+                (value) => validateFactoryResult(value as any) as T,
+            );
         }
-        return validateFactoryResult(result);
+        return validateFactoryResult(result as any) as T;
     }
 
     private performBuild(
