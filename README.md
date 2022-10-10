@@ -1,7 +1,7 @@
 <div align="center">
 
-[![GitHub license](https://img.shields.io/github/license/Goldziher/interfaceForge)](https://github.com/Goldziher/interfaceForge/blob/main/LICENSE)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+![NPM](https://img.shields.io/npm/l/interface-forge)
+
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
@@ -9,6 +9,8 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 
 </div>
 
