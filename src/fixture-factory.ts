@@ -10,7 +10,9 @@ import {
     writeFixtureFile,
 } from './utils/file';
 
-export class FixtureFactory<T> extends TypeFactory<T> {
+export class FixtureFactory<
+    T extends Record<string, any>,
+> extends TypeFactory<T> {
     private readonly defaultPath: string | undefined;
 
     constructor(
@@ -25,13 +27,16 @@ export class FixtureFactory<T> extends TypeFactory<T> {
         }
     }
 
-    protected getOrCreateFixture<R>(filePath: string, build: R): R {
+    protected getOrCreateFixture<R extends Record<string, any>>(
+        filePath: string,
+        build: R,
+    ): R {
         const parsedPath = parseFilePath(
             this.defaultPath ? path.join(this.defaultPath, filePath) : filePath,
         );
         const data = readFileIfExists<T>(parsedPath.fullPath);
         if (data && isSameStructure(build, data)) {
-            return data;
+            return data as R;
         }
         return writeFixtureFile<R>(build, parsedPath);
     }

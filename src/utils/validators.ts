@@ -35,7 +35,9 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
     return schema;
 }
 
-export function validateFactoryResult<T>(factoryResult: T): T {
+export function validateFactoryResult<T extends Record<string, any>>(
+    factoryResult: T,
+): T {
     const missingValues = recursiveValidate(factoryResult, DerivedValueProxy);
     if (missingValues.length) {
         throw new Error(

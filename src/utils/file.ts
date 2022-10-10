@@ -81,7 +81,10 @@ export function writeFixtureFile<T>(
     }
 }
 
-export function mapKeyPaths<T>(input: T, parent = ''): string[] {
+export function mapKeyPaths<T extends Record<string, any>>(
+    input: T,
+    parent = '',
+): string[] {
     const keys: string[] = [];
     for (let [key, value] of Object.entries(input)) {
         if (value !== undefined) {
@@ -105,12 +108,12 @@ export function mapKeyPaths<T>(input: T, parent = ''): string[] {
     return [...new Set(keys)];
 }
 
-export function isSameStructure<T>(
-    obj1: T,
-    obj2: Record<string, any>,
-): obj2 is T {
+export function isSameStructure<T extends Record<string, any>>(
+    target: T,
+    soute: Record<string, any>,
+): soute is T {
     return (
-        JSON.stringify(mapKeyPaths(obj1).sort()) ===
-        JSON.stringify(mapKeyPaths(obj2).sort())
+        JSON.stringify(mapKeyPaths(target).sort()) ===
+        JSON.stringify(mapKeyPaths(soute).sort())
     );
 }
