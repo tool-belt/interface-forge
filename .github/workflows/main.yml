@@ -21,6 +21,8 @@ jobs:
               id: pnpm-install
               with:
                   version: 7
+            - name: Install Dependencies
+              run: pnpm install
             - name: test
               run: pnpm run test:coverage --ci
             - name: SonarCloud Scan
