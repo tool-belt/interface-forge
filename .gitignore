@@ -6,3 +6,4 @@ docs/
 *.log
 _/
 .idea/
+.DS_Store
