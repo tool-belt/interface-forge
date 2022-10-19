@@ -75,3 +75,18 @@ describe('User', () => {
     // ...
 });
 ```
+
+## Browser Usage
+
+The `TypeFactory` class can be used in the browser (whereas the `FixtureFactory` class cannot).
+For webpack, the following lines need to be added to your config:
+
+```typescript title="webpack.config.ts (excerpt)"
+    resolve: {
+        // …,
+        fallback: {
+            fs: false,
+            path: false,
+        },
+    },
+```
