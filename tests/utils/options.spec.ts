@@ -9,7 +9,7 @@ describe('parseOptions', () => {
         expect(parseOptions(options, 1)).toEqual([options, undefined]);
     });
     it('calls options function with iteration', () => {
-        const options = jest.fn((iteration: number) => ({ key: iteration }));
+        const options = vi.fn((iteration: number) => ({ key: iteration }));
         const result = parseOptions(options, 1);
         expect(options).toHaveBeenCalledWith(1);
         expect(result).toEqual([{ key: 1 }, undefined]);
@@ -17,14 +17,14 @@ describe('parseOptions', () => {
     describe('handles OverridesAndFactory object correctly', () => {
         it('returns both overrides and factory when passed both', () => {
             const overrides = { key: 'value' };
-            const factory = jest.fn();
+            const factory = vi.fn();
             expect(parseOptions({ overrides, factory }, 1)).toEqual([
                 overrides,
                 factory,
             ]);
         });
         it('returns [undefined, factory] when only factory is passed', () => {
-            const factory = jest.fn();
+            const factory = vi.fn();
             expect(parseOptions({ factory }, 1)).toEqual([undefined, factory]);
         });
         it('returns [overrides, undefined] when only overrides are passed', () => {
@@ -35,10 +35,10 @@ describe('parseOptions', () => {
             ]);
         });
         it('calls function overrides with iteration', () => {
-            const overrides = jest.fn((iteration: number) => ({
+            const overrides = vi.fn((iteration: number) => ({
                 key: iteration,
             }));
-            const factory = jest.fn();
+            const factory = vi.fn();
             const result = parseOptions({ overrides, factory }, 1);
             expect(overrides).toHaveBeenCalledWith(1);
             expect(result).toEqual([{ key: 1 }, factory]);

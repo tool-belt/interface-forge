@@ -17,25 +17,29 @@ import {
     validateFactorySchema,
 } from './utils/validators';
 
-type SyncBuildArgs<T> = {
+interface SyncBuildArgs<T> {
     defaults: FactorySchema<T>;
     overrides?: FactoryDefaults<Partial<T>>;
     factory?: FactoryFunction<T>;
     iteration: number;
-};
+}
 
-type AsyncBuildArgs<T> = {
+interface AsyncBuildArgs<T> {
     defaults: Promise<FactorySchema<T>> | FactorySchema<T>;
     overrides?:
         | Promise<FactoryDefaults<Partial<T>>>
         | FactoryDefaults<Partial<T>>;
     factory?: FactoryFunction<T>;
     iteration: number;
-};
+}
 
-export class BuildArgProxy {}
+export class BuildArgProxy {
+    // This class is intentionally left empty.
+}
 
-export class DerivedValueProxy {}
+export class DerivedValueProxy {
+    // This class is intentionally left empty.
+}
 
 export class Ref<T> {
     readonly value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>;

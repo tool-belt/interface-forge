@@ -10,26 +10,26 @@ const defaults: ComplexObject = {
 };
 
 describe('FixtureFactory', () => {
-    let existsSyncSpy: jest.SpyInstance;
-    let writeFileSyncSpy: jest.SpyInstance;
-    let mkdirSyncSpy: jest.SpyInstance;
-    let readFileIfExistsSpy: jest.SpyInstance;
-    let readFileSyncSpy: jest.SpyInstance;
+    let existsSyncSpy: vi.SpyInstance;
+    let writeFileSyncSpy: vi.SpyInstance;
+    let mkdirSyncSpy: vi.SpyInstance;
+    let readFileIfExistsSpy: vi.SpyInstance;
+    let readFileSyncSpy: vi.SpyInstance;
 
     beforeEach(() => {
-        readFileIfExistsSpy = jest.spyOn(fileUtils, 'readFileIfExists');
+        readFileIfExistsSpy = vi.spyOn(fileUtils, 'readFileIfExists');
         readFileIfExistsSpy.mockImplementation(() => defaults);
 
-        existsSyncSpy = jest.spyOn(fs, 'existsSync');
-        mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
-        readFileSyncSpy = jest.spyOn(fs, 'readFileSync');
-        writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+        existsSyncSpy = vi.spyOn(fs, 'existsSync');
+        mkdirSyncSpy = vi.spyOn(fs, 'mkdirSync');
+        readFileSyncSpy = vi.spyOn(fs, 'readFileSync');
+        writeFileSyncSpy = vi.spyOn(fs, 'writeFileSync');
         mkdirSyncSpy.mockImplementation(() => undefined);
         writeFileSyncSpy.mockImplementation(() => undefined);
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('getOrCreateFixture', () => {

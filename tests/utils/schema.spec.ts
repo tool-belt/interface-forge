@@ -284,7 +284,7 @@ describe('parseFactorySchema Sync', () => {
                 ]),
             },
         });
-        // @ts-ignore
+        // @ts-expect-error
         expect(result.options?.children?.length).toBe(5);
     });
     it('parses schema correctly using generator fn', () => {

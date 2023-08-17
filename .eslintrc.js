@@ -6,5 +6,6 @@ module.exports = {
     },
     rules: {
         'sonarjs/cognitive-complexity': ['error', 20],
+        'jest/no-deprecated-functions': 'off',
     },
 };
