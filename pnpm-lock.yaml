@@ -64,7 +64,7 @@ packages:
         engines: { node: '>=6.0.0' }
         dependencies:
             '@jridgewell/gen-mapping': 0.3.3
-            '@jridgewell/trace-mapping': 0.3.9
+            '@jridgewell/trace-mapping': 0.3.19
         dev: true
 
     /@babel/code-frame@7.22.10:
@@ -702,7 +702,7 @@ packages:
         dependencies:
             '@jridgewell/set-array': 1.1.2
             '@jridgewell/sourcemap-codec': 1.4.15
-            '@jridgewell/trace-mapping': 0.3.9
+            '@jridgewell/trace-mapping': 0.3.19
         dev: true
 
     /@jridgewell/resolve-uri@3.1.1:
