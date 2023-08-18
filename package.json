@@ -35,6 +35,8 @@
     ],
     "scripts": {
         "preinstall": "npx only-allow pnpm",
+        "clean": "rimraf dist",
+        "clean:nodemodules": "rimraf node_modules",
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
         "contributors:add": "all-contributors add",
         "contributors:generate": "all-contributors generate",
