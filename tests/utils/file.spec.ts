@@ -59,15 +59,15 @@ const annoyinglyComplexObject: any = {
 };
 
 describe('readFileIfExists', () => {
-    let existsSyncSpy: jest.SpyInstance;
-    let readFileSyncSpy: jest.SpyInstance;
+    let existsSyncSpy: vi.SpyInstance;
+    let readFileSyncSpy: vi.SpyInstance;
 
     beforeEach(() => {
-        existsSyncSpy = jest.spyOn(fs, 'existsSync');
-        readFileSyncSpy = jest.spyOn(fs, 'readFileSync');
+        existsSyncSpy = vi.spyOn(fs, 'existsSync');
+        readFileSyncSpy = vi.spyOn(fs, 'readFileSync');
     });
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
     it('returns parsed file contents if file exists', () => {
         const testData = {
@@ -145,21 +145,21 @@ describe('isSameStructure', () => {
 });
 
 describe('parseFilePath', () => {
-    let existsSyncSpy: jest.SpyInstance;
-    let accessSyncSpy: jest.SpyInstance;
-    let mkdirSyncSpy: jest.SpyInstance;
+    let existsSyncSpy: vi.SpyInstance;
+    let accessSyncSpy: vi.SpyInstance;
+    let mkdirSyncSpy: vi.SpyInstance;
 
     beforeEach(() => {
-        existsSyncSpy = jest.spyOn(fs, 'existsSync');
-        accessSyncSpy = jest.spyOn(fs, 'accessSync');
-        mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync');
+        existsSyncSpy = vi.spyOn(fs, 'existsSync');
+        accessSyncSpy = vi.spyOn(fs, 'accessSync');
+        mkdirSyncSpy = vi.spyOn(fs, 'mkdirSync');
         existsSyncSpy.mockImplementation(() => true);
         accessSyncSpy.mockImplementation(() => undefined);
         mkdirSyncSpy.mockImplementation(() => undefined);
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it('throws an error if path is not absolute', () => {
@@ -173,7 +173,7 @@ describe('parseFilePath', () => {
         );
     });
     it('throws an error if no filePath is provided', () => {
-        // @ts-ignore
+        // @ts-expect-error
         expect(() => parseFilePath(undefined)).toThrow(
             ERROR_MESSAGES.MISSING_FILENAME,
         );
