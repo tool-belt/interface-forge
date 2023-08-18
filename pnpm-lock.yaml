@@ -1421,7 +1421,7 @@ packages:
         hasBin: true
         dependencies:
             caniuse-lite: 1.0.30001521
-            electron-to-chromium: 1.4.494
+            electron-to-chromium: 1.4.495
             node-releases: 2.0.13
             update-browserslist-db: 1.0.11(browserslist@4.21.10)
         dev: true
@@ -1785,10 +1785,10 @@ packages:
             }
         dev: true
 
-    /electron-to-chromium@1.4.494:
+    /electron-to-chromium@1.4.495:
         resolution:
             {
-                integrity: sha512-KF7wtsFFDu4ws1ZsSOt4pdmO1yWVNWCFtijVYZPUeW4SV7/hy/AESjLn/+qIWgq7mHscNOKAwN5AIM1+YAy+Ww==,
+                integrity: sha512-mwknuemBZnoOCths4GtpU/SDuVMp3uQHKa2UNJT9/aVD6WVRjGpXOxRGX7lm6ILIenTdGXPSTCTDaWos5tEU8Q==,
             }
         dev: true
 
@@ -4201,10 +4201,10 @@ packages:
             }
         dev: true
 
-    /std-env@3.3.3:
+    /std-env@3.4.0:
         resolution:
             {
-                integrity: sha512-Rz6yejtVyWnVjC1RFvNmYL10kgjC49EOghxWn0RFqlCHGFpQx+Xe7yW3I4ceK1SGrWIGMjD5Kbue8W/udkbMJg==,
+                integrity: sha512-YqHeQIIQ8r1VtUZOTOyjsAXAsjr369SplZ5rlQaiJTBsvodvPSCME7vuz8pnQltbQ0Cw0lyFo5Q8uyNwYQ58Xw==,
             }
         dev: true
 
@@ -4769,7 +4769,7 @@ packages:
             magic-string: 0.30.2
             pathe: 1.1.1
             picocolors: 1.0.0
-            std-env: 3.3.3
+            std-env: 3.4.0
             strip-literal: 1.3.0
             tinybench: 2.5.0
             tinypool: 0.7.0
