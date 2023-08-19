@@ -40,17 +40,6 @@
       "contributions": [
         "code"
       ]
-    },
-    {
-      "login": "ghalibansari",
-      "name": "Ghalib Ansari",
-      "avatar_url": "https://avatars.githubusercontent.com/u/20482230?v=4",
-      "profile": "https://github.com/ghalibansari",
-      "contributions": [
-        "code",
-        "doc",
-        "maintenance"
-      ]
     }
   ],
   "contributorsPerLine": 7
