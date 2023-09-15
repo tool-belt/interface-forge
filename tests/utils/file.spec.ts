@@ -1,4 +1,5 @@
-import fs from 'fs';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import fs from 'node:fs';
 
 import { ERROR_MESSAGES } from '../../src';
 import {
@@ -15,22 +16,12 @@ const defaults: ComplexObject = {
 };
 
 const annoyinglyComplexObject: any = {
-    ...{
-        ...defaults,
-        options: {
-            type: '1',
-        },
-    },
+    ...defaults,
     options: {
         type: '1',
         children: [
             {
-                ...{
-                    ...defaults,
-                    options: {
-                        type: '1',
-                    },
-                },
+                ...defaults,
                 options: {
                     type: '1',
                     children: [defaults],
@@ -41,12 +32,7 @@ const annoyinglyComplexObject: any = {
             [
                 [
                     {
-                        ...{
-                            ...defaults,
-                            options: {
-                                type: '1',
-                            },
-                        },
+                        ...defaults,
                         options: {
                             type: '1',
                             children: [defaults],
@@ -154,8 +140,8 @@ describe('parseFilePath', () => {
         accessSyncSpy = vi.spyOn(fs, 'accessSync');
         mkdirSyncSpy = vi.spyOn(fs, 'mkdirSync');
         existsSyncSpy.mockImplementation(() => true);
-        accessSyncSpy.mockImplementation(() => undefined);
-        mkdirSyncSpy.mockImplementation(() => undefined);
+        accessSyncSpy.mockImplementation(() => {});
+        mkdirSyncSpy.mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -174,9 +160,7 @@ describe('parseFilePath', () => {
     });
     it('throws an error if no filePath is provided', () => {
         // @ts-expect-error
-        expect(() => parseFilePath(undefined)).toThrow(
-            ERROR_MESSAGES.MISSING_FILENAME,
-        );
+        expect(() => parseFilePath()).toThrow(ERROR_MESSAGES.MISSING_FILENAME);
         expect(() => parseFilePath('')).toThrow(
             ERROR_MESSAGES.MISSING_FILENAME,
         );

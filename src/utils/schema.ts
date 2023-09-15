@@ -54,6 +54,7 @@ export function parseFactorySchema<T>(
             value = parseRef(value, isSync, iteration);
         } else if (isIterator(value)) {
             value = value.next().value;
+            // eslint-disable-next-line sonarjs/elseif-without-else
         } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
             value = parseFactorySchema(value, iteration, isSync, key);
         }

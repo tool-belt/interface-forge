@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class,unicorn/no-new-array,unicorn/no-array-callback-reference */
 import { isPromise } from '@tool-belt/type-predicates';
 
 import { ERROR_MESSAGES } from './constants';

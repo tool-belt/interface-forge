@@ -2,6 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "declaration": true,
+        "inlineSourceMap": true,
         "outDir": "dist",
         "baseUrl": "."
     },

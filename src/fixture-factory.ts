@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import { TypeFactory } from './type-factory';
 import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';

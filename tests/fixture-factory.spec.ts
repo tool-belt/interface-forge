@@ -1,4 +1,5 @@
-import fs from 'fs';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import fs from 'node:fs';
 
 import { ERROR_MESSAGES, FixtureFactory } from '../src';
 import * as fileUtils from '../src/utils/file';
@@ -24,8 +25,8 @@ describe('FixtureFactory', () => {
         mkdirSyncSpy = vi.spyOn(fs, 'mkdirSync');
         readFileSyncSpy = vi.spyOn(fs, 'readFileSync');
         writeFileSyncSpy = vi.spyOn(fs, 'writeFileSync');
-        mkdirSyncSpy.mockImplementation(() => undefined);
-        writeFileSyncSpy.mockImplementation(() => undefined);
+        mkdirSyncSpy.mockImplementation(() => {});
+        writeFileSyncSpy.mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -37,7 +38,7 @@ describe('FixtureFactory', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             readFileIfExistsSpy.mockReturnValueOnce(null);
             writeFileSyncSpy.mockImplementationOnce(() => {
-                throw Error('');
+                throw new Error('');
             });
             const factory = new FixtureFactory<ComplexObject>(defaults);
             expect(() => factory.fixtureSync('/testfile')).toThrow(
@@ -187,7 +188,7 @@ describe('FixtureFactory', () => {
             readFileIfExistsSpy.mockRestore();
             let writtenValue: string;
             writeFileSyncSpy.mockImplementation(
-                (_, value) => (writtenValue = value),
+                (_: any, value: any) => (writtenValue = value),
             );
 
             const factory = new FixtureFactory<ComplexObject>(() => ({

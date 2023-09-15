@@ -42,7 +42,7 @@ describe('iterate', () => {
 describe('sample', () => {
     it('samples values correctly with long iterable', () => {
         const arr = [1, 2, 3];
-        for (const iterable of [arr, new Set(arr), arr.join()]) {
+        for (const iterable of [arr, new Set(arr), arr.join(',')]) {
             const generator = sample(iterable as Iterable<any>);
             const value1 = generator.next().value;
             const value2 = generator.next().value;
@@ -51,7 +51,7 @@ describe('sample', () => {
     });
     it('samples values correctly with 1 length iterable', () => {
         const arr = [1];
-        for (const iterable of [arr, new Set(arr), arr.join()]) {
+        for (const iterable of [arr, new Set(arr), arr.join(',')]) {
             const generator = sample(iterable as Iterable<any>);
             const value1 = generator.next().value;
             const value2 = generator.next().value;

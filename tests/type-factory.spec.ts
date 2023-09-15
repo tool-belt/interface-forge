@@ -26,12 +26,11 @@ describe('.build', () => {
     it('builds correctly with builder function', async () => {
         const factory = new TypeFactory<ComplexObject>(
             defaults,
-            async (defaults, iteration) =>
-                Promise.resolve({
-                    ...defaults,
-                    name: 'newObject',
-                    value: iteration + 1,
-                }),
+            async (defaults, iteration) => ({
+                ...defaults,
+                name: 'newObject',
+                value: iteration + 1,
+            }),
         );
         expect(await factory.build()).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -75,7 +74,7 @@ describe('.build', () => {
         });
         expect(
             await factoryTwo.build({
-                overrides: async () => Promise.resolve({ name: 'newObject' }),
+                overrides: async () => ({ name: 'newObject' }),
             }),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
@@ -90,7 +89,7 @@ describe('.build', () => {
             },
         });
         const result = await Promise.all(
-            Array(5)
+            Array.from({ length: 5 })
                 .fill(null)
                 .map(async () => factory.build()),
         );
@@ -158,9 +157,7 @@ describe('.buildSync', () => {
         });
     });
     it('throws when called with Promise defaults', () => {
-        const factory = new TypeFactory<ComplexObject>(async () =>
-            Promise.resolve(defaults),
-        );
+        const factory = new TypeFactory<ComplexObject>(async () => defaults);
         expect(() => factory.buildSync()).toThrow(
             ERROR_MESSAGES.PROMISE_DEFAULTS,
         );
@@ -169,7 +166,7 @@ describe('.buildSync', () => {
         const factory = new TypeFactory<ComplexObject>(defaults);
         expect(() =>
             factory.buildSync({
-                overrides: async () => Promise.resolve({ name: 'newObject' }),
+                overrides: async () => ({ name: 'newObject' }),
             }),
         ).toThrow(ERROR_MESSAGES.PROMISE_OVERRIDES);
     });
@@ -177,8 +174,7 @@ describe('.buildSync', () => {
         const factory = new TypeFactory<ComplexObject>(defaults);
         expect(() =>
             factory.buildSync({
-                factory: async (value) =>
-                    Promise.resolve({ ...value, name: 'newObject' }),
+                factory: async (value) => ({ ...value, name: 'newObject' }),
             }),
         ).toThrow(ERROR_MESSAGES.PROMISE_FACTORY);
     });
@@ -189,7 +185,7 @@ describe('.buildSync', () => {
                 type: TypeFactory.iterate(typeOptions),
             },
         });
-        const result = Array(5)
+        const result = Array.from({ length: 5 })
             .fill(null)
             .map(() => factory.buildSync());
         expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
@@ -237,14 +233,13 @@ describe('.batch', () => {
         const factory = new TypeFactory<{
             id: number;
         }>((i) => ({ id: i }));
-        const results = new Array(10)
+        const results = Array.from({ length: 10 })
             .fill(null)
-            .map(() => factory.batchSync(10))
-            .flat()
+            .flatMap(() => factory.batchSync(10))
             .map(({ id }) => id);
         expect([...new Set(results)]).toHaveLength(100);
         expect(results[0]).toBe(0);
-        expect(results[results.length - 1]).toBe(99);
+        expect(results.at(-1)).toBe(99);
     });
 });
 

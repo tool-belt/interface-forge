@@ -1,6 +1,8 @@
+/* eslint-disable sonarjs/elseif-without-else */
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { isRecord } from '@tool-belt/type-predicates';
-import fs from 'fs';
-import path from 'path';
 
 import { ERROR_MESSAGES } from '../constants';
 import { getValueFromNestedArray } from './general';
@@ -46,7 +48,7 @@ export function readFileIfExists<T>(filePath: string): T | null {
     if (fs.existsSync(filePath)) {
         try {
             const data = fs.readFileSync(filePath, {
-                encoding: 'utf-8',
+                encoding: 'utf8',
             });
             return JSON.parse(data) as T;
         } catch (error) {

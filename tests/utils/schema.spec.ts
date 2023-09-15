@@ -32,7 +32,7 @@ describe('parseFactorySchema Async', () => {
             await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    value: TypeFactory.use(async () => Promise.resolve(99)),
+                    value: TypeFactory.use(async () => 99),
                 },
                 0,
                 false,
@@ -104,7 +104,9 @@ describe('parseFactorySchema Async', () => {
     });
     it('parses schema correctly using generator fn', async () => {
         const generator = TypeFactory.iterate([
-            new Promise((resolve) => resolve(1)),
+            new Promise((resolve) => {
+                resolve(1);
+            }),
             2,
             3,
         ]);

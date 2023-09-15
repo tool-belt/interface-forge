@@ -13,6 +13,7 @@ function recursiveValidate(
     for (const [key, value] of Object.entries(obj)) {
         if (value instanceof cls) {
             mappedKeys.push(parent ? `${parent}.${key}` : key);
+            // eslint-disable-next-line sonarjs/elseif-without-else
         } else if (isRecord(value)) {
             mappedKeys.push(...recursiveValidate(value, cls, key));
         }
@@ -24,7 +25,7 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
     schema: T,
 ): T {
     const missingValues = recursiveValidate(schema, BuildArgProxy);
-    if (missingValues.length) {
+    if (missingValues.length > 0) {
         throw new Error(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
                 ':missingArgs',
@@ -39,7 +40,7 @@ export function validateFactoryResult<T extends Record<string, any>>(
     factoryResult: T,
 ): T {
     const missingValues = recursiveValidate(factoryResult, DerivedValueProxy);
-    if (missingValues.length) {
+    if (missingValues.length > 0) {
         throw new Error(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(
                 ':missingValues',
