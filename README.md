@@ -10,7 +10,7 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/github/all-contributors/tool-belt/interface-forge?color=ee8449&style=flat-square)](#contributors)
 
 </div>
 
@@ -123,7 +123,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/nhirschfeld/"><img src="https://avatars.githubusercontent.com/u/30733348?v=4?s=100" width="100px;" alt="Na'aman Hirschfeld"/><br /><sub><b>Na'aman Hirschfeld</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=Goldziher" title="Code">💻</a> <a href="https://github.com/tool-belt/interface-forge/commits?author=Goldziher" title="Documentation">📖</a> <a href="#maintenance-Goldziher" title="Maintenance">🚧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dkress59"><img src="https://avatars.githubusercontent.com/u/28515387?v=4?s=100" width="100px;" alt="Damian"/><br /><sub><b>Damian</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Code">💻</a> <a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Documentation">📖</a> <a href="#maintenance-dkress59" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dkress59"><img src="https://avatars.githubusercontent.com/u/28515387?v=4?s=100" width="100px;" alt="Damian"/><br /><sub><b>Damian</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Code">💻</a> <a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/stuikomma"><img src="https://avatars.githubusercontent.com/u/2040603?v=4?s=100" width="100px;" alt="Yannis Kommana"/><br /><sub><b>Yannis Kommana</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=stuikomma" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/ghalibansari"><img src="https://avatars.githubusercontent.com/u/20482230?v=4?s=100" width="100px;" alt="Ghalib Ansari"/><br /><sub><b>Ghalib Ansari</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=ghalibansari" title="Code">💻</a></td>
     </tr>

@@ -41,7 +41,6 @@
         "@tool-belt/eslint-config": "^3.0.5",
         "@types/node": "^20.6.1",
         "@vitest/coverage-v8": "^0.34.4",
-        "all-contributors-cli": "^6.26.1",
         "eslint": "^8.49.0",
         "husky": "^8.0.3",
         "lint-staged": "^14.0.1",
