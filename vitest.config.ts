@@ -6,7 +6,7 @@ export default defineConfig({
         globals: true,
         include: ['tests/**/*.spec.ts'],
         coverage: {
-            provider: 'istanbul',
+            reporter: ['text', 'lcov'],
         },
     },
 });
