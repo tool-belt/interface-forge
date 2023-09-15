@@ -5,29 +5,19 @@
         {
             "name": "Na'aman Hirschfeld",
             "email": "nhirschfeld@gmail.com"
-        },
-        {
-            "name": "Damian Kress",
-            "email": "mail@damiankress.de"
         }
     ],
-    "version": "1.5.1",
+    "version": "1.6.0",
     "license": "MIT",
     "description": "Gracefully generate testing data using TypeScript",
     "keywords": [
         "factory",
         "fixture",
-        "interface",
-        "jest",
-        "mocha",
-        "mock data",
-        "mock",
-        "test data",
         "testing",
         "typescript"
     ],
-    "repository": "https://github.com/Goldziher/interfaceForge",
-    "bugs": "https://github.com/Goldziher/interfaceForge/issues",
+    "repository": "https://github.com/tool-belt/interface-forge",
+    "bugs": "https://github.com/tool-belt/interface-forge/issues",
     "main": "dist/index.js",
     "typings": "dist/index",
     "files": [
@@ -48,18 +38,18 @@
         "test:watch": "vitest"
     },
     "devDependencies": {
-        "@tool-belt/eslint-config": "^3.0.3",
-        "@types/node": "^20.5.1",
-        "@vitest/coverage-istanbul": "^0.34.2",
+        "@tool-belt/eslint-config": "^3.0.5",
+        "@types/node": "^20.6.1",
+        "@vitest/coverage-istanbul": "^0.34.4",
         "all-contributors-cli": "^6.26.1",
-        "eslint": "^8.47.0",
+        "eslint": "^8.49.0",
         "husky": "^8.0.3",
-        "lint-staged": "^14.0.0",
-        "prettier": "^3.0.2",
+        "lint-staged": "^14.0.1",
+        "prettier": "^3.0.3",
         "rimraf": "^5.0.1",
         "ts-node": "^10.9.1",
-        "typescript": "^5.1.6",
-        "vitest": "^0.34.2"
+        "typescript": "^5.2.2",
+        "vitest": "^0.34.4"
     },
     "lint-staged": {
         "*.ts": "eslint --fix",
