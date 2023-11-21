@@ -24,10 +24,10 @@ export function validateAbsolutePath(filePath?: string): void {
 export function parseFilePath(filePath: string): ParsedFilePath {
     validateAbsolutePath(filePath);
     let fileName = path.basename(filePath);
-    const fixturesDir = filePath.replace(fileName, '') + '__fixtures__/';
+    const fixturesDir = `${filePath.replace(fileName, '')}__fixtures__/`;
     const extension = path.extname(fileName);
     if (!extension) {
-        fileName = fileName + '.json';
+        fileName = `${fileName}.json`;
     } else if (extension.toLowerCase() !== '.json') {
         throw new Error(
             ERROR_MESSAGES.INVALID_EXTENSION.replace(
@@ -77,7 +77,7 @@ export function writeFixtureFile<T>(
         throw new Error(
             ERROR_MESSAGES.FILE_WRITE.replace(':filePath', fullPath).replace(
                 ':fileError',
-                ': ' + JSON.stringify(error),
+                `: ${JSON.stringify(error)}`,
             ),
         );
     }

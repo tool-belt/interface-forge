@@ -33,8 +33,8 @@ describe('validateFactorySchema', () => {
         expect(() =>
             validateFactorySchema<any>({
                 ...defaults,
-                topLevel: TypeFactory.required(),
                 nested: { ...defaults, options: TypeFactory.required() as any },
+                topLevel: TypeFactory.required(),
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
@@ -68,8 +68,8 @@ describe('validateFactoryResult', () => {
         expect(() =>
             validateFactoryResult<any>({
                 ...defaults,
-                topLevel: TypeFactory.derived(),
                 nested: { ...defaults, options: TypeFactory.derived() as any },
+                topLevel: TypeFactory.derived(),
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(

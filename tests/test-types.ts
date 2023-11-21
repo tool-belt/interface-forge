@@ -1,10 +1,10 @@
 export interface ComplexObject extends Record<string, any> {
     name: string;
-    value: number | null;
     options?: Options;
+    value: number | null;
 }
 
 export interface Options extends Record<string, any> {
-    type: '1' | '2' | '3' | 'all' | 'none';
     children?: ComplexObject[];
+    type: '1' | '2' | '3' | 'all' | 'none';
 }

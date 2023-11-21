@@ -18,29 +18,29 @@ const defaults: ComplexObject = {
 const annoyinglyComplexObject: any = {
     ...defaults,
     options: {
-        type: '1',
-        children: [
-            {
-                ...defaults,
-                options: {
-                    type: '1',
-                    children: [defaults],
-                },
-            },
-        ],
         arrayOfArray: [
             [
                 [
                     {
                         ...defaults,
                         options: {
-                            type: '1',
                             children: [defaults],
+                            type: '1',
                         },
                     },
                 ],
             ],
         ],
+        children: [
+            {
+                ...defaults,
+                options: {
+                    children: [defaults],
+                    type: '1',
+                },
+            },
+        ],
+        type: '1',
     },
 };
 
@@ -58,8 +58,8 @@ describe('readFileIfExists', () => {
     it('returns parsed file contents if file exists', () => {
         const testData = {
             'id': 0,
-            'value': 'test',
             'is-JSON': true,
+            'value': 'test',
         };
         existsSyncSpy.mockReturnValueOnce(true);
         readFileSyncSpy.mockReturnValueOnce(JSON.stringify(testData));

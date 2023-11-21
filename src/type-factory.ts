@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class,unicorn/no-new-array,unicorn/no-array-callback-reference */
+/* eslint-disable unicorn/no-new-array,unicorn/no-array-callback-reference */
 import { isPromise } from '@tool-belt/type-predicates';
 
 import { ERROR_MESSAGES } from './constants';
@@ -20,18 +20,18 @@ import {
 
 interface SyncBuildArgs<T> {
     defaults: FactorySchema<T>;
-    overrides?: FactoryDefaults<Partial<T>>;
     factory?: FactoryFunction<T>;
     iteration: number;
+    overrides?: FactoryDefaults<Partial<T>>;
 }
 
 interface AsyncBuildArgs<T> {
     defaults: Promise<FactorySchema<T>> | FactorySchema<T>;
+    factory?: FactoryFunction<T>;
+    iteration: number;
     overrides?:
         | Promise<FactoryDefaults<Partial<T>>>
         | FactoryDefaults<Partial<T>>;
-    factory?: FactoryFunction<T>;
-    iteration: number;
 }
 
 export class BuildArgProxy {
@@ -92,7 +92,7 @@ export class TypeFactory<T> {
                 throw new Error(ERROR_MESSAGES.PROMISE_OVERRIDES);
             }
         }
-        return { defaults, overrides, factory, iteration };
+        return { defaults, factory, iteration, overrides };
     };
 
     private postBuild(isSync: boolean, result: T | Promise<T>): T | Promise<T> {

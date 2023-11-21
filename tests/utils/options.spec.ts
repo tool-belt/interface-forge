@@ -18,7 +18,7 @@ describe('parseOptions', () => {
         it('returns both overrides and factory when passed both', () => {
             const overrides = { key: 'value' };
             const factory = vi.fn();
-            expect(parseOptions({ overrides, factory }, 1)).toEqual([
+            expect(parseOptions({ factory, overrides }, 1)).toEqual([
                 overrides,
                 factory,
             ]);
@@ -39,7 +39,7 @@ describe('parseOptions', () => {
                 key: iteration,
             }));
             const factory = vi.fn();
-            const result = parseOptions({ overrides, factory }, 1);
+            const result = parseOptions({ factory, overrides }, 1);
             expect(overrides).toHaveBeenCalledWith(1);
             expect(result).toEqual([{ key: 1 }, factory]);
         });

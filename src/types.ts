@@ -22,8 +22,8 @@ export type FactorySchema<T> = {
 };
 
 export interface OverridesAndFactory<T> {
-    overrides?: FactoryDefaults<Partial<T>>;
     factory?: FactoryFunction<T>;
+    overrides?: FactoryDefaults<Partial<T>>;
 }
 
 export type FactoryBuildOptions<T> =

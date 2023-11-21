@@ -70,7 +70,6 @@ describe('parseFactorySchema Async', () => {
                 ...defaults,
                 options: TypeFactory.use<Options>(
                     new TypeFactory<Options>({
-                        type: 'none',
                         children: TypeFactory.use(
                             new TypeFactory<ComplexObject>(defaults),
 
@@ -82,6 +81,7 @@ describe('parseFactorySchema Async', () => {
                                 }),
                             },
                         ),
+                        type: 'none',
                     }),
                 ),
             },
@@ -91,13 +91,13 @@ describe('parseFactorySchema Async', () => {
         expect(result).toStrictEqual<ComplexObject>({
             ...defaults,
             options: {
-                type: 'none',
                 children: expect.arrayContaining([
                     {
                         ...defaults,
                         value: expect.any(Number),
                     },
                 ]),
+                type: 'none',
             },
         });
         expect(result.options?.children?.length).toBe(5);
@@ -167,28 +167,28 @@ describe('parseFactorySchema Async', () => {
         expect(
             await parseFactorySchema<any>(
                 {
-                    topLevel: Promise.resolve(1),
                     nested: {
-                        value: Promise.resolve(2),
                         deep: {
                             value: Promise.resolve({
-                                nested: 3,
                                 deep: Promise.resolve(4),
+                                nested: 3,
                             }),
                         },
+                        value: Promise.resolve(2),
                     },
+                    topLevel: Promise.resolve(1),
                 },
                 1,
                 false,
             ),
         ).toEqual({
-            topLevel: 1,
             nested: {
-                value: 2,
                 deep: {
-                    value: { nested: 3, deep: 4 },
+                    value: { deep: 4, nested: 3 },
                 },
+                value: 2,
             },
+            topLevel: 1,
         });
     });
 });
@@ -256,7 +256,6 @@ describe('parseFactorySchema Sync', () => {
                 ...defaults,
                 options: TypeFactory.use<Options>(
                     new TypeFactory<Options>({
-                        type: 'none',
                         children: TypeFactory.use(
                             new TypeFactory<ComplexObject>(defaults),
 
@@ -268,6 +267,7 @@ describe('parseFactorySchema Sync', () => {
                                 }),
                             },
                         ),
+                        type: 'none',
                     }),
                 ),
             },
@@ -277,13 +277,13 @@ describe('parseFactorySchema Sync', () => {
         expect(result).toStrictEqual<ComplexObject>({
             ...defaults,
             options: {
-                type: 'none',
                 children: expect.arrayContaining([
                     {
                         ...defaults,
                         value: expect.any(Number),
                     },
                 ]),
+                type: 'none',
             },
         });
         // @ts-expect-error
