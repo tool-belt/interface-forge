@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/no-new-array,unicorn/no-array-callback-reference */
+/* eslint-disable unicorn/no-new-array */
 import { isPromise } from '@tool-belt/type-predicates';
 
 import { ERROR_MESSAGES } from './constants';

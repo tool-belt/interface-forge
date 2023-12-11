@@ -37,17 +37,17 @@
         "test:watch": "vitest"
     },
     "devDependencies": {
-        "@tool-belt/eslint-config": "^4.0.2",
-        "@types/node": "^20.9.3",
-        "@vitest/coverage-v8": "^0.34.6",
-        "eslint": "^8.54.0",
+        "@tool-belt/eslint-config": "^5.0.3",
+        "@types/node": "^20.10.4",
+        "@vitest/coverage-v8": "^1.0.4",
+        "eslint": "^8.55.0",
         "husky": "^8.0.3",
-        "lint-staged": "^15.1.0",
-        "prettier": "^3.1.0",
+        "lint-staged": "^15.2.0",
+        "prettier": "^3.1.1",
         "rimraf": "^5.0.5",
-        "ts-node": "^10.9.1",
-        "typescript": "^5.3.2",
-        "vitest": "^0.34.6"
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3",
+        "vitest": "^1.0.4"
     },
     "lint-staged": {
         "*.ts": "eslint --fix",

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/elseif-without-else */
 import fs from 'node:fs';
 import path from 'node:path';
 

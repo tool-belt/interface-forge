@@ -13,7 +13,6 @@ function recursiveValidate(
     for (const [key, value] of Object.entries(obj)) {
         if (value instanceof cls) {
             mappedKeys.push(parent ? `${parent}.${key}` : key);
-            // eslint-disable-next-line sonarjs/elseif-without-else
         } else if (isRecord(value)) {
             mappedKeys.push(...recursiveValidate(value, cls, key));
         }
