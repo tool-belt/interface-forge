@@ -39,7 +39,7 @@ describe('validateFactorySchema', () => {
         ).toThrow(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
                 ':missingArgs',
-                'topLevel, nested.options',
+                'nested.options, topLevel',
             ),
         );
     });
@@ -74,7 +74,7 @@ describe('validateFactoryResult', () => {
         ).toThrow(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(
                 ':missingValues',
-                'topLevel, nested.options',
+                'nested.options, topLevel',
             ),
         );
     });
