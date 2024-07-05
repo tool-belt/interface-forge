@@ -1,30 +1,8 @@
-<div align="center">
+# Interface-Forge
 
-![NPM](https://img.shields.io/npm/l/interface-forge)
-
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Goldziher_interface-forge&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Goldziher_interface-forge)
-
-[![All Contributors](https://img.shields.io/github/all-contributors/tool-belt/interface-forge?color=ee8449&style=flat-square)](#contributors)
-
-</div>
-
-Interface-Forge allows you to gracefully generate dynamic mock data and static fixtures in TypeScript.
-
----
+Interface-Forge is a TypeScript library for creating strongly typed mock data factories. This library builds upon [Faker.js](https://fakerjs.dev/) by providing a simple and intuitive `Factory` class that extends the `Faker` class from [Faker.js](https://fakerjs.dev/).
 
 ## Installation
-
-```shell
-yarn add --dev interface-forge
-```
-
-Or
 
 ```shell
 npm install --save-dev interface-forge
@@ -32,48 +10,39 @@ npm install --save-dev interface-forge
 
 ## Basic Example
 
-To create a factory you need some TS types:
+To create a factory, you need a TypeScript type:
 
 ```typescript
 // types.ts
 
-export interface UserProfile {
-    profession: string;
-    gender: string;
-    age: number;
-}
-
-export interface Cat {
-    name: string;
-}
-
-export interface User {
+interface User {
     firstName: string;
     lastName: string;
     email: string;
-    profile: UserProfile;
-    cats: Cat[];
+    profile: {
+        profession: string;
+        gender: string;
+        age: number;
+    };
 }
 ```
 
-Pass the desired type as a generic argument when instantiating TypeFactory, alongside default values for the factory:
+Pass the desired type as a generic argument when instantiating the `Factory` class, alongside default values for the factory:
 
 ```typescript
 // factories.ts
-import { TypeFactory } from 'interface-forge';
+import { Factory } from 'interface-forge';
 import { User } from './types';
 
-// i is type number
-const UserFactory = new TypeFactory<User>((i) => ({
-    firstName: 'John',
-    lastName: 'Smith',
-    email: 'js@example.com',
+const UserFactory = new Factory<User>((factory, iteration) => ({
+    firstName: factory.person.firstName(),
+    lastName: factory.person.lastName(),
+    email: factory.internet.email(),
     profile: {
-        profession: 'cook',
-        gender: 'male',
-        age: 27 + i,
+        profession: factory.person.jobType(),
+        gender: factory.person.gender(),
+        age: 27 + iteration,
     },
-    cats: [],
 }));
 ```
 
@@ -83,16 +52,7 @@ Then use the factory to create an object of the desired type in a test file:
 // User.spec.ts
 
 describe('User', () => {
-    // you can pass override values when calling build
-    const user = UserFactory.buildSync({
-        firstName: 'Johanne',
-        profile: {
-            profession: 'Journalist',
-            gender: 'Female',
-            age: 31,
-        },
-        cats: [],
-    });
+    const user = UserFactory.build();
     // user == {
     //     firstName: "Johanne",
     //     lastName: "Smith",
@@ -100,40 +60,131 @@ describe('User', () => {
     //     profile: {
     //         profession: "Journalist",
     //         gender: "Female",
-    //         age: 31
+    //         age: 27
     //     },
-    //     cats: []
     // }
     // ...
 });
 ```
 
-Take a look at our [documentation](https://goldziher.github.io/interface-forge/) or read
-the [introduction article](https://javascript.plainenglish.io/generating-test-data-and-fixtures-with-interface-forge-5a5548233aa5)
-.
+## Factory Class Methods
 
-## Contributing & Contributors ✨
+### `build`
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Builds a single object based on the factory's schema. Optionally, you can pass an object to override specific properties.
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/nhirschfeld/"><img src="https://avatars.githubusercontent.com/u/30733348?v=4?s=100" width="100px;" alt="Na'aman Hirschfeld"/><br /><sub><b>Na'aman Hirschfeld</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=Goldziher" title="Code">💻</a> <a href="https://github.com/tool-belt/interface-forge/commits?author=Goldziher" title="Documentation">📖</a> <a href="#maintenance-Goldziher" title="Maintenance">🚧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dkress59"><img src="https://avatars.githubusercontent.com/u/28515387?v=4?s=100" width="100px;" alt="Damian"/><br /><sub><b>Damian</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Code">💻</a> <a href="https://github.com/tool-belt/interface-forge/commits?author=dkress59" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stuikomma"><img src="https://avatars.githubusercontent.com/u/2040603?v=4?s=100" width="100px;" alt="Yannis Kommana"/><br /><sub><b>Yannis Kommana</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=stuikomma" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/ghalibansari"><img src="https://avatars.githubusercontent.com/u/20482230?v=4?s=100" width="100px;" alt="Ghalib Ansari"/><br /><sub><b>Ghalib Ansari</b></sub></a><br /><a href="https://github.com/tool-belt/interface-forge/commits?author=ghalibansari" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
+**Usage:**
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
+```typescript
+const user = UserFactory.build();
+// user == {
+//     firstName: "Johanne",
+//     lastName: "Smith",
+//     email: "js@example.com",
+//     profile: {
+//         profession: "Journalist",
+//         gender: "Female",
+//         age: 27
+//     },
+// }
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+const customUser = UserFactory.build({ age: 35 });
+// customUser.age == 35
+```
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
-Contributions of any kind welcome! Please see the [contributing guide](CONTRIBUTING.md).
+### `batch`
+
+Generates a batch of objects based on the factory's schema. Optionally, you can pass an object or an array of objects to override specific properties for each instance.
+
+**Usage:**
+
+```typescript
+const users = UserFactory.batch(3);
+// users == [
+//     { ... },
+//     { ... },
+//     { ... }
+// ]
+
+const customUsers = UserFactory.batch(3, { age: 35 });
+// customUsers == [
+//     { ..., age: 35 },
+//     { ..., age: 35 },
+//     { ..., age: 35 }
+// ]
+
+const variedUsers = UserFactory.batch(3, [
+    { age: 30 },
+    { age: 25 },
+    { age: 40 },
+]);
+// variedUsers == [
+//     { ..., age: 30 },
+//     { ..., age: 25 },
+//     { ..., age: 40 }
+// ]
+```
+
+### `use`
+
+Creates a reference to a function that can be used within the factory. This method allows for the encapsulation of a function and its arguments, enabling deferred execution.
+
+**Usage:**
+
+```typescript
+const complexFactory = new Factory<ComplexObject>((factory) => ({
+    name: factory.person.firstName(),
+    value: factory.number.int({ min: 1, max: 3 }),
+    options: {
+        type: '1',
+    },
+}));
+
+const factoryWithOptions = new Factory<ComplexObject>((factory) => ({
+    ...defaults,
+    options: {
+        type: '1',
+        children: factory.use(complexFactory.batch, 2),
+    },
+}));
+
+const result = factoryWithOptions.build();
+// result.options.children == [
+//     { ... },
+//     { ... }
+// ]
+```
+
+### `iterate`
+
+Cycles through the values of an iterable indefinitely.
+
+**Usage:**
+
+```typescript
+const values = ['Value 1', 'Value 2', 'Value 3'];
+const generator = UserFactory.iterate(values);
+
+console.log(generator.next().value); // 'Value 1'
+console.log(generator.next().value); // 'Value 2'
+console.log(generator.next().value); // 'Value 3'
+console.log(generator.next().value); // 'Value 1'
+```
+
+### `sample`
+
+Samples values randomly from an iterable, ensuring no immediate repetitions.
+
+**Usage:**
+
+```typescript
+const values = [1, 2, 3];
+const generator = UserFactory.sample(values);
+
+console.log(generator.next().value); // 1 (or 2, or 3)
+console.log(generator.next().value); // (different from the previous value)
+```
+
+## Contributing
+
+Contributions of any kind are welcome! Please see the [contributing guide](CONTRIBUTING.md).

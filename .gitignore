@@ -1,9 +1,8 @@
-node_modules/
-dist/
-coverage/
-docusaurus/
-docs/
 *.log
-_/
-.idea/
 .DS_Store
+.idea/
+.vscode
+_/
+coverage/
+dist/
+node_modules/

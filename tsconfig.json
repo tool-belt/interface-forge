@@ -1,13 +1,11 @@
 {
     "include": ["**/*.ts"],
-    "exclude": ["docusaurus"],
     "compilerOptions": {
         "alwaysStrict": true,
         "baseUrl": ".",
         "esModuleInterop": true,
-        "lib": ["ESNext"],
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
