@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import fs from 'node:fs';
+
+import { MockInstance } from 'vitest';
 
 import { ERROR_MESSAGES } from '../../src';
 import {
@@ -45,8 +46,8 @@ const annoyinglyComplexObject: any = {
 };
 
 describe('readFileIfExists', () => {
-    let existsSyncSpy: vi.SpyInstance;
-    let readFileSyncSpy: vi.SpyInstance;
+    let existsSyncSpy: MockInstance;
+    let readFileSyncSpy: MockInstance;
 
     beforeEach(() => {
         existsSyncSpy = vi.spyOn(fs, 'existsSync');
@@ -131,9 +132,9 @@ describe('isSameStructure', () => {
 });
 
 describe('parseFilePath', () => {
-    let existsSyncSpy: vi.SpyInstance;
-    let accessSyncSpy: vi.SpyInstance;
-    let mkdirSyncSpy: vi.SpyInstance;
+    let existsSyncSpy: MockInstance;
+    let accessSyncSpy: MockInstance;
+    let mkdirSyncSpy: MockInstance;
 
     beforeEach(() => {
         existsSyncSpy = vi.spyOn(fs, 'existsSync');

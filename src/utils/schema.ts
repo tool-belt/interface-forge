@@ -40,6 +40,14 @@ async function recursiveResolve<T>(
     return output as T;
 }
 
+/**
+ *
+ * @param schema The schema to parse
+ * @param iteration The current iteration
+ * @param isSync Whether the build is synchronous
+ * @param parent The parent key
+ * @returns T | Promise<T>
+ */
 export function parseFactorySchema<T>(
     schema: FactorySchema<T>,
     iteration: number,
@@ -53,6 +61,7 @@ export function parseFactorySchema<T>(
         } else if (value instanceof Ref) {
             value = parseRef(value, isSync, iteration);
         } else if (isIterator(value)) {
+            // eslint-disable-next-line prefer-destructuring
             value = value.next().value;
         } else if (!(value instanceof DerivedValueProxy) && isRecord(value)) {
             value = parseFactorySchema(value, iteration, isSync, key);

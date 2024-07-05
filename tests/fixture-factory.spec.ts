@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import fs from 'node:fs';
+
+import { MockInstance } from 'vitest';
 
 import { ERROR_MESSAGES, FixtureFactory } from '../src';
 import * as fileUtils from '../src/utils/file';
@@ -11,11 +12,11 @@ const defaults: ComplexObject = {
 };
 
 describe('FixtureFactory', () => {
-    let existsSyncSpy: vi.SpyInstance;
-    let writeFileSyncSpy: vi.SpyInstance;
-    let mkdirSyncSpy: vi.SpyInstance;
-    let readFileIfExistsSpy: vi.SpyInstance;
-    let readFileSyncSpy: vi.SpyInstance;
+    let existsSyncSpy: MockInstance;
+    let writeFileSyncSpy: MockInstance;
+    let mkdirSyncSpy: MockInstance;
+    let readFileIfExistsSpy: MockInstance;
+    let readFileSyncSpy: MockInstance;
 
     beforeEach(() => {
         readFileIfExistsSpy = vi.spyOn(fileUtils, 'readFileIfExists');
@@ -38,7 +39,7 @@ describe('FixtureFactory', () => {
             existsSyncSpy.mockReturnValueOnce(true);
             readFileIfExistsSpy.mockReturnValueOnce(null);
             writeFileSyncSpy.mockImplementationOnce(() => {
-                throw new Error('');
+                throw new Error('ERROR');
             });
             const factory = new FixtureFactory<ComplexObject>(defaults);
             expect(() => factory.fixtureSync('/testfile')).toThrow(

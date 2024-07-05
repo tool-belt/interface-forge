@@ -20,6 +20,11 @@ function recursiveValidate(
     return mappedKeys;
 }
 
+/**
+ *
+ * @param schema The schema to validate
+ * @returns T
+ */
 export function validateFactorySchema<T extends FactorySchema<any>>(
     schema: T,
 ): T {
@@ -35,6 +40,11 @@ export function validateFactorySchema<T extends FactorySchema<any>>(
     return schema;
 }
 
+/**
+ *
+ * @param factoryResult The factory result to validate
+ * @returns T
+ */
 export function validateFactoryResult<T extends Record<string, any>>(
     factoryResult: T,
 ): T {

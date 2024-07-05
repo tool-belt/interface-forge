@@ -6,7 +6,8 @@
         "baseUrl": ".",
         "esModuleInterop": true,
         "lib": ["ESNext"],
-        "module": "CommonJS",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -14,7 +15,10 @@
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "target": "ES2015",
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "forceConsistentCasingInFileNames": true,
+        "target": "ESNext",
         "types": ["vitest/globals", "vitest"]
     }
 }

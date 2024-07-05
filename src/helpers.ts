@@ -6,6 +6,11 @@ function iterableToArray<T>(iterable: Iterable<T>): T[] {
     return values;
 }
 
+/**
+ *
+ * @param iterable An iterable to cycle through
+ * @returns A generator that cycles through the values of the iterable
+ */
 export function iterate<T>(iterable: Iterable<T>): Generator<T, T, T> {
     const values = iterableToArray(iterable);
     return (function* () {
@@ -23,6 +28,11 @@ export function iterate<T>(iterable: Iterable<T>): Generator<T, T, T> {
     })();
 }
 
+/**
+ *
+ * @param iterable An iterable to sample from
+ * @returns A generator that samples values from the iterable
+ */
 export function sample<T>(iterable: Iterable<T>): Generator<T, T, T> {
     const values = iterableToArray(iterable);
     return (function* () {

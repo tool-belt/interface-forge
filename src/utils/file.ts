@@ -11,6 +11,10 @@ interface ParsedFilePath {
     fullPath: string;
 }
 
+/**
+ *
+ * @param filePath The path to the file to validate
+ */
 export function validateAbsolutePath(filePath?: string): void {
     if (!filePath?.trim()) {
         throw new Error(ERROR_MESSAGES.MISSING_FILENAME);
@@ -20,6 +24,11 @@ export function validateAbsolutePath(filePath?: string): void {
     }
 }
 
+/**
+ *
+ * @param filePath The path to the file to parse
+ * @returns ParsedFilePath
+ */
 export function parseFilePath(filePath: string): ParsedFilePath {
     validateAbsolutePath(filePath);
     let fileName = path.basename(filePath);
@@ -43,6 +52,11 @@ export function parseFilePath(filePath: string): ParsedFilePath {
     };
 }
 
+/**
+ *
+ * @param filePath The path to the file to read
+ * @returns T | null
+ */
 export function readFileIfExists<T>(filePath: string): T | null {
     if (fs.existsSync(filePath)) {
         try {
@@ -62,6 +76,14 @@ export function readFileIfExists<T>(filePath: string): T | null {
     return null;
 }
 
+/**
+ *
+ * @param build The object to write to the file
+ * @param ParsedFilePath The parsed file path
+ * @param ParsedFilePath.fixturesDir The directory to write the file to
+ * @param ParsedFilePath.fullPath The full path to the file to write
+ * @returns T
+ */
 export function writeFixtureFile<T>(
     build: T,
     { fixturesDir, fullPath }: ParsedFilePath,
@@ -82,6 +104,12 @@ export function writeFixtureFile<T>(
     }
 }
 
+/**
+ *
+ * @param input The object to map key paths from
+ * @param parent The parent key path
+ * @returns string[]
+ */
 export function mapKeyPaths<T extends Record<string, any>>(
     input: T,
     parent = '',
@@ -109,12 +137,18 @@ export function mapKeyPaths<T extends Record<string, any>>(
     return [...new Set(keys)];
 }
 
+/**
+ *
+ * @param target The target object to compare
+ * @param source The source object to compare
+ * @returns boolean
+ */
 export function isSameStructure<T extends Record<string, any>>(
     target: T,
-    soute: Record<string, any>,
-): soute is T {
+    source: Record<string, any>,
+): source is T {
     return (
         JSON.stringify(mapKeyPaths(target).sort()) ===
-        JSON.stringify(mapKeyPaths(soute).sort())
+        JSON.stringify(mapKeyPaths(source).sort())
     );
 }

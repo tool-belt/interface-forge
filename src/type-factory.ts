@@ -34,10 +34,12 @@ interface AsyncBuildArgs<T> {
         | FactoryDefaults<Partial<T>>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class BuildArgProxy {
     // This class is intentionally left empty.
 }
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class DerivedValueProxy {
     // This class is intentionally left empty.
 }
@@ -55,17 +57,36 @@ export class Ref<T> {
     }
 }
 
+/**
+ * Represents a factory for creating instances of type `T`. This class provides methods to build
+ * single instances (`build` and `buildSync`), and to build batches of instances (`batch` and `batchSync`).
+ * It supports both synchronous and asynchronous creation patterns, allowing for complex object
+ * construction scenarios, including handling asynchronous defaults or overrides.
+ *
+ * The factory maintains an internal counter to support unique instance creation through iteration,
+ * and allows for resetting this counter as needed.
+ * @template T The type of object this factory produces.
+ */
 export class TypeFactory<T> {
     private readonly defaults: FactoryDefaults<T>;
     public counter: number;
     public factory?: FactoryFunction<T>;
 
+    /**
+     * Constructs a new `TypeFactory` instance.
+     * @param defaults - The default values or a function returning default values for instances of type `T`.
+     * @param factory - An optional custom function used to create instances of type `T`.
+     */
     constructor(defaults: FactoryDefaults<T>, factory?: FactoryFunction<T>) {
         this.defaults = defaults;
         this.factory = factory;
         this.counter = 0;
     }
 
+    /**
+     * Resets the internal counter to a specified value, defaulting to 0.
+     * @param value - The value to reset the counter to. Defaults to 0.
+     */
     resetCounter(value = 0): void {
         this.counter = value;
     }

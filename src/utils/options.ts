@@ -17,6 +17,12 @@ function isOverridesAndFactory<T>(
     )(input);
 }
 
+/**
+ *
+ * @param options The options to parse
+ * @param iteration The current iteration
+ * @returns [overrides, factory]
+ */
 export function parseOptions<T>(
     options: FactoryBuildOptions<T> | undefined,
     iteration: number,
