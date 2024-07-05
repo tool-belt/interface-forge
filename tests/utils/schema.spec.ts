@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, TypeFactory } from '../../src';
+import { ERROR_MESSAGES, Factory } from '../../src';
 import { parseFactorySchema } from '../../src/utils/schema';
 import { ComplexObject, Options } from '../test-types';
 
@@ -13,7 +13,7 @@ describe('parseFactorySchema Async', () => {
             await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    options: new TypeFactory<any>({
+                    options: new Factory<any>({
                         type: 'none',
                     }),
                 },
@@ -32,7 +32,7 @@ describe('parseFactorySchema Async', () => {
             await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    value: TypeFactory.use(async () => 99),
+                    value: Factory.use(async () => 99),
                 },
                 0,
                 false,
@@ -47,8 +47,8 @@ describe('parseFactorySchema Async', () => {
             await parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    options: TypeFactory.use<Options>(
-                        new TypeFactory<Options>({
+                    options: Factory.use<Options>(
+                        new Factory<Options>({
                             type: 'none',
                         }),
                         { overrides: { type: 'all' } },
@@ -68,10 +68,10 @@ describe('parseFactorySchema Async', () => {
         const result = await parseFactorySchema<ComplexObject>(
             {
                 ...defaults,
-                options: TypeFactory.use<Options>(
-                    new TypeFactory<Options>({
-                        children: TypeFactory.use(
-                            new TypeFactory<ComplexObject>(defaults),
+                options: Factory.use<Options>(
+                    new Factory<Options>({
+                        children: Factory.use(
+                            new Factory<ComplexObject>(defaults),
 
                             {
                                 batch: 5,
@@ -103,7 +103,7 @@ describe('parseFactorySchema Async', () => {
         expect(result.options?.children?.length).toBe(5);
     });
     it('parses schema correctly using generator fn', async () => {
-        const generator = TypeFactory.iterate([
+        const generator = Factory.iterate([
             new Promise((resolve) => {
                 resolve(1);
             }),
@@ -199,7 +199,7 @@ describe('parseFactorySchema Sync', () => {
             parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    options: new TypeFactory<any>({
+                    options: new Factory<any>({
                         type: 'none',
                     }),
                 },
@@ -218,7 +218,7 @@ describe('parseFactorySchema Sync', () => {
             parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    value: TypeFactory.use(() => 99),
+                    value: Factory.use(() => 99),
                 },
                 0,
                 true,
@@ -233,8 +233,8 @@ describe('parseFactorySchema Sync', () => {
             parseFactorySchema<ComplexObject>(
                 {
                     ...defaults,
-                    options: TypeFactory.use<Options>(
-                        new TypeFactory<Options>({
+                    options: Factory.use<Options>(
+                        new Factory<Options>({
                             type: 'none',
                         }),
                         { overrides: { type: 'all' } },
@@ -254,10 +254,10 @@ describe('parseFactorySchema Sync', () => {
         const result = parseFactorySchema<ComplexObject>(
             {
                 ...defaults,
-                options: TypeFactory.use<Options>(
-                    new TypeFactory<Options>({
-                        children: TypeFactory.use(
-                            new TypeFactory<ComplexObject>(defaults),
+                options: Factory.use<Options>(
+                    new Factory<Options>({
+                        children: Factory.use(
+                            new Factory<ComplexObject>(defaults),
 
                             {
                                 batch: 5,
@@ -290,7 +290,7 @@ describe('parseFactorySchema Sync', () => {
         expect(result.options?.children?.length).toBe(5);
     });
     it('parses schema correctly using generator fn', () => {
-        const generator = TypeFactory.iterate([1, 2, 3]);
+        const generator = Factory.iterate([1, 2, 3]);
         expect(
             parseFactorySchema<ComplexObject>(
                 {

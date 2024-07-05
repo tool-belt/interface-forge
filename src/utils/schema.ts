@@ -1,7 +1,7 @@
 import { isIterator, isPromise, isRecord } from '@tool-belt/type-predicates';
 
 import { ERROR_MESSAGES } from '../constants';
-import { DerivedValueProxy, Ref, TypeFactory } from '../type-factory';
+import { DerivedValueProxy, Factory, Ref } from '../factory';
 import { FactorySchema } from '../types';
 
 function parseRef(
@@ -9,17 +9,17 @@ function parseRef(
     isSync: boolean,
     iteration: number,
 ): unknown {
-    if (value instanceof TypeFactory) {
+    if (value instanceof Factory) {
         if (batch) {
             if (isSync) {
-                return value.batchSync(batch, options) as unknown;
+                return value.batch(batch, options) as unknown;
             }
-            return value.batch(batch, options);
+            return value.batchAsync(batch, options);
         }
         if (isSync) {
-            return value.buildSync(options);
+            return value.build(options);
         }
-        return value.build(options);
+        return value.buildAsync(options);
     } else {
         return value(iteration);
     }
@@ -56,8 +56,8 @@ export function parseFactorySchema<T>(
 ): T | Promise<T> {
     const output: Record<string, unknown> = {};
     for (let [key, value] of Object.entries(schema)) {
-        if (value instanceof TypeFactory) {
-            value = isSync ? value.buildSync() : value.build();
+        if (value instanceof Factory) {
+            value = isSync ? value.build() : value.buildAsync();
         } else if (value instanceof Ref) {
             value = parseRef(value, isSync, iteration);
         } else if (isIterator(value)) {

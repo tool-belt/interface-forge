@@ -1,4 +1,4 @@
-import { BuildArgProxy, Ref, TypeFactory } from './type-factory';
+import { BuildArgProxy, Factory, Ref } from './factory';
 
 export type FactoryFunction<T> = (
     values: T,
@@ -16,7 +16,7 @@ export type FactorySchema<T> = {
               | T[K]
               | Promise<T[K]>
               | Ref<T[K]>
-              | TypeFactory<T[K]>
+              | Factory<T[K]>
               | Generator<T[K], T[K], T[K]>
               | BuildArgProxy;
 };

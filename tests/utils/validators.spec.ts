@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, TypeFactory } from '../../src';
+import { ERROR_MESSAGES, Factory } from '../../src';
 import {
     validateFactoryResult,
     validateFactorySchema,
@@ -15,7 +15,7 @@ describe('validateFactorySchema', () => {
         expect(() =>
             validateFactorySchema<ComplexObject>({
                 ...defaults,
-                options: TypeFactory.required() as any,
+                options: Factory.required() as any,
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
@@ -33,8 +33,8 @@ describe('validateFactorySchema', () => {
         expect(() =>
             validateFactorySchema<any>({
                 ...defaults,
-                nested: { ...defaults, options: TypeFactory.required() as any },
-                topLevel: TypeFactory.required(),
+                nested: { ...defaults, options: Factory.required() as any },
+                topLevel: Factory.required(),
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_BUILD_ARGS.replace(
@@ -50,7 +50,7 @@ describe('validateFactoryResult', () => {
         expect(() =>
             validateFactoryResult<ComplexObject>({
                 ...defaults,
-                options: TypeFactory.derived() as any,
+                options: Factory.derived() as any,
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(
@@ -68,8 +68,8 @@ describe('validateFactoryResult', () => {
         expect(() =>
             validateFactoryResult<any>({
                 ...defaults,
-                nested: { ...defaults, options: TypeFactory.derived() as any },
-                topLevel: TypeFactory.derived(),
+                nested: { ...defaults, options: Factory.derived() as any },
+                topLevel: Factory.derived(),
             }),
         ).toThrow(
             ERROR_MESSAGES.MISSING_DERIVED_PARAMETERS.replace(

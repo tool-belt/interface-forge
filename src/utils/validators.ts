@@ -1,7 +1,7 @@
 import { isRecord } from '@tool-belt/type-predicates';
 
 import { ERROR_MESSAGES } from '../constants';
-import { BuildArgProxy, DerivedValueProxy } from '../type-factory';
+import { BuildArgProxy, DerivedValueProxy } from '../factory';
 import { FactorySchema } from '../types';
 
 function recursiveValidate(

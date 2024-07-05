@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { TypeFactory } from './type-factory';
+import { Factory } from './factory';
 import { FactoryBuildOptions, FactoryDefaults, FactoryFunction } from './types';
 import {
     isSameStructure,
@@ -10,9 +10,7 @@ import {
     writeFixtureFile,
 } from './utils/file';
 
-export class FixtureFactory<
-    T extends Record<string, any>,
-> extends TypeFactory<T> {
+export class FixtureFactory<T extends Record<string, any>> extends Factory<T> {
     private readonly defaultPath: string | undefined;
 
     constructor(
@@ -45,12 +43,12 @@ export class FixtureFactory<
         filePath: string,
         options?: FactoryBuildOptions<T>,
     ): Promise<T> {
-        const instance = await this.build(options);
+        const instance = await this.buildAsync(options);
         return this.getOrCreateFixture(filePath, instance);
     }
 
     fixtureSync(filePath: string, options?: FactoryBuildOptions<T>): T {
-        const instance = this.buildSync(options);
+        const instance = this.build(options);
         return this.getOrCreateFixture(filePath, instance);
     }
 
@@ -59,7 +57,7 @@ export class FixtureFactory<
         size: number,
         options?: FactoryBuildOptions<T>,
     ): Promise<T[]> {
-        const batch = await this.batch(size, options);
+        const batch = await this.batchAsync(size, options);
         return this.getOrCreateFixture(filePath, batch);
     }
 
@@ -68,7 +66,7 @@ export class FixtureFactory<
         size: number,
         options?: FactoryBuildOptions<T>,
     ): T[] {
-        const batch = this.batchSync(size, options);
+        const batch = this.batch(size, options);
         return this.getOrCreateFixture(filePath, batch);
     }
 }

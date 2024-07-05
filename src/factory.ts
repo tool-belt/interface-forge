@@ -45,11 +45,11 @@ export class DerivedValueProxy {
 }
 
 export class Ref<T> {
-    readonly value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>;
+    readonly value: ((iteration: number) => Promise<T> | T) | Factory<T>;
     readonly options?: UseOptions<T>;
 
     constructor(
-        value: ((iteration: number) => Promise<T> | T) | TypeFactory<T>,
+        value: ((iteration: number) => Promise<T> | T) | Factory<T>,
         options?: Record<string, any>,
     ) {
         this.value = value;
@@ -67,7 +67,7 @@ export class Ref<T> {
  * and allows for resetting this counter as needed.
  * @template T The type of object this factory produces.
  */
-export class TypeFactory<T> {
+export class Factory<T> {
     private readonly defaults: FactoryDefaults<T>;
     public counter: number;
     public factory?: FactoryFunction<T>;
@@ -140,24 +140,7 @@ export class TypeFactory<T> {
         return parseFactorySchema<T>(mergedSchema, iteration, isSync);
     }
 
-    build = async (options?: FactoryBuildOptions<T>): Promise<T> => {
-        const { defaults, overrides, factory, iteration } = this.preBuild(
-            false,
-            options,
-        );
-        const value = await this.performBuild(
-            await defaults,
-            await overrides,
-            iteration,
-            false,
-        );
-        return this.postBuild(
-            false,
-            factory ? factory(value, iteration) : value,
-        );
-    };
-
-    buildSync = (options?: FactoryBuildOptions<T>): T => {
+    build = (options?: FactoryBuildOptions<T>): T => {
         const { defaults, overrides, factory, iteration } = this.preBuild(
             true,
             options,
@@ -174,12 +157,32 @@ export class TypeFactory<T> {
         ) as T;
     };
 
-    async batch(size: number, options?: FactoryBuildOptions<T>): Promise<T[]> {
-        return Promise.all(new Array(size).fill(options).map(this.build));
+    buildAsync = async (options?: FactoryBuildOptions<T>): Promise<T> => {
+        const { defaults, overrides, factory, iteration } = this.preBuild(
+            false,
+            options,
+        );
+        const value = await this.performBuild(
+            await defaults,
+            await overrides,
+            iteration,
+            false,
+        );
+        return this.postBuild(
+            false,
+            factory ? factory(value, iteration) : value,
+        );
+    };
+
+    batch(size: number, options?: FactoryBuildOptions<T>): T[] {
+        return new Array(size).fill(options).map(this.build);
     }
 
-    batchSync(size: number, options?: FactoryBuildOptions<T>): T[] {
-        return new Array(size).fill(options).map(this.buildSync);
+    async batchAsync(
+        size: number,
+        options?: FactoryBuildOptions<T>,
+    ): Promise<T[]> {
+        return Promise.all(new Array(size).fill(options).map(this.buildAsync));
     }
 
     static required(): BuildArgProxy {
@@ -191,7 +194,7 @@ export class TypeFactory<T> {
     }
 
     static use<P>(
-        value: ((iteration: number) => Promise<P> | P) | TypeFactory<P>,
+        value: ((iteration: number) => Promise<P> | P) | Factory<P>,
         options?: UseOptions<P>,
     ): Ref<P> {
         return new Ref<P>(value, options);

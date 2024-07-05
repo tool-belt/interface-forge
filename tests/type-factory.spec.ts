@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, TypeFactory } from '../src';
+import { ERROR_MESSAGES, Factory } from '../src';
 import { ComplexObject } from './test-types';
 
 const typeOptions = ['1', '2', '3', 'all', 'none'];
@@ -10,21 +10,23 @@ const defaults: ComplexObject = {
 
 describe('.build', () => {
     it('builds correctly with defaults object literal', async () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
-        expect(await factory.build()).toStrictEqual<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
+        expect(await factory.buildAsync()).toStrictEqual<ComplexObject>(
+            defaults,
+        );
     });
     it('builds correctly with defaults function', async () => {
-        const factory = new TypeFactory<ComplexObject>(() => ({
+        const factory = new Factory<ComplexObject>(() => ({
             ...defaults,
             value: 99,
         }));
-        expect(await factory.build()).toStrictEqual<ComplexObject>({
+        expect(await factory.buildAsync()).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 99,
         });
     });
     it('builds correctly with builder function', async () => {
-        const factory = new TypeFactory<ComplexObject>(
+        const factory = new Factory<ComplexObject>(
             defaults,
             async (defaults, iteration) => ({
                 ...defaults,
@@ -32,34 +34,34 @@ describe('.build', () => {
                 value: iteration + 1,
             }),
         );
-        expect(await factory.build()).toStrictEqual<ComplexObject>({
+        expect(await factory.buildAsync()).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
             value: 1,
         });
     });
     it('merges options correctly when passed object literal', async () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            await factory.build({ name: 'newObject' }),
+            await factory.buildAsync({ name: 'newObject' }),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
         });
     });
     it('merges options correctly when passed object literal in overrides key', async () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            await factory.build({ overrides: { name: 'newObject' } }),
+            await factory.buildAsync({ overrides: { name: 'newObject' } }),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
         });
     });
     it('merges options correctly when passed options function', async () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            await factory.build({
+            await factory.buildAsync({
                 overrides: () => ({ name: 'newObject' }),
             }),
         ).toStrictEqual<ComplexObject>({
@@ -68,12 +70,12 @@ describe('.build', () => {
         });
     });
     it('merges options correctly when passed options async function', async () => {
-        const factoryOne = new TypeFactory<ComplexObject>(defaults);
-        const factoryTwo = new TypeFactory<ComplexObject>(async () => {
-            return await factoryOne.build();
+        const factoryOne = new Factory<ComplexObject>(defaults);
+        const factoryTwo = new Factory<ComplexObject>(async () => {
+            return await factoryOne.buildAsync();
         });
         expect(
-            await factoryTwo.build({
+            await factoryTwo.buildAsync({
                 overrides: async () => ({ name: 'newObject' }),
             }),
         ).toStrictEqual<ComplexObject>({
@@ -82,16 +84,16 @@ describe('.build', () => {
         });
     });
     it('handles generator iteration correctly', async () => {
-        const factory = new TypeFactory<ComplexObject>({
+        const factory = new Factory<ComplexObject>({
             ...defaults,
             options: {
-                type: TypeFactory.iterate(typeOptions),
+                type: Factory.iterate(typeOptions),
             },
         });
         const result = await Promise.all(
             Array.from({ length: 5 })
                 .fill(null)
-                .map(async () => factory.build()),
+                .map(async () => factory.buildAsync()),
         );
         expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
     });
@@ -99,21 +101,21 @@ describe('.build', () => {
 
 describe('.buildSync', () => {
     it('builds correctly with defaults object literal', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
-        expect(factory.buildSync()).toStrictEqual<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
+        expect(factory.build()).toStrictEqual<ComplexObject>(defaults);
     });
     it('builds correctly with defaults function', () => {
-        const factory = new TypeFactory<ComplexObject>(() => ({
+        const factory = new Factory<ComplexObject>(() => ({
             ...defaults,
             value: 99,
         }));
-        expect(factory.buildSync()).toStrictEqual<ComplexObject>({
+        expect(factory.build()).toStrictEqual<ComplexObject>({
             ...defaults,
             value: 99,
         });
     });
     it('builds correctly with builder function', () => {
-        const factory = new TypeFactory<ComplexObject>(
+        const factory = new Factory<ComplexObject>(
             defaults,
             (defaults, iteration) => ({
                 ...defaults,
@@ -121,34 +123,34 @@ describe('.buildSync', () => {
                 value: iteration + 1,
             }),
         );
-        expect(factory.buildSync()).toStrictEqual<ComplexObject>({
+        expect(factory.build()).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
             value: 1,
         });
     });
     it('merges options correctly when passed object literal', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            factory.buildSync({ name: 'newObject' }),
+            factory.build({ name: 'newObject' }),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
         });
     });
     it('merges options correctly when passed object literal in overrides key', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            factory.buildSync({ overrides: { name: 'newObject' } }),
+            factory.build({ overrides: { name: 'newObject' } }),
         ).toStrictEqual<ComplexObject>({
             ...defaults,
             name: 'newObject',
         });
     });
     it('merges options correctly when passed options function', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(
-            factory.buildSync({
+            factory.build({
                 overrides: () => ({ name: 'newObject' }),
             }),
         ).toStrictEqual<ComplexObject>({
@@ -157,53 +159,51 @@ describe('.buildSync', () => {
         });
     });
     it('throws when called with Promise defaults', () => {
-        const factory = new TypeFactory<ComplexObject>(async () => defaults);
-        expect(() => factory.buildSync()).toThrow(
-            ERROR_MESSAGES.PROMISE_DEFAULTS,
-        );
+        const factory = new Factory<ComplexObject>(async () => defaults);
+        expect(() => factory.build()).toThrow(ERROR_MESSAGES.PROMISE_DEFAULTS);
     });
     it('throws when called with Promise options', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(() =>
-            factory.buildSync({
+            factory.build({
                 overrides: async () => ({ name: 'newObject' }),
             }),
         ).toThrow(ERROR_MESSAGES.PROMISE_OVERRIDES);
     });
     it('throws when called with Promise returning factory', () => {
-        const factory = new TypeFactory<ComplexObject>(defaults);
+        const factory = new Factory<ComplexObject>(defaults);
         expect(() =>
-            factory.buildSync({
+            factory.build({
                 factory: async (value) => ({ ...value, name: 'newObject' }),
             }),
         ).toThrow(ERROR_MESSAGES.PROMISE_FACTORY);
     });
     it('handles generator iteration correctly', () => {
-        const factory = new TypeFactory<ComplexObject>({
+        const factory = new Factory<ComplexObject>({
             ...defaults,
             options: {
-                type: TypeFactory.iterate(typeOptions),
+                type: Factory.iterate(typeOptions),
             },
         });
         const result = Array.from({ length: 5 })
             .fill(null)
-            .map(() => factory.buildSync());
+            .map(() => factory.build());
         expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
     });
 });
 
 describe('resetCounter', () => {
-    const factory = new TypeFactory<ComplexObject>(defaults);
+    const factory = new Factory<ComplexObject>(defaults);
     it('resets to zero by default', () => {
         expect(factory.counter).toBe(0);
-        factory.buildSync();
+        factory.build();
         expect(factory.counter).toBe(1);
         factory.resetCounter();
         expect(factory.counter).toBe(0);
     });
     it('resets to passed value', () => {
         expect(factory.counter).toBe(0);
-        factory.buildSync();
+        factory.build();
         expect(factory.counter).toBe(1);
         factory.resetCounter(5);
         expect(factory.counter).toBe(5);
@@ -212,11 +212,11 @@ describe('resetCounter', () => {
 
 describe('.batch', () => {
     it('returns an array of unique objects', async () => {
-        const factory = new TypeFactory<ComplexObject>(
+        const factory = new Factory<ComplexObject>(
             {
                 ...defaults,
                 options: {
-                    type: TypeFactory.iterate(typeOptions),
+                    type: Factory.iterate(typeOptions),
                 },
             },
             (defaults, iteration) => ({
@@ -224,18 +224,18 @@ describe('.batch', () => {
                 value: iteration,
             }),
         );
-        const result = await factory.batch(5);
+        const result = await factory.batchAsync(5);
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
     });
     it('increments counter correctly', () => {
-        const factory = new TypeFactory<{
+        const factory = new Factory<{
             id: number;
         }>((i) => ({ id: i }));
         const results = Array.from({ length: 10 })
             .fill(null)
-            .flatMap(() => factory.batchSync(10))
+            .flatMap(() => factory.batch(10))
             .map(({ id }) => id);
         expect([...new Set(results)]).toHaveLength(100);
         expect(results[0]).toBe(0);
@@ -245,11 +245,11 @@ describe('.batch', () => {
 
 describe('.batchSync', () => {
     it('returns an array of unique objects', () => {
-        const factory = new TypeFactory<ComplexObject>(
+        const factory = new Factory<ComplexObject>(
             {
                 ...defaults,
                 options: {
-                    type: TypeFactory.iterate(typeOptions),
+                    type: Factory.iterate(typeOptions),
                 },
             },
             (defaults, iteration) => ({
@@ -257,7 +257,7 @@ describe('.batchSync', () => {
                 value: iteration,
             }),
         );
-        const result = factory.batchSync(5);
+        const result = factory.batch(5);
         expect(result).toBeInstanceOf(Array);
         expect(result.map(({ value }) => value)).toEqual([0, 1, 2, 3, 4]);
         expect(result.map(({ options }) => options!.type)).toEqual(typeOptions);
