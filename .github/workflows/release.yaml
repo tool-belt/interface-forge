@@ -12,7 +12,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: 22
-            - uses: pnpm/action-setup@v3.0.0
+            - uses: pnpm/action-setup@v4.0.0
               name: Install pnpm
               id: pnpm-install
               with:
@@ -21,4 +21,4 @@ jobs:
               run: pnpm install
             - run: pnpm build
             - run: pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-            - run: pnpm publish
+            - run: pnpm publish --no-git-checks
