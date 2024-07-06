@@ -36,6 +36,7 @@
         "lint": "eslint --fix '**/*.ts'",
         "prepare": "husky install",
         "test": "vitest run",
+        "prepublish": "pnpm build",
         "test:coverage": "vitest run --coverage",
         "test:watch": "vitest"
     },
