@@ -40,6 +40,8 @@
         "test:watch": "vitest"
     },
     "devDependencies": {
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
         "@tool-belt/eslint-config": "^6.0.1",
         "@types/node": "^20.14.10",
         "@vitest/coverage-v8": "^1.6.0",
