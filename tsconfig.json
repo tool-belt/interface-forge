@@ -1,12 +1,11 @@
 {
     "include": ["**/*.ts"],
-    "exclude": ["docusaurus"],
     "compilerOptions": {
         "alwaysStrict": true,
         "baseUrl": ".",
         "esModuleInterop": true,
-        "lib": ["ESNext"],
-        "module": "CommonJS",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -14,7 +13,10 @@
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "target": "ES2015",
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "forceConsistentCasingInFileNames": true,
+        "target": "ESNext",
         "types": ["vitest/globals", "vitest"]
     }
 }

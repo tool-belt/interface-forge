@@ -7,21 +7,24 @@
             "email": "nhirschfeld@gmail.com"
         }
     ],
-    "version": "1.6.1",
+    "version": "2.0.0",
     "license": "MIT",
-    "description": "Gracefully generate testing data using TypeScript",
+    "description": "Gracefully generate testing data using TypeScript and Faker.js",
     "keywords": [
         "factory",
-        "fixture",
         "testing",
-        "typescript"
+        "typescript",
+        "faker.js",
+        "faker"
     ],
     "repository": "https://github.com/tool-belt/interface-forge",
     "bugs": "https://github.com/tool-belt/interface-forge/issues",
     "main": "dist/index.js",
-    "typings": "dist/index",
+    "typings": "dist/index.d.ts",
+    "type": "module",
     "files": [
-        "dist/"
+        "dist/index.js",
+        "dist/index.d.ts"
     ],
     "scripts": {
         "clean": "rimraf dist",
@@ -29,7 +32,7 @@
         "build": "rimraf dist && tsc -p ./tsconfig.build.json",
         "contributors:add": "all-contributors add",
         "contributors:generate": "all-contributors generate",
-        "format": "prettier --write '**/*.{js,md,json,yaml,yml}'",
+        "format": "prettier --write '**/*.{ts,d.ts,js,md,json,yaml,yml}'",
         "lint": "eslint --fix '**/*.ts'",
         "prepare": "husky install",
         "test": "vitest run",
@@ -37,23 +40,26 @@
         "test:watch": "vitest"
     },
     "devDependencies": {
-        "@tool-belt/eslint-config": "^5.0.3",
-        "@types/node": "^20.10.4",
-        "@vitest/coverage-v8": "^1.0.4",
-        "eslint": "^8.55.0",
-        "husky": "^8.0.3",
-        "lint-staged": "^15.2.0",
-        "prettier": "^3.1.1",
-        "rimraf": "^5.0.5",
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
+        "@tool-belt/eslint-config": "^6.0.1",
+        "@types/node": "^20.14.10",
+        "@vitest/coverage-v8": "^1.6.0",
+        "eslint": "^9.6.0",
+        "husky": "^9.0.11",
+        "lint-staged": "^15.2.7",
+        "prettier": "^3.3.2",
+        "rimraf": "^5.0.8",
         "ts-node": "^10.9.2",
-        "typescript": "^5.3.3",
-        "vitest": "^1.0.4"
+        "typescript": "^5.5.3",
+        "vitest": "^1.6.0"
     },
     "lint-staged": {
-        "*.ts": "eslint --fix",
-        "*.{js,md,json,yaml,yml}": "prettier --write"
+        "*.{ts,d.ts,js,md,json,yaml,yml}": "prettier --write",
+        "*.ts": "eslint --fix"
     },
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
         "@tool-belt/type-predicates": "^1.3.0"
     },
     "engines": {

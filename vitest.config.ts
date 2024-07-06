@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -7,6 +6,6 @@ export default defineConfig({
             reporter: ['text', 'lcov'],
         },
         globals: true,
-        include: ['tests/**/*.spec.ts'],
+        include: ['**/*.spec.ts'],
     },
 });
