@@ -58,7 +58,7 @@ describe('Factory class functionality', () => {
             expect(result.value).toBeTruthy();
             expect(typeof result.name).toBe('string');
             expect(typeof result.value).toBe('number');
-            expect([1, 2, 3].includes(result.value)).toBeTruthy();
+            expect([1, 2, 3].includes(result.value!)).toBeTruthy();
         });
 
         it('builds correctly with defaults function', () => {
@@ -133,7 +133,7 @@ describe('Factory class functionality', () => {
         });
 
         it('handles batch generation with complex overrides', () => {
-            const factory = new Factory<ComplexObject>((factory) => ({
+            const factory = new Factory<ComplexObject>(() => ({
                 ...defaults,
                 value: 99,
             }));
