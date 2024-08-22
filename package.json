@@ -34,7 +34,7 @@
         "contributors:generate": "all-contributors generate",
         "format": "prettier --write '**/*.{ts,d.ts,js,md,json,yaml,yml}'",
         "lint": "eslint --fix '**/*.ts'",
-        "prepare": "husky install",
+        "prepare": "husky",
         "test": "vitest run",
         "prepublish": "pnpm build",
         "test:coverage": "vitest run --coverage",
